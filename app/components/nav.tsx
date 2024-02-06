@@ -13,36 +13,34 @@ export default function Nav() {
   return (
     <>
       {/* DESKTOP */}
-      <main className="hidden xl:flex w-full max-w-[1600px] px-[104px]">
-        <div className="flex items-center justify-between w-full py-[32px]">
-          <Link href="/" className="hover:opacity-75">
-            <Image src={"/logo.svg"} width={220} height={71} alt="logo" />
-          </Link>
-          <div className="flex items-center justify-center font-semibold w-full">
-            <div className="flex items-center gap-[56px] text-[14px]">
-              {ROUTES.map((item, index) => (
-                <Link
-                  key={index}
-                  href={item.href}
-                  className={`transition-all tracking-[3px] ${
-                    item.href === page
-                      ? "text-blue-love"
-                      : "text-blue-love/40 hover:hover:text-blue-love"
-                  }`}
-                >
-                  {item.title}
-                </Link>
-              ))}
-            </div>
+      <main className="hidden xl:flex items-center justify-between py-[32px] w-full xxmax-w-[1600px] px-[104px]">
+        <Link href="/" className="hover:opacity-75">
+          <Image src={"/logo.svg"} width={220} height={71} alt="logo" />
+        </Link>
+        <div className="flex items-center justify-center font-semibold w-full">
+          <div className="flex items-center gap-[56px] text-[14px]">
+            {ROUTES.map((item, index) => (
+              <Link
+                key={index}
+                href={item.href}
+                className={`transition-all tracking-[3px] ${
+                  item.href === page
+                    ? "text-blue-love"
+                    : "text-blue-love/40 hover:hover:text-blue-love"
+                }`}
+              >
+                {item.title}
+              </Link>
+            ))}
           </div>
-
-          <button
-            className="flex justify-center items-center transition-all bg-button hover:scale-[1.02] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] min-h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love"
-            onClick={() => {}}
-          >
-            CONNECT WALLET
-          </button>
         </div>
+
+        <button
+          className="flex justify-center items-center transition-all bg-button hover:scale-[1.02] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love"
+          onClick={() => {}}
+        >
+          CONNECT WALLET
+        </button>
       </main>
       {/* MOBILE */}
       <main className="flex xl:hidden w-full px-4 relative">

@@ -30,7 +30,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`flex flex-col items-center bg-gradient-to-b from-white to-[#0052FF] ${poppins.className}`}
+        className={`bg-gradient-to-b from-white to-[#0052FF] ${poppins.className}`}
       >
         <StateProvider>
           <Nav />
