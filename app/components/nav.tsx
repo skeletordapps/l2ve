@@ -13,7 +13,7 @@ export default function Nav() {
   return (
     <>
       {/* DESKTOP */}
-      <main className="hidden xl:flex items-center justify-between py-[32px] w-full xxmax-w-[1600px] px-[104px]">
+      <main className="hidden xl:flex items-center justify-between py-[32px] w-full px-[104px]">
         <Link href="/" className="hover:opacity-75">
           <Image src={"/logo.svg"} width={220} height={71} alt="logo" />
         </Link>

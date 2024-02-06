@@ -33,12 +33,14 @@ export default function RootLayout({
         className={`bg-gradient-to-b from-white via-[#0052FF]/30 to-[#0052FF] ${poppins.className}`}
       > */}
       <body
-        className={`bg-main bg-cover bg-no-repeat bg-[center_top_-100px] ${poppins.className}`}
+        className={`flex flex-col bg-gradient-to-b from-white to-blue-love ${poppins.className}`}
       >
-        <StateProvider>
-          <Nav />
-          {children}
-        </StateProvider>
+        <div className="flex flex-col bg-main bg-cover bg-no-repeat bg-[center_top_-100px] max-w-[1800px] self-center">
+          <StateProvider>
+            <Nav />
+            {children}
+          </StateProvider>
+        </div>
       </body>
     </html>
   );
