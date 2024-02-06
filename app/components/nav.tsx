@@ -37,7 +37,7 @@ export default function Nav() {
           </div>
 
           <button
-            className="flex justify-center items-center bg-button bg-contain bg-no-repeat min-w-[212px] min-h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love hover:drop-shadow-xl"
+            className="flex justify-center items-center transition-all bg-button hover:scale-[1.02] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] min-h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love"
             onClick={() => {}}
           >
             CONNECT WALLET
