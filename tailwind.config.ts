@@ -15,7 +15,9 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        main: "url('/bg-l2ve.png')",
         button: "url('/bg-button.png')",
+        separator: "url('/separator.svg')",
       },
     },
   },

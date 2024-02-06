@@ -29,8 +29,11 @@ export default function RootLayout({
           key="desc"
         />
       </head>
+      {/* <body
+        className={`bg-gradient-to-b from-white via-[#0052FF]/30 to-[#0052FF] ${poppins.className}`}
+      > */}
       <body
-        className={`bg-gradient-to-b from-white to-[#0052FF] ${poppins.className}`}
+        className={`bg-main bg-cover bg-no-repeat bg-[center_top_-100px] ${poppins.className}`}
       >
         <StateProvider>
           <Nav />
