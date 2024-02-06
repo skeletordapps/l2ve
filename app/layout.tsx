@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
+import StateProvider from "./context/StateContext";
+import Nav from "./components/nav";
 
-const inter = Inter({ subsets: ["latin"] });
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +21,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <head>
+        <title>L2VE</title>
+        <meta
+          name="description"
+          content="Cupid Inu has landed on BASE! His mission is to scatter as much $L2VE as possible. For this mission he travels from one L2 blockchain to the next."
+          key="desc"
+        />
+      </head>
+      <body
+        className={`flex flex-col items-center bg-gradient-to-b from-white to-[#0052FF] ${poppins.className}`}
+      >
+        <StateProvider>
+          <Nav />
+          {children}
+        </StateProvider>
+      </body>
     </html>
   );
 }
