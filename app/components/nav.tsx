@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useContext, useState } from "react";
 import { ROUTES } from "@/app/utils/consts";
 import Link from "next/link";
-import { StateContext, Theme } from "../context/StateContext";
+import { StateContext } from "../context/StateContext";
 import { Transition } from "@headlessui/react";
 
 export default function Nav() {
@@ -39,21 +39,27 @@ export default function Nav() {
           className="flex justify-center items-center transition-all bg-button hover:scale-[1.02] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love"
           onClick={() => {}}
         >
-          CONNECT WALLET
+          BUY $L2VE
         </button>
       </main>
       {/* MOBILE */}
-      <main className="flex xl:hidden w-full px-4 relative">
+      <main className="flex xl:hidden w-full sm:px-4 relative">
         <div
-          className={`flex items-center justify-between w-full py-[20px] px-[10px] border-b border-bluez/[24%] dark:border-aquaz/20`}
+          className={`flex items-center justify-between w-full py-[20px] px-[10px]`}
         >
           <Link href="/" className="hover:opacity-75">
-            <Image src={"logo.svg"} width={28.25} height={28.25} alt="logo" />
+            <Image
+              src={"/logo.svg"}
+              width={180}
+              height={71}
+              alt="logo"
+              className="w-[140px] sm:w-[180px]"
+            />
           </Link>
           <div className="flex items-center justify-center flex-1"></div>
           <div className="flex flex-row items-center gap-3">
             <button
-              className="w-[29px] h-[29px] dark:text-white"
+              className="w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] text-blue-love"
               onMouseEnter={() => setOpen(true)}
             >
               <svg
@@ -84,16 +90,15 @@ export default function Nav() {
           leaveTo="opacity-0"
           onMouseLeave={() => setOpen(false)}
         >
-          <div className="absolute top-[85px] right-0 w-full px-4">
-            <div className="text-slate-600 dark:text-slate-400 flex justify-center items-center flex-wrap gap-10 text-[14px] bg-white/40 dark:bg-bluez/30 backdrop-blur-[8px] shadow-2xl py-10 rounded-b-xl">
+          <div className="absolute top-[75px] right-0 w-full px-4">
+            <div className="text-slate-600 dark:text-slate-400 flex justify-center items-center flex-wrap gap-10 text-[14px] bg-white/40 dark:bg-blue-love/30 backdrop-blur-[8px] shadow-2xl py-10 rounded-b-xl">
               {ROUTES.filter((item) => item.title !== "Legal Disclaimer").map(
                 (item, index) => (
                   <Link
                     key={index}
                     href={item.href}
-                    className={`hover:text-bluez dark:hover:text-aquaz hover:border-b border-bluez dark:border-aquaz ${
-                      item.href === page &&
-                      "text-bluez dark:text-aquaz border-b"
+                    className={`hover:text-blue-love hover:border-b border-blue-love ${
+                      item.href === page && "text-blue-love border-b"
                     }`}
                   >
                     {item.title}

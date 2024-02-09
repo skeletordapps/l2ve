@@ -6,11 +6,11 @@ export const ROUTES: route[] = [
   },
   {
     title: "SPACEMAP",
-    href: "#",
+    href: "/#spacemap",
   },
   {
     title: "STATISTICS",
-    href: "#",
+    href: "/#statistics",
   },
 ];
 
