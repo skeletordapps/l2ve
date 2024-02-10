@@ -14,7 +14,7 @@ export default function Stage4() {
             STATISTICS
           </p>
           <p className="text-[20px] sm:text-[28px] xl:text-[48px] xl:tracking-[-2px]">
-            PEOPLE DO LIE, NUMBERS DON'T
+            PEOPLE LIE, NUMBERS DON'T
           </p>
         </div>
 
