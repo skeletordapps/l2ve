@@ -5,6 +5,7 @@ import { ROUTES } from "@/app/utils/consts";
 import Link from "next/link";
 import { StateContext } from "../context/StateContext";
 import { Transition } from "@headlessui/react";
+import { CustomConnectButton } from "./connectButton";
 
 export default function Nav() {
   const { page } = useContext(StateContext);
@@ -35,12 +36,13 @@ export default function Nav() {
           </div>
         </div>
 
-        <button
+        <CustomConnectButton />
+        {/* <button
           className="flex justify-center items-center transition-all bg-button hover:scale-[1.02] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love"
           onClick={() => {}}
         >
           BUY $L2VE
-        </button>
+        </button> */}
       </main>
       {/* MOBILE */}
       <main className="flex xl:hidden w-full sm:px-4 relative">
