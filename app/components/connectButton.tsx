@@ -1,4 +1,5 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import Image from "next/image";
 export const CustomConnectButton = () => {
   return (
     <ConnectButton.Custom>
@@ -72,10 +73,11 @@ export const CustomConnectButton = () => {
                         }}
                       >
                         {chain.iconUrl && (
-                          <img
+                          <Image
                             alt={chain.name ?? "Chain icon"}
                             src={chain.iconUrl}
-                            style={{ width: 24, height: 24 }}
+                            width={24}
+                            height={24}
                           />
                         )}
                       </div>
@@ -88,9 +90,6 @@ export const CustomConnectButton = () => {
                     className="flex justify-center items-center transition-all bg-button hover:scale-[1.03] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love"
                   >
                     {account.displayName}
-                    {/* {account.displayBalance
-                      ? ` (${account.displayBalance})`
-                      : ""} */}
                   </button>
                 </div>
               );

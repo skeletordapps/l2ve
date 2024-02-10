@@ -14,6 +14,7 @@ import {
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { base } from "wagmi/chains";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
+import Image from "next/image";
 
 const { chains, publicClient } = configureChains(
   [base],
@@ -41,9 +42,9 @@ const wagmiConfig = createConfig({
 
 const CustomAvatar: AvatarComponent = ({ address, ensImage, size }) => {
   return ensImage ? (
-    <img src={ensImage} width={size} height={size} />
+    <Image src={ensImage} width={size} height={size} alt="avatar" />
   ) : (
-    <img src={"/avatar.png"} width={size} height={size} alt="avatar" />
+    <Image src={"/avatar.png"} width={size} height={size} alt="avatar" />
   );
 };
 
