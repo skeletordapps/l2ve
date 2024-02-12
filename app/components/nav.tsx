@@ -1,15 +1,51 @@
 "use client";
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { ROUTES } from "@/app/utils/consts";
 import Link from "next/link";
-import { StateContext } from "../context/StateContext";
+import { StateContext, Theme } from "../context/StateContext";
 import { Transition } from "@headlessui/react";
 import { CustomConnectButton } from "./connectButton";
+import { dark, light } from "@/public/svgs";
 
 export default function Nav() {
-  const { page } = useContext(StateContext);
+  const { page, theme, setTheme } = useContext(StateContext);
   const [open, setOpen] = useState(false);
+  const [options, _] = useState<{ image: React.ReactElement; theme: Theme }[]>([
+    { image: light, theme: Theme.light },
+    { image: dark, theme: Theme.dark },
+  ]);
+
+  const changeTheme = useCallback(
+    (selectedTheme: Theme) => {
+      setTheme(selectedTheme);
+      localStorage.setItem("theme", selectedTheme);
+
+      switch (selectedTheme) {
+        case Theme.light:
+          document.documentElement.classList.remove("dark");
+          break;
+        case Theme.dark:
+          document.documentElement.classList.add("dark");
+          break;
+      }
+    },
+    [setTheme]
+  );
+
+  useEffect(() => {
+    switch (localStorage.theme as Theme) {
+      case Theme.light:
+        changeTheme(Theme.light);
+        break;
+      case Theme.dark:
+        changeTheme(Theme.dark);
+        break;
+      default:
+        changeTheme(Theme.light);
+        break;
+    }
+  }, [changeTheme]);
 
   return (
     <>
@@ -36,7 +72,16 @@ export default function Nav() {
           </div>
         </div>
 
-        <CustomConnectButton />
+        <button
+          onClick={() =>
+            changeTheme(theme === Theme.light ? Theme.dark : Theme.light)
+          }
+        >
+          <div className="w-[24px] h-[24px] text-blue-love">
+            {options.find((option) => option.theme === theme)?.image}
+          </div>
+        </button>
+        {/* <CustomConnectButton /> */}
         {/* <button
           className="flex justify-center items-center transition-all bg-button hover:scale-[1.02] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love"
           onClick={() => {}}
@@ -60,6 +105,15 @@ export default function Nav() {
           </Link>
           <div className="flex items-center justify-center flex-1"></div>
           <div className="flex flex-row items-center gap-3">
+            <button
+              onClick={() =>
+                changeTheme(theme === Theme.light ? Theme.dark : Theme.light)
+              }
+            >
+              <div className="w-[24px] h-[24px] text-blue-love">
+                {options.find((option) => option.theme === theme)?.image}
+              </div>
+            </button>
             <button
               className="w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] text-blue-love"
               onClick={() => setOpen(!open)}

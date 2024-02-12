@@ -12,6 +12,9 @@ export const enum Theme {
 export const StateContext = createContext({
   page: "/",
   setPage: (value: string) => {},
+
+  theme: Theme.light,
+  setTheme: (value: Theme) => {},
 });
 
 type Props = {
@@ -22,6 +25,7 @@ export const StateProvider = ({ children }: Props) => {
   const pathname = usePathname();
   const params = useParams();
   const [page, setPage] = useState(ROUTES[0].href);
+  const [theme, setTheme] = useState(Theme.light);
 
   useEffect(() => {
     const route = ROUTES.find((item) =>
@@ -40,6 +44,8 @@ export const StateProvider = ({ children }: Props) => {
       value={{
         page,
         setPage,
+        theme,
+        setTheme,
       }}
     >
       {children}
