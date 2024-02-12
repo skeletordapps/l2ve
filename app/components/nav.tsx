@@ -45,7 +45,7 @@ export default function Nav() {
         </button> */}
       </main>
       {/* MOBILE */}
-      <main className="flex xl:hidden w-full sm:px-4 relative">
+      <main className="flex xl:hidden w-full sm:px-4 relative z-30">
         <div
           className={`flex items-center justify-between w-full py-[20px] px-[10px]`}
         >
