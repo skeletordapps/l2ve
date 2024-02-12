@@ -4,6 +4,7 @@ import Stage1 from "./components/home/stage1";
 import Stage2 from "./components/home/stage2";
 import Stage3 from "./components/home/stage3";
 import Stage4 from "./components/home/stage4";
+import Stage5 from "./components/home/stage5";
 
 export default function Home() {
   return (
@@ -13,7 +14,7 @@ export default function Home() {
       <Stage3 />
       <Separator />
       <Stage4 />
-      <Separator />
+      <Stage5 />
       <Footer />
     </main>
   );
