@@ -26,7 +26,7 @@ export default function Footer() {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <g clip-path="url(#clip0_1_2)">
+          <g clipPath="url(#clip0_1_2)">
             <path
               d="M947.747 1259.61H311.861C139.901 1259.61 0 1119.72 0 947.752V311.871C0 139.907 139.901 0.00541362 311.861 0.00541362H947.747C1119.71 0.00541362 1259.61 139.907 1259.61 311.871V947.752C1259.61 1119.72 1119.71 1259.61 947.747 1259.61Z"
               fill="#472A91"
@@ -70,8 +70,9 @@ export default function Footer() {
         Just join our Community and never get left behind!
       </p>
       <p className="flex items-center gap-6 mt-[-20px] scale-[0.8] ml-[-40px] md:ml-0 md:scale-100">
-        {socials.map((social) => (
+        {socials.map((social, index) => (
           <Link
+            key={index}
             target="blank"
             href={social.href}
             className="transition-all hover:scale-[1.05]"

@@ -9,27 +9,13 @@ export const ROUTES: route[] = [
     href: "/#spacemap",
   },
   {
-    title: "STATISTICS",
-    href: "/#statistics",
+    title: "PROGRESS",
+    href: "/#progress",
+  },
+  {
+    title: "TOKENOMICS",
+    href: "/#tokenomics",
   },
 ];
 
 export type social = { title: string; href: string; src: string };
-
-export const SOCIALS: social[] = [
-  {
-    title: "Twitter-X",
-    href: "#",
-    src: "/socials/twitter-x.svg",
-  },
-  {
-    title: "Telegram",
-    href: "#",
-    src: "/socials/telegram.svg",
-  },
-  {
-    title: "Discord",
-    href: "#",
-    src: "/socials/discord.svg",
-  },
-];

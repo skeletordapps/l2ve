@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function Stage5() {
   return (
     <div
-      id="statistics"
+      id="tokenomics"
       className="flex flex-col justify-between w-full mt-12 mt-24 xl:mt-32"
     >
       <div className="flex flex-col xl:flex-row justify-between w-full">

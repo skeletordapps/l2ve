@@ -4,7 +4,7 @@ import Slider from "../slider";
 export default function Stage4() {
   return (
     <div
-      id="statistics"
+      id="progress"
       className="flex flex-col xl:flex-row justify-between w-full mt-12 sm:mt-24 xl:mt-32"
     >
       <div className="hidden xl:block" />
