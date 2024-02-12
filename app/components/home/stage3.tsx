@@ -32,7 +32,7 @@ export default function Stage3() {
               </p>
             </div>
 
-            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[2px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] 2xl:text-[48px] p-24 text-blue-love/50">
+            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[5px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] 2xl:text-[48px] p-24 text-blue-love/50">
               Unveil at 500k MCap
             </div>
           </div>
@@ -69,7 +69,7 @@ export default function Stage3() {
                 every new L2 Cupid Inu discovers.
               </p>
             </div>
-            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[2px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] 2xl:text-[48px] p-24 text-blue-love/50">
+            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[5px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] 2xl:text-[48px] p-24 text-blue-love/50">
               Unveil at 500k MCap
             </div>
           </div>
@@ -96,7 +96,7 @@ export default function Stage3() {
                 to next L2 with Airdrop.
               </p>
             </div>
-            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[2px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] 2xl:text-[48px] p-24 text-blue-love/50">
+            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[5px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] 2xl:text-[48px] p-24 text-blue-love/50">
               Unveil at 500k MCap
             </div>
           </div>
@@ -139,7 +139,7 @@ export default function Stage3() {
                 can choose where to head next!
               </p>
             </div>
-            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[2px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] xl:text-[48px] xl:p-24 text-blue-love/50 text-center">
+            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[5px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] xl:text-[48px] xl:p-24 text-blue-love/50 text-center">
               Unveil at 500k MCap
             </div>
           </div>
@@ -166,7 +166,7 @@ export default function Stage3() {
                 every new L2 Cupid Inu discovers.
               </p>
             </div>
-            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[2px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] xl:text-[48px] xl:p-24 text-blue-love/50 text-center">
+            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[5px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] xl:text-[48px] xl:p-24 text-blue-love/50 text-center">
               Unveil at 500k MCap
             </div>
           </div>
@@ -192,7 +192,7 @@ export default function Stage3() {
                 to next L2 with Airdrop.
               </p>
             </div>
-            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[2px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] xl:text-[48px] xl:p-24 text-blue-love/50 text-center">
+            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[5px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] xl:text-[48px] xl:p-24 text-blue-love/50 text-center">
               Unveil at 500k MCap
             </div>
           </div>
