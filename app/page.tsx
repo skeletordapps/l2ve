@@ -10,7 +10,6 @@ import Stage4 from "./components/home/stage4";
 export default function Home() {
   return (
     <main className="flex flex-col items-center">
-      {/* <div className="hidden xl:flex w-full bg-red-200">CU</div> */}
       <Stage1 />
       <Stage2 />
       <Stage3 />

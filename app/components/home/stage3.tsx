@@ -10,7 +10,7 @@ export default function Stage3() {
         {/* BOXES */}
         <div className="flex flex-row font-bold text-[16px] 2xl:text-[20px] text-blue-love mt-[80px] tracking-[-1px] flex-wrap gap-[130px]">
           {/* STATE III */}
-          <div className="flex items-center p-6 2xl:p-8 shadow-lg rounded-[20px] bg-white text-center max-w-[420px] 2xl:max-w-[500px] gap-8 ml-[-80px] 2xl:ml-0 mb-[-60px] xl:h-[200px] 2xl:h-auto">
+          <div className="flex items-center p-6 2xl:p-8 shadow-lg rounded-[20px] bg-white text-center max-w-[420px] 2xl:max-w-[500px] gap-8 ml-[-80px] 2xl:ml-0 mb-[-60px] xl:h-[200px] 2xl:h-auto relative">
             <div className="flex items-center justify-center">
               <Image
                 src="/balls.svg"
@@ -31,6 +31,10 @@ export default function Stage3() {
                 can choose where to head next!
               </p>
             </div>
+
+            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[2px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] 2xl:text-[48px] p-24 text-blue-love/50">
+              Unveil at 500k MCap
+            </div>
           </div>
 
           {/* SPACEMAP */}
@@ -44,7 +48,7 @@ export default function Stage3() {
           </div>
 
           {/* STAGE IV */}
-          <div className="flex items-center p-6 2xl:p-8 shadow-lg rounded-[20px] bg-white text-center max-w-[420px] 2xl:max-w-[500px] xl:ml-[500px] 2xl:ml-[760px] xl:mt-[-50px] 2xl:mt-[-90px] xl:max-h-[200px] 2xl:max-h-[260px] 2xl:gap-8">
+          <div className="flex items-center p-6 2xl:p-8 shadow-lg rounded-[20px] bg-white text-center max-w-[420px] 2xl:max-w-[500px] xl:ml-[500px] 2xl:ml-[760px] xl:mt-[-50px] 2xl:mt-[-90px] xl:max-h-[200px] 2xl:max-h-[260px] 2xl:gap-8 relative">
             <div className="relative min-w-[94px] min-h-[172.03px]">
               <Image
                 src="/parachute.svg"
@@ -65,10 +69,13 @@ export default function Stage3() {
                 every new L2 Cupid Inu discovers.
               </p>
             </div>
+            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[2px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] 2xl:text-[48px] p-24 text-blue-love/50">
+              Unveil at 500k MCap
+            </div>
           </div>
 
           {/* STAGE V */}
-          <div className="flex items-center p-6 2xl:p-8 shadow-lg rounded-[20px] bg-white text-center max-w-[420px] 2xl:max-w-[500px] gap-4 ml-[-120px] xl:mt-[-200px] 2xl:mt-[-240px]">
+          <div className="flex items-center p-6 2xl:p-8 shadow-lg rounded-[20px] bg-white text-center max-w-[420px] 2xl:max-w-[500px] gap-4 ml-[-120px] xl:mt-[-200px] 2xl:mt-[-240px] relative">
             <div className="flex items-center justify-center">
               <Image
                 src="/infinity.svg"
@@ -89,6 +96,9 @@ export default function Stage3() {
                 to next L2 with Airdrop.
               </p>
             </div>
+            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[2px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] 2xl:text-[48px] p-24 text-blue-love/50">
+              Unveil at 500k MCap
+            </div>
           </div>
         </div>
 
@@ -96,7 +106,7 @@ export default function Stage3() {
       </div>
 
       {/* MOBILE */}
-      <div className="flex flex-col lg:hidden w-full mt-10 sm:mt-16 z-20">
+      <div className="flex flex-col xl:hidden w-full mt-10 sm:mt-16 z-20">
         <div className="flex flex-col text-blue-love leading-[48px] sm:leading-[68px] px-6 sm:px-12 my-4">
           <p className="font-bold text-[56px] sm:text-[96px] tracking-[-2px]">
             SPACEMAP
@@ -109,7 +119,7 @@ export default function Stage3() {
         {/* BOXES */}
         <div className="flex flex-col text-[20px] sm:text-[24px] text-blue-love sm:mt-[10px] tracking-[-1px] min-w-full p-6 sm:p-12 gap-6">
           {/* STATE III */}
-          <div className="flex flex-col items-center p-8 shadow-lg rounded-[20px] bg-white sm:text-center gap-4">
+          <div className="flex flex-col items-center p-8 shadow-lg rounded-[20px] bg-white sm:text-center gap-4 relative">
             <div className="flex items-center justify-between gap-4">
               <Image
                 src="/balls.svg"
@@ -129,10 +139,13 @@ export default function Stage3() {
                 can choose where to head next!
               </p>
             </div>
+            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[2px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] xl:text-[48px] xl:p-24 text-blue-love/50 text-center">
+              Unveil at 500k MCap
+            </div>
           </div>
 
           {/* STAGE IV */}
-          <div className="flex flex-col items-center p-8 shadow-lg rounded-[20px] bg-white sm:text-center gap-4">
+          <div className="flex flex-col items-center p-8 shadow-lg rounded-[20px] bg-white sm:text-center gap-4 relative">
             <div className="flex items-center justify-between">
               <Image
                 src="/parachute.svg"
@@ -153,10 +166,13 @@ export default function Stage3() {
                 every new L2 Cupid Inu discovers.
               </p>
             </div>
+            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[2px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] xl:text-[48px] xl:p-24 text-blue-love/50 text-center">
+              Unveil at 500k MCap
+            </div>
           </div>
 
           {/* STAGE V */}
-          <div className="flex flex-col items-center p-8 shadow-lg rounded-[20px] bg-white sm:text-center gap-4">
+          <div className="flex flex-col items-center p-8 shadow-lg rounded-[20px] bg-white sm:text-center gap-4 relative">
             <div className="flex items-center justify-between gap-4">
               <Image
                 src="/infinity.svg"
@@ -175,6 +191,9 @@ export default function Stage3() {
                 Same Strategy. Accumulate ve3,3, provide endless APR and move on
                 to next L2 with Airdrop.
               </p>
+            </div>
+            <div className="absolute top-0 left-0 bg-white/80 backdrop-blur-[2px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] xl:text-[48px] xl:p-24 text-blue-love/50 text-center">
+              Unveil at 500k MCap
             </div>
           </div>
         </div>
