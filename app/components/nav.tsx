@@ -62,7 +62,7 @@ export default function Nav() {
           <div className="flex flex-row items-center gap-3">
             <button
               className="w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] text-blue-love"
-              onMouseEnter={() => setOpen(true)}
+              onClick={() => setOpen(!open)}
             >
               <svg
                 fill="none"
