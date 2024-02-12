@@ -28,8 +28,6 @@ const { chains, publicClient } = configureChains(
   ]
 );
 
-export { publicClient };
-
 const { connectors } = getDefaultWallets({
   appName: "L2VE",
   projectId: "xxxxx",

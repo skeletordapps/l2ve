@@ -1,11 +1,9 @@
-"use client";
 import Footer from "./components/home/footer";
 import Separator from "./components/home/separator";
 import Stage1 from "./components/home/stage1";
 import Stage2 from "./components/home/stage2";
 import Stage3 from "./components/home/stage3";
 import Stage4 from "./components/home/stage4";
-// import Swap from "./components/swap";
 
 export default function Home() {
   return (
@@ -16,7 +14,6 @@ export default function Home() {
       <Separator />
       <Stage4 />
       <Separator />
-      {/* <Swap /> */}
       <Footer />
     </main>
   );
