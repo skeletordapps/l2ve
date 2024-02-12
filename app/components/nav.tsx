@@ -52,7 +52,13 @@ export default function Nav() {
       {/* DESKTOP */}
       <main className="hidden xl:flex items-center justify-between py-[32px] w-full px-[104px]">
         <Link href="/" className="hover:opacity-75">
-          <Image src={"/logo.svg"} width={220} height={71} alt="logo" />
+          <Image
+            src={"/logo.svg"}
+            width={220}
+            height={71}
+            alt="logo"
+            className="dark:hue-rotate-[200deg] dark:invert"
+          />
         </Link>
         <div className="flex items-center justify-center font-semibold w-full">
           <div className="flex items-center gap-[56px] text-[14px]">
@@ -62,8 +68,8 @@ export default function Nav() {
                 href={item.href}
                 className={`transition-all tracking-[3px] ${
                   item.href === page
-                    ? "text-blue-love"
-                    : "text-blue-love/40 hover:hover:text-blue-love"
+                    ? "text-blue-love dark:text-dark-love"
+                    : "text-blue-love dark:text-dark-love/40 hover:hover:text-blue-love dark:hover:text-dark-love"
                 }`}
               >
                 {item.title}
@@ -77,13 +83,13 @@ export default function Nav() {
             changeTheme(theme === Theme.light ? Theme.dark : Theme.light)
           }
         >
-          <div className="w-[24px] h-[24px] text-blue-love">
+          <div className="w-[24px] h-[24px] text-blue-love dark:text-dark-love">
             {options.find((option) => option.theme === theme)?.image}
           </div>
         </button>
         {/* <CustomConnectButton /> */}
         {/* <button
-          className="flex justify-center items-center transition-all bg-button hover:scale-[1.02] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love"
+          className="flex justify-center items-center transition-all bg-button hover:scale-[1.02] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love dark:text-dark-love"
           onClick={() => {}}
         >
           BUY $L2VE
@@ -100,7 +106,7 @@ export default function Nav() {
               width={180}
               height={71}
               alt="logo"
-              className="w-[140px] sm:w-[180px]"
+              className="w-[140px] sm:w-[180px] dark:hue-rotate-[15deg]"
             />
           </Link>
           <div className="flex items-center justify-center flex-1"></div>
@@ -110,12 +116,12 @@ export default function Nav() {
                 changeTheme(theme === Theme.light ? Theme.dark : Theme.light)
               }
             >
-              <div className="w-[24px] h-[24px] text-blue-love">
+              <div className="w-[24px] h-[24px] text-blue-love dark:text-dark-love">
                 {options.find((option) => option.theme === theme)?.image}
               </div>
             </button>
             <button
-              className="w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] text-blue-love"
+              className="w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] text-blue-love dark:text-dark-love"
               onClick={() => setOpen(!open)}
             >
               <svg
@@ -147,14 +153,15 @@ export default function Nav() {
           onMouseLeave={() => setOpen(false)}
         >
           <div className="absolute top-[75px] right-0 w-full px-4">
-            <div className="text-slate-600 dark:text-slate-400 flex justify-center items-center flex-wrap gap-10 text-[14px] bg-white/40 dark:bg-blue-love/30 backdrop-blur-[8px] shadow-2xl py-10 rounded-b-xl">
+            <div className="text-slate-600 dark:text-slate-400 flex justify-center items-center flex-wrap gap-10 text-[14px] bg-white dark:bg-[#11151E]/40 dark:bg-blue-love dark:bg-dark-love/30 backdrop-blur-[8px] shadow-2xl py-10 rounded-b-xl">
               {ROUTES.filter((item) => item.title !== "Legal Disclaimer").map(
                 (item, index) => (
                   <Link
                     key={index}
                     href={item.href}
-                    className={`hover:text-blue-love hover:border-b border-blue-love ${
-                      item.href === page && "text-blue-love border-b"
+                    className={`hover:text-blue-love dark:text-dark-love hover:border-b border-blue-love ${
+                      item.href === page &&
+                      "text-blue-love dark:text-dark-love border-b"
                     }`}
                   >
                     {item.title}

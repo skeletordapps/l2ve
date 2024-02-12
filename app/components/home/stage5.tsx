@@ -17,7 +17,7 @@ export default function Stage5() {
         <div className="hidden xl:block w-full" />
         <div className="flex flex-col w-full px-6 md:px-12 2xl:pr-[300px]">
           {/* TITLE */}
-          <div className="flex flex-col text-white leading-[40px] xl:leading-[70px] font-bold">
+          <div className="flex flex-col text-white dark:text-dark-love leading-[40px] xl:leading-[70px] font-bold">
             <p className="text-[46px] xl:text-[96px]">TOKENOMICS</p>
             <p className="text-[20px] sm:text-[28px] xl:text-[48px] xl:tracking-[-2px]">
               PEOPLE LIE, NUMBERS DON'T
@@ -26,8 +26,14 @@ export default function Stage5() {
         </div>
       </div>
       {/* GRAPHFICS */}
-      <div className="flex flex-col justify-center items-center font-bold text-[28px] xl:text-[48px] xl:tracking-[-4%] text-blue-love mt-10 xl:mt-[-200px] gap-14 px-4 xl:px-0 pb-10">
-        <Image src="/chart.png" alt="Stage V" width={1159} height={490} />
+      <div className="flex flex-col justify-center items-center font-bold text-[28px] xl:text-[48px] xl:tracking-[-4%] text-blue-love dark:text-dark-love mt-10 xl:mt-[-200px] gap-14 px-4 xl:px-0 pb-10">
+        <Image
+          src="/chart.png"
+          alt="Stage V"
+          width={1159}
+          height={490}
+          className="dark:hue-rotate-[20deg]"
+        />
       </div>
     </div>
   );

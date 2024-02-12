@@ -10,7 +10,7 @@ export default function Stage4() {
       <div className="hidden xl:block" />
       <div className="flex flex-col w-full px-6 md:px-12 xl:px-20">
         {/* TITLE */}
-        <div className="flex flex-col text-white leading-[50px] xl:leading-[70px] font-bold">
+        <div className="flex flex-col text-white dark:text-dark-love leading-[50px] xl:leading-[70px] font-bold">
           <p className="text-[56px] sm:text-[66px] 2xl:text-[96px]">
             STAGE PROGRESS
           </p>
@@ -20,7 +20,7 @@ export default function Stage4() {
         </div>
 
         {/* GRAPHFICS */}
-        <div className="flex flex-col font-bold text-[28px] xl:text-[48px] xl:tracking-[-4%] text-blue-love xl:max-w-[1143px] mt-20 gap-14 px-4 xl:px-0">
+        <div className="flex flex-col font-bold text-[28px] xl:text-[48px] xl:tracking-[-4%] text-blue-love dark:text-dark-love xl:max-w-[1143px] mt-20 gap-14 px-4 xl:px-0">
           <Slider title="veAERO" start={0} goal={100000} current={0} />
           <Slider title="MCap" start={0} goal={500000} current={0} />
         </div>

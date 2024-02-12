@@ -69,7 +69,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`flex flex-col bg-gradient-to-b bg-no-repeat from-white dark:from-black/90 to-blue-love dark:to-black/50 ${poppins.className}`}
+        className={`flex flex-col bg-gradient-to-b bg-no-repeat from-white dark:from-[#11151E] to-blue-love dark:to-blue-900 ${poppins.className}`}
       >
         <div className="flex flex-col bg-main bg-cover bg-no-repeat bg-center-top max-w-[1800px] xl:self-center">
           <WagmiConfig config={wagmiConfig}>

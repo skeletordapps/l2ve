@@ -37,7 +37,7 @@ export const CustomConnectButton = () => {
                   <button
                     onClick={openConnectModal}
                     type="button"
-                    className="flex justify-center items-center transition-all bg-button hover:scale-[1.03] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love"
+                    className="flex justify-center items-center transition-all bg-button hover:scale-[1.03] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love dark:text-dark-love"
                   >
                     CONNECT WALLET
                   </button>
@@ -59,7 +59,7 @@ export const CustomConnectButton = () => {
                   <button
                     onClick={openChainModal}
                     type="button"
-                    className="flex items-center gap-1 text-blue-love"
+                    className="flex items-center gap-1 text-blue-love dark:text-dark-love"
                   >
                     {chain.hasIcon && (
                       <div
@@ -87,7 +87,7 @@ export const CustomConnectButton = () => {
                   <button
                     onClick={openAccountModal}
                     type="button"
-                    className="flex justify-center items-center transition-all bg-button hover:scale-[1.03] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love"
+                    className="flex justify-center items-center transition-all bg-button hover:scale-[1.03] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love dark:text-dark-love"
                   >
                     {account.displayName}
                   </button>

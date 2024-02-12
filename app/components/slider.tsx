@@ -22,11 +22,11 @@ export default function Slider({ title, start, goal, current }: Slider) {
 
   return (
     <div className="flex flex-col">
-      <div className="text-white text-center">{title}</div>
+      <div className="text-white dark:text-dark-love text-center">{title}</div>
       <div className="w-full xl:px-12">
-        <div className="flex w-full h-[50px] bg-white rounded-[20px] relative">
+        <div className="flex w-full h-[50px] bg-white dark:bg-[#11151E] rounded-[20px] relative">
           <div
-            className={`absolute top-0 left-0 flex h-[50px] bg-blue-love rounded-[20px]`}
+            className={`absolute top-0 left-0 flex h-[50px] bg-blue-love dark:bg-dark-love rounded-[20px]`}
             style={{ width: progress }}
           />
           <Image
@@ -41,7 +41,9 @@ export default function Slider({ title, start, goal, current }: Slider) {
       </div>
       <div className="flex justify-between">
         <div>{start}</div>
-        <div className="text-white">{goal.toLocaleString("en-us")}</div>
+        <div className="text-white dark:text-dark-love">
+          {goal.toLocaleString("en-us")}
+        </div>
       </div>
     </div>
   );

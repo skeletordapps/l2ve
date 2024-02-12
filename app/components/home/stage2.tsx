@@ -17,13 +17,13 @@ export default function Stage2() {
         />
         <div className="flex flex-col max-w-[716px] z-20">
           {/* TITLE */}
-          <div className="flex flex-col text-blue-love leading-[60px] mt-14 2xl:ml-[-200px]">
+          <div className="flex flex-col text-blue-love dark:text-dark-love leading-[60px] mt-14 2xl:ml-[-200px]">
             <p className="font-bold text-[96px] tracking-[-2px]">L2 + VE?</p>
             <p className="font-bold text-[40px]">WHAT DOES THIS EVEN MEAN?</p>
           </div>
           {/* BOXES */}
-          <div className="flex flex-col gap-20 font-medium text-[20px] text-blue-love mt-[40px]">
-            <div className="py-6 px-12 shadow-lg rounded-[20px] bg-white text-center ml-[-200px] max-w-[780px]">
+          <div className="flex flex-col gap-20 font-medium text-[20px] text-blue-love dark:text-dark-love mt-[40px]">
+            <div className="py-6 px-12 shadow-lg rounded-[20px] bg-white dark:bg-[#11151E] text-center ml-[-200px] max-w-[780px]">
               Cupid Inu is in <span className="font-bold">$L2VE</span> with{" "}
               <span className="font-bold">L2 Blockchains</span>, but even more
               he's in <span className="font-bold">$L2VE</span> with passive
@@ -32,7 +32,7 @@ export default function Stage2() {
               tax, he wants to create an everlasting APR for $L2VE, because{" "}
               <span className="font-bold">$L2VE never ends</span>!
             </div>
-            <div className="flex items-center py-3 px-12 shadow-lg rounded-[20px] bg-white text-center ml-[-100px] max-w-[780px] gap-10">
+            <div className="flex items-center py-3 px-12 shadow-lg rounded-[20px] bg-white dark:bg-[#11151E] text-center ml-[-100px] max-w-[780px] gap-10">
               <div className="flex items-center justify-center">
                 <Image
                   src="/jerrycan.svg"
@@ -55,11 +55,11 @@ export default function Stage2() {
                   />
                 </div>
               </div>
-              <div className="min-w-1 h-full bg-blue-love font-bold text-[16px]"></div>
+              <div className="min-w-1 h-full bg-blue-love dark:bg-dark-love font-bold text-[16px]"></div>
               <div>Deploy Liquidity on UniSwap v3.</div>
             </div>
 
-            <div className="flex items-center py-3 px-12 shadow-lg rounded-[20px] bg-white text-center ml-[-180px] max-w-[780px] gap-16">
+            <div className="flex items-center py-3 px-12 shadow-lg rounded-[20px] bg-white dark:bg-[#11151E] text-center ml-[-180px] max-w-[780px] gap-16">
               <div className="flex items-center justify-center w-full">
                 <Image
                   src="/jerrycan.svg"
@@ -78,11 +78,11 @@ export default function Stage2() {
                     alt="uniswap"
                     width={230}
                     height={33}
-                    className="mt-[-5px]"
+                    className="mt-[-5px] dark:invert dark:hue-rotate-[200deg]"
                   />
                 </div>
               </div>
-              <div className="min-w-1 h-full bg-blue-love font-bold text-[16px]"></div>
+              <div className="min-w-1 h-full bg-blue-love dark:bg-dark-love font-bold text-[16px]"></div>
               <div>
                 Deploy Liquidity on Aerodome. Vote with veAERO on $L2VE pair.
                 Good APR. Forever.
@@ -90,13 +90,19 @@ export default function Stage2() {
             </div>
           </div>
         </div>
-        <Image src="/mark-2.svg" alt="Stage 1" width={202} height={295} />
+        <Image
+          src="/mark-2.svg"
+          alt="Stage 1"
+          width={202}
+          height={295}
+          className="dark:hue-rotate-[200deg] dark:invert"
+        />
         <Image
           src="/rocket-path.svg"
           alt="Rocket"
           width={617.82}
           height={1104.86}
-          className="absolute top-[490px] left-[33%] z-0"
+          className="absolute top-[490px] left-[33%] z-0 dark:hue-rotate-[-30deg]"
         />
       </div>
 
@@ -107,7 +113,7 @@ export default function Stage2() {
       >
         <div className="flex flex-col z-20">
           {/* TITLE */}
-          <div className="flex flex-col text-blue-love leading-[50px] sm:leading-[60px] mt-14 xl:ml-[-200px]">
+          <div className="flex flex-col text-blue-love dark:text-dark-love leading-[50px] sm:leading-[60px] mt-14 xl:ml-[-200px]">
             <p className="font-bold text-[66px] sm:text-[96px] tracking-[-2px]">
               L2 + VE?
             </p>
@@ -116,8 +122,8 @@ export default function Stage2() {
             </p>
           </div>
           {/* BOXES */}
-          <div className="flex flex-col gap-6 sm:gap-10 font-medium text-[16px] sm:text-[20px] text-blue-love mt-[40px]">
-            <div className="py-6 px-6 sm:px-12 shadow-lg rounded-[20px] bg-white text-center">
+          <div className="flex flex-col gap-6 sm:gap-10 font-medium text-[16px] sm:text-[20px] text-blue-love dark:text-dark-love mt-[40px]">
+            <div className="py-6 px-6 sm:px-12 shadow-lg rounded-[20px] bg-white dark:bg-[#11151E] text-center">
               Cupid Inu is in <span className="font-bold">$L2VE</span> with{" "}
               <span className="font-bold">L2 Blockchains</span>, but even more
               he's in <span className="font-bold">$L2VE</span> with passive
@@ -126,7 +132,7 @@ export default function Stage2() {
               tax, he wants to create an everlasting APR for $L2VE, because{" "}
               <span className="font-bold">$L2VE never ends</span>!
             </div>
-            <div className="flex flex-col sm:flex-row items-center py-3 sm:px-8 shadow-lg rounded-[20px] bg-white sm:text-center gap-4 sm:gap-10">
+            <div className="flex flex-col sm:flex-row items-center py-3 sm:px-8 shadow-lg rounded-[20px] bg-white dark:bg-[#11151E] sm:text-center gap-4 sm:gap-10">
               <div className="flex items-center justify-center">
                 <Image
                   src="/jerrycan.svg"
@@ -149,14 +155,14 @@ export default function Stage2() {
                   />
                 </div>
               </div>
-              <div className="hidden sm:block min-w-1 h-full bg-blue-love font-bold text-[16px]" />
-              <div className="sm:hidden w-full h-[1px] bg-blue-love font-bold text-[16px]" />
+              <div className="hidden sm:block min-w-1 h-full bg-blue-love dark:bg-dark-love font-bold text-[16px]" />
+              <div className="sm:hidden w-full h-[1px] bg-blue-love dark:bg-dark-love font-bold text-[16px]" />
               <div className="px-10 sm:px-0">
                 Deploy Liquidity on UniSwap v3.
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center py-3 sm:px-8 shadow-lg rounded-[20px] bg-white sm:text-center gap-4 sm:gap-10">
+            <div className="flex flex-col sm:flex-row items-center py-3 sm:px-8 shadow-lg rounded-[20px] bg-white dark:bg-[#11151E] sm:text-center gap-4 sm:gap-10">
               <div className="flex items-center justify-center">
                 <Image
                   src="/jerrycan.svg"
@@ -179,8 +185,8 @@ export default function Stage2() {
                   />
                 </div>
               </div>
-              <div className="hidden sm:block min-w-1 max-w-1 h-full bg-blue-love font-bold text-[16px]" />
-              <div className="sm:hidden w-full h-[1px] bg-blue-love font-bold text-[16px]" />
+              <div className="hidden sm:block min-w-1 max-w-1 h-full bg-blue-love dark:bg-dark-love font-bold text-[16px]" />
+              <div className="sm:hidden w-full h-[1px] bg-blue-love dark:bg-dark-love font-bold text-[16px]" />
               <div className="px-10 sm:px-0">
                 Deploy Liquidity on Aerodome. Vote with veAERO on $L2VE pair.
                 Good APR. Forever.
