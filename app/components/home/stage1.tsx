@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Stage1() {
   return (
@@ -35,9 +36,13 @@ export default function Stage1() {
           <button className="flex items-center justify-center h-[56px] rounded-[10px] shadow-black/25 shadow-md font-semibold text-[14px] tracking-[3px] bg-blue-love dark:bg-dark-love text-white px-6 transition-all hover:scale-[1.03]">
             MEDIUM
           </button>
-          <button className="flex items-center justify-center h-[56px] rounded-[10px] shadow-black/25 shadow-md font-semibold text-[14px] tracking-[3px] bg-white dark:bg-[#11151E] text-blue-love dark:text-dark-love px-6  transition-all hover:scale-[1.03]">
+          <Link
+            target="blank"
+            href="https://app.uniswap.org/swap?inputCurrency=ETH&outputCurrency=0xA19328fb05ce6FD204D16c2a2A98F7CF434c12F4"
+            className="flex items-center justify-center h-[56px] rounded-[10px] shadow-black/25 shadow-md font-semibold text-[14px] tracking-[3px] bg-white dark:bg-[#11151E] text-blue-love dark:text-dark-love px-6  transition-all hover:scale-[1.03]"
+          >
             BUY $L2VE
-          </button>
+          </Link>
         </div>
       </div>
       <Image
