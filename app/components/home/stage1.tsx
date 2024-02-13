@@ -33,9 +33,13 @@ export default function Stage1() {
         </div>
         {/* BUTTONS */}
         <div className="flex items-center gap-[37px] mt-[26px]">
-          <button className="flex items-center justify-center h-[56px] rounded-[10px] shadow-black/25 shadow-md font-semibold text-[14px] tracking-[3px] bg-blue-love dark:bg-dark-love text-white px-6 transition-all hover:scale-[1.03]">
+          <Link
+            target="blank"
+            href="https://medium.com/@L2veofficial"
+            className="flex items-center justify-center h-[56px] rounded-[10px] shadow-black/25 shadow-md font-semibold text-[14px] tracking-[3px] bg-blue-love dark:bg-dark-love text-white px-6 transition-all hover:scale-[1.03]"
+          >
             MEDIUM
-          </button>
+          </Link>
           <Link
             target="blank"
             href="https://app.uniswap.org/swap?inputCurrency=ETH&outputCurrency=0xA19328fb05ce6FD204D16c2a2A98F7CF434c12F4"
