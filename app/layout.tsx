@@ -33,7 +33,7 @@ export const localhost = /*#__PURE__*/ defineChain({
 });
 
 const { chains, publicClient } = configureChains(
-  [localhost],
+  [base],
   [
     jsonRpcProvider({
       rpc: (chain) => ({
@@ -80,8 +80,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const notify = () => toast("Wow so easy !");
-
   return (
     <html lang="en">
       <head>

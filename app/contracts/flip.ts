@@ -16,12 +16,15 @@ import NotificateTx from "../utils/notificateTx";
 export type FlipInfos = {
   paused: boolean;
   price: number;
+  owner: string;
 };
 
 export type Balances = {
   balance: number;
   rewards: number;
   tickets: number;
+  accumulatedLosses: number;
+  contractBalance: number;
 };
 
 export async function getBalances(signer: JsonRpcSigner) {
@@ -39,8 +42,27 @@ export async function getBalances(signer: JsonRpcSigner) {
   const contract = new Contract(CONTRACTS.flipCoin, L2VE_FLIP_COIN_ABI, signer);
   const rewards = Number(formatEther(await contract.rewards(userAddress)));
   const tickets = Number(await contract.tickets(userAddress));
+  const accumulatedLosses = Number(
+    formatEther(await contract.accumulatedLosses())
+  );
 
-  return { balance, rewards, tickets } as Balances;
+  const contractBalanceInL2VE = await balanceOf(
+    L2VE_ABI,
+    CONTRACTS.l2ve,
+    CONTRACTS.flipCoin,
+    undefined,
+    signer
+  );
+
+  const contractBalance = Number(formatEther(contractBalanceInL2VE));
+
+  return {
+    balance,
+    rewards,
+    tickets,
+    accumulatedLosses,
+    contractBalance,
+  } as Balances;
 }
 
 export async function hasAllowance(
@@ -78,6 +100,7 @@ export async function handleApproval(
 }
 
 export async function togglePause(signer: JsonRpcSigner) {
+  console.log("toggle pause");
   const contract = new Contract(CONTRACTS.flipCoin, L2VE_FLIP_COIN_ABI, signer);
 
   try {
@@ -86,8 +109,46 @@ export async function togglePause(signer: JsonRpcSigner) {
     const owner = await contract.owner();
     const isPaused = await contract.paused();
 
-    if (userAddress === owner && isPaused) {
-      const tx = await contract.unpause();
+    if (userAddress === owner) {
+      const tx = isPaused ? await contract.unpause() : await contract.pause();
+      await NotificateTx(network, tx);
+    }
+  } catch (error) {
+    handleError({ e: error as Error, notificate: true });
+  }
+}
+
+export async function withdrawLosses(signer: JsonRpcSigner) {
+  console.log("withdraw losses");
+  const contract = new Contract(CONTRACTS.flipCoin, L2VE_FLIP_COIN_ABI, signer);
+
+  try {
+    const userAddress = await signer.getAddress();
+    const network = await signer.provider?.getNetwork();
+    const owner = await contract.owner();
+    const isPaused = await contract.paused();
+
+    if (userAddress === owner) {
+      const tx = await contract.withdrawLosses();
+      await NotificateTx(network, tx);
+    }
+  } catch (error) {
+    handleError({ e: error as Error, notificate: true });
+  }
+}
+
+export async function withdraw(signer: JsonRpcSigner) {
+  console.log("withdraw");
+  const contract = new Contract(CONTRACTS.flipCoin, L2VE_FLIP_COIN_ABI, signer);
+
+  try {
+    const userAddress = await signer.getAddress();
+    const network = await signer.provider?.getNetwork();
+    const owner = await contract.owner();
+    const isPaused = await contract.paused();
+
+    if (userAddress === owner) {
+      const tx = await contract.withdraw();
       await NotificateTx(network, tx);
     }
   } catch (error) {
@@ -96,7 +157,7 @@ export async function togglePause(signer: JsonRpcSigner) {
 }
 
 export async function getInfos(
-  provider?: JsonRpcProvider,
+  provider: JsonRpcProvider,
   signer?: JsonRpcSigner
 ) {
   const contract = new Contract(
@@ -105,10 +166,16 @@ export async function getInfos(
     signer ? signer : provider
   );
 
-  const paused = await contract.paused();
-  const price = Number(formatEther(await contract.price()));
+  try {
+    const paused = await contract.paused();
+    const price = Number(formatEther(await contract.price()));
+    const owner = await contract.owner();
 
-  return { paused, price } as FlipInfos;
+    return { paused, price, owner } as FlipInfos;
+  } catch (error) {
+    handleError({ e: error as Error, notificate: false });
+    return { paused: true, price: 0 } as FlipInfos;
+  }
 }
 
 export async function buy(numOfTickets: number, signer: JsonRpcSigner) {
@@ -142,6 +209,33 @@ export async function play(
     const isWinner = receipt.logs[0].args[2];
 
     return isWinner;
+  } catch (error) {
+    handleError({ e: error as Error, notificate: true });
+    return null;
+  }
+}
+
+export async function claim(signer: JsonRpcSigner) {
+  const contract = new Contract(CONTRACTS.flipCoin, L2VE_FLIP_COIN_ABI, signer);
+
+  try {
+    const userAddress = await signer.getAddress();
+    const network = await signer.provider?.getNetwork();
+    const tx = await contract.claim(userAddress);
+    await NotificateTx(network, tx);
+  } catch (error) {
+    handleError({ e: error as Error, notificate: true });
+  }
+}
+
+export async function convertIntickets(signer: JsonRpcSigner) {
+  const contract = new Contract(CONTRACTS.flipCoin, L2VE_FLIP_COIN_ABI, signer);
+
+  try {
+    const userAddress = await signer.getAddress();
+    const network = await signer.provider?.getNetwork();
+    const tx = await contract.convertInTickets(userAddress);
+    await NotificateTx(network, tx);
   } catch (error) {
     handleError({ e: error as Error, notificate: true });
   }

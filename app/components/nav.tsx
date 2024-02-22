@@ -77,7 +77,7 @@ export default function Nav() {
             ))}
           </div>
         </div>
-        <CustomConnectButton />
+        {page === "/flip" && <CustomConnectButton />}
         <button
           className="pl-10"
           onClick={() =>
