@@ -4,6 +4,8 @@ import "./globals.css";
 import StateProvider from "./context/StateContext";
 import Nav from "./components/nav";
 
+import "@rainbow-me/rainbowkit/styles.css";
+
 import {
   getDefaultWallets,
   RainbowKitProvider,
