@@ -42,3 +42,22 @@
   }
 }
 
+
+.coinFlip {
+  animation-name: coinFlip;
+  animation-duration: 0.1s; /* Adjust duration as needed */
+  animation-iteration-count: infinite; /* Or remove and define logic in JS */
+  transform-origin: 50% 50%;
+}
+
+@keyframes coinFlip {
+  0% {
+    transform: rotateX(0deg);
+  }
+  50% {
+    transform: rotateX(180deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}

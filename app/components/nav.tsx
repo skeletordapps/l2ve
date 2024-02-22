@@ -69,7 +69,7 @@ export default function Nav() {
                 className={`transition-all tracking-[3px] ${
                   item.href === page
                     ? "text-blue-love dark:text-dark-love"
-                    : "text-blue-love dark:text-dark-love/40 hover:hover:text-blue-love dark:hover:text-dark-love"
+                    : "text-blue-love/40 dark:text-dark-love/40 hover:hover:text-blue-love dark:hover:text-dark-love"
                 }`}
               >
                 {item.title}
@@ -77,23 +77,17 @@ export default function Nav() {
             ))}
           </div>
         </div>
-
+        <CustomConnectButton />
         <button
+          className="pl-10"
           onClick={() =>
             changeTheme(theme === Theme.light ? Theme.dark : Theme.light)
           }
         >
-          <div className="w-[24px] h-[24px] text-blue-love dark:text-dark-love">
+          <div className="w-[32px] h-[32px] text-blue-love dark:text-dark-love">
             {options.find((option) => option.theme === theme)?.image}
           </div>
         </button>
-        {/* <CustomConnectButton /> */}
-        {/* <button
-          className="flex justify-center items-center transition-all bg-button hover:scale-[1.02] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love dark:text-dark-love"
-          onClick={() => {}}
-        >
-          BUY $L2VE
-        </button> */}
       </main>
       {/* MOBILE */}
       <main className="flex xl:hidden w-full sm:px-4 relative z-30">
