@@ -1,5 +1,5 @@
 "use client";
-import { StateContext, Theme } from "@/app/context/StateContext";
+import { StateContext } from "@/app/context/StateContext";
 import {
   Balances,
   FlipInfos,
@@ -15,18 +15,12 @@ import {
   withdraw,
   withdrawLosses,
 } from "@/app/contracts/flip";
-import {
-  coinflip,
-  coinflipDark,
-  head,
-  headDark,
-  tails,
-  tailsDark,
-} from "@/public/svgs";
+import { coinflip, head, tails } from "@/public/svgs";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useNetwork, useAccount } from "wagmi";
+import { Tooltip, Button } from "flowbite-react";
 
 export default function Game() {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +37,7 @@ export default function Game() {
   const [walletHasAllowance, setWalletHasAllowance] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [coin, setCoin] = useState<JSX.Element>(head);
-  const { theme, provider, signer } = useContext(StateContext);
+  const { provider, signer } = useContext(StateContext);
 
   const network = useNetwork();
   const { address } = useAccount();
@@ -229,19 +223,7 @@ export default function Game() {
   }, [flipInfos, address]);
 
   useEffect(() => {
-    setCoin(
-      isPlaying
-        ? theme === Theme.light
-          ? coinflip
-          : coinflipDark
-        : side
-        ? theme === Theme.light
-          ? head
-          : headDark
-        : theme === Theme.light
-        ? tails
-        : tailsDark
-    );
+    setCoin(isPlaying ? coinflip : side ? head : tails);
   }, [side, isPlaying, setCoin]);
 
   return (
@@ -270,9 +252,9 @@ export default function Game() {
           </div>
 
           {/* BOX */}
-          <div className="flex flex-col gap-6 font-medium text-[20px] text-blue-love dark:text-dark-love/70 mt-[40px] border rounded-[20px] bg-white/40 dark:bg-dark-love/10 shadow-xl w-full relative pb-10">
-            <div className="flex justify-between items-center gap-10 bg-blue-love p-8 px-[55px] rounded-t-[20px]">
-              <div className="flex flex-col items-center text-white/50 text-[22px]">
+          <div className="flex flex-col gap-6 font-medium text-[20px] text-blue-love dark:text-dark-love/70 mt-[40px] border dark:border-dark-love/50 rounded-[20px] bg-white/40 dark:bg-dark-love/10 shadow-xl w-full relative pb-10">
+            <div className="flex justify-between items-center gap-10 bg-blue-love dark:bg-dark-love p-8 px-[55px] rounded-t-[20px]">
+              <div className="flex flex-col items-center text-white/50 dark:text-white/70 text-[22px]">
                 BALANCE
                 <span className="font-bold text-2xl text-white">
                   {Number(balances?.balance || 0).toLocaleString("en-us", {
@@ -281,7 +263,7 @@ export default function Game() {
                   L2VE
                 </span>
               </div>
-              <div className="flex flex-col items-center text-white/50 text-[22px]">
+              <div className="flex flex-col items-center text-white/50 dark:text-white/70 text-[22px]">
                 TICKETS
                 <span className="font-bold text-2xl text-white">
                   {Number(balances?.tickets || 0).toLocaleString("en-us", {
@@ -289,7 +271,7 @@ export default function Game() {
                   })}
                 </span>
               </div>
-              <div className="flex flex-col items-center text-white/50 text-[22px]">
+              <div className="flex flex-col items-center text-white/50 dark:text-white/70 text-[22px]">
                 REWARDS
                 <span className="font-bold text-2xl text-white">
                   {Number(balances?.rewards || 0).toLocaleString("en-us", {
@@ -300,15 +282,17 @@ export default function Game() {
               </div>
             </div>
             <div className="flex gap-10 justify-between items-center w-full px-10">
-              <span className="text-7xl w-[50px] text-blue-love/40">1</span>
-              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 gap-10">
+              <span className="text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
+                1
+              </span>
+              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 dark:bg-black/60 gap-10">
                 <p>
                   GET SOME <span className="font-bold">L2VE</span> TO PLAY
                 </p>
                 <Link
                   target="blank"
                   href="https://app.uniswap.org/swap?inputCurrency=ETH&outputCurrency=0xA19328fb05ce6FD204D16c2a2A98F7CF434c12F4"
-                  className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold bg-white dark:bg-dark-love text-blue-love px-12 transition-all hover:scale-[1.03]`}
+                  className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold bg-white dark:bg-dark-love text-blue-love dark:text-white px-12 transition-all hover:scale-[1.03]`}
                 >
                   BUY
                 </Link>
@@ -316,16 +300,52 @@ export default function Game() {
             </div>
 
             <div className="flex gap-10 justify-between items-center w-full px-10">
-              <span className="text-7xl w-[50px] text-blue-love/40">2</span>
-              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 gap-10">
-                <span>GET TICKETS</span>
+              <span className="text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
+                2
+              </span>
+              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 dark:bg-black/60 gap-10 relative">
+                <div className="flex items-center gap-2">
+                  GET TICKETS{" "}
+                  <Tooltip
+                    content={`Ticket Price: ${flipInfos?.price.toLocaleString(
+                      "en-us",
+                      { maximumFractionDigits: 2 }
+                    )} L2VE`}
+                  >
+                    <div className="w-6 h-6">
+                      <svg
+                        data-slot="icon"
+                        fill="none"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </Tooltip>
+                </div>
+
+                {/* <span className="absolute top-14 left-6 text-xs text-blue-love/50">
+                  Ticket Price:{" "}
+                  {(flipInfos?.price || 0).toLocaleString("en-us", {
+                    maximumFractionDigits: 2,
+                  })}{" "}
+                  L2VE
+                </span> */}
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() =>
                       ticketsToBuy > 1 && setTicketsToBuy(ticketsToBuy - 1)
                     }
-                    className="flex justify-center items-center text-blue-love rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80"
+                    className="flex justify-center items-center text-blue-love dark:text-dark-love rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80"
                   >
                     <svg
                       data-slot="icon"
@@ -360,7 +380,7 @@ export default function Game() {
                       balances.balance >= ticketsToBuy * flipInfos?.price &&
                       setTicketsToBuy(ticketsToBuy + 1)
                     }
-                    className="flex justify-center items-center text-blue-love rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80"
+                    className="flex justify-center items-center text-blue-love dark:text-dark-love rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80"
                   >
                     <svg
                       data-slot="icon"
@@ -383,8 +403,10 @@ export default function Game() {
             </div>
 
             <div className="flex gap-10 justify-between items-center w-full px-10">
-              <span className="text-7xl w-[50px] text-blue-love/40">3</span>
-              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 gap-10">
+              <span className="text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
+                3
+              </span>
+              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 dark:bg-black/60 gap-10">
                 <span>FLIP IT</span>
                 <div className="flex items-center gap-2">
                   <button
@@ -392,7 +414,7 @@ export default function Game() {
                     onClick={() =>
                       ticketsToBet > 1 && setTicketsToBet(ticketsToBet - 1)
                     }
-                    className="flex justify-center items-center text-[#FF0000] rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80"
+                    className="flex justify-center items-center text-[#FF0000] dark:text-red-400 rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80"
                   >
                     <svg
                       data-slot="icon"
@@ -413,7 +435,7 @@ export default function Game() {
                   <button
                     disabled={isLoading || !canFlip}
                     onClick={onPlay}
-                    className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold bg-[#FF0000] dark:bg-dark-love text-white px-6 transition-all hover:scale-[1.03]`}
+                    className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold bg-[#FF0000] dark:bg-red-400 text-white px-6 transition-all hover:scale-[1.03]`}
                   >
                     <span
                       className={`${
@@ -440,7 +462,7 @@ export default function Game() {
                       balances.tickets >= ticketsToBet + 1 &&
                       setTicketsToBet(ticketsToBet + 1)
                     }
-                    className="flex justify-center items-center text-[#FF0000] rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80"
+                    className="flex justify-center items-center text-[#FF0000] dark:text-red-400 rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80"
                   >
                     <svg
                       data-slot="icon"
@@ -463,8 +485,10 @@ export default function Game() {
             </div>
 
             <div className="flex gap-10 justify-between items-center w-full px-10">
-              <span className="text-7xl w-[50px] text-blue-love/40">4</span>
-              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 gap-10">
+              <span className="text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
+                4
+              </span>
+              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 dark:bg-black/60 gap-10">
                 <span>CLAIM</span>
                 <div className="flex items-center gap-2">
                   <button
@@ -477,7 +501,7 @@ export default function Game() {
                   <button
                     onClick={onConvertInTickets}
                     disabled={isLoading || !canClaim}
-                    className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold text-blue-love bg-white dark:bg-dark-love px-6 transition-all hover:scale-[1.03]`}
+                    className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold text-blue-love dark:text-white bg-white dark:bg-dark-love/50 px-6 transition-all hover:scale-[1.03]`}
                   >
                     CONVERT IN TICKETS
                   </button>
