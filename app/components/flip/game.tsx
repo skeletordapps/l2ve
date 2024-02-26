@@ -42,6 +42,7 @@ export default function Game() {
   const [canFlip, setCanFlip] = useState(false);
   const [walletHasAllowance, setWalletHasAllowance] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  const [coin, setCoin] = useState<JSX.Element>(head);
   const { theme, provider, signer } = useContext(StateContext);
 
   const network = useNetwork();
@@ -57,7 +58,7 @@ export default function Game() {
       await checkAllowance();
     }
     setIsLoading(false);
-  }, [flipInfos, ticketsToBuy, signer]);
+  }, [network, flipInfos, ticketsToBuy, signer]);
 
   const onBuy = useCallback(async () => {
     setIsLoading(true);
@@ -68,7 +69,7 @@ export default function Game() {
       await checkAllowance();
     }
     setIsLoading(false);
-  }, [ticketsToBuy, signer]);
+  }, [network, ticketsToBuy, signer]);
 
   const onTogglePause = useCallback(async () => {
     setIsLoading(true);
@@ -79,7 +80,7 @@ export default function Game() {
       await checkAllowance();
     }
     setIsLoading(false);
-  }, [signer, network]);
+  }, [signer, network, setIsLoading]);
 
   const onWithdrawLosses = useCallback(async () => {
     setIsLoading(true);
@@ -90,7 +91,7 @@ export default function Game() {
       await checkAllowance();
     }
     setIsLoading(false);
-  }, [signer, network]);
+  }, [signer, network, setIsLoading]);
 
   const onWithdraw = useCallback(async () => {
     setIsLoading(true);
@@ -101,24 +102,33 @@ export default function Game() {
       await checkAllowance();
     }
     setIsLoading(false);
-  }, [signer, network]);
+  }, [signer, network, setIsLoading]);
 
   const onPlay = useCallback(async () => {
     setIsLoading(true);
-    setIsPlaying(true);
-
     if (signer && !network.chain?.unsupported) {
-      const response = await play(side, ticketsToBet, signer);
+      setIsPlaying(true);
 
+      const response = await play(side, ticketsToBet, signer);
       setIsWinner(response);
       setIsPlaying(false);
+      if (!response) setSide(!side);
 
       await onGetInfos();
       await onGetBalances();
       await checkAllowance();
     }
     setIsLoading(false);
-  }, [network, side, ticketsToBet, signer, setIsPlaying, setIsWinner]);
+  }, [
+    network,
+    side,
+    ticketsToBet,
+    signer,
+    setIsPlaying,
+    setIsWinner,
+    setSide,
+    setIsLoading,
+  ]);
 
   const onClaim = useCallback(async () => {
     setIsLoading(true);
@@ -130,7 +140,7 @@ export default function Game() {
       await checkAllowance();
     }
     setIsLoading(false);
-  }, [network, signer]);
+  }, [network, signer, setIsLoading]);
 
   const onConvertInTickets = useCallback(async () => {
     setIsLoading(true);
@@ -142,7 +152,7 @@ export default function Game() {
       await checkAllowance();
     }
     setIsLoading(false);
-  }, [network, signer]);
+  }, [network, signer, setIsLoading]);
 
   const onGetInfos = useCallback(async () => {
     setIsLoading(true);
@@ -152,7 +162,7 @@ export default function Game() {
     }
 
     setIsLoading(false);
-  }, [provider, signer]);
+  }, [provider, signer, network, setIsLoading, setFlipInfos]);
 
   const onGetBalances = useCallback(async () => {
     setIsLoading(true);
@@ -162,7 +172,7 @@ export default function Game() {
     }
 
     setIsLoading(false);
-  }, [signer]);
+  }, [signer, network, setIsLoading, setBalances]);
 
   useEffect(() => {
     if (provider || signer) {
@@ -177,8 +187,11 @@ export default function Game() {
       if (
         balances.balance &&
         balances.balance >= ticketsToBuy * flipInfos?.price
-      )
+      ) {
         setCanBuy(true);
+      } else {
+        setCanBuy(false);
+      }
       if (balances.rewards) setCanClaim(true);
       if (balances.tickets && balances.tickets >= ticketsToBet)
         setCanFlip(true);
@@ -187,7 +200,9 @@ export default function Game() {
     flipInfos,
     balances,
     ticketsToBet,
+    ticketsToBuy,
     walletHasAllowance,
+    setCanBuy,
     setCanClaim,
     setCanFlip,
   ]);
@@ -213,6 +228,22 @@ export default function Game() {
     setIsOwner(false);
   }, [flipInfos, address]);
 
+  useEffect(() => {
+    setCoin(
+      isPlaying
+        ? theme === Theme.light
+          ? coinflip
+          : coinflipDark
+        : side
+        ? theme === Theme.light
+          ? head
+          : headDark
+        : theme === Theme.light
+        ? tails
+        : tailsDark
+    );
+  }, [side, isPlaying, setCoin]);
+
   return (
     <>
       <div className="flex justify-center lg:justify-between w-full mt-4 lg:mt-10 relative">
@@ -221,9 +252,9 @@ export default function Game() {
           alt="Stage 1"
           width={190}
           height={295}
-          className="hidden xl:block dark:hue-rotate-[200deg] dark:invert"
+          className="hidden 2xl:block dark:hue-rotate-[200deg] dark:invert"
         />
-        <div className="flex flex-col w-full px-6 sm:px-14 xl:px-0 xl:max-w-[405px] 2xl:max-w-[655px] justify-center items-start z-20">
+        <div className="flex flex-col w-full px-6 sm:px-14 xl:px-0 xl:max-w-[405px] 2xl:max-w-[665px] justify-center items-start z-20">
           {/* TITLE */}
           <div className="flex flex-col text-blue-love dark:text-dark-love leading-[80px] sm:leading-[90px]">
             <p className="flex">
@@ -239,173 +270,244 @@ export default function Game() {
           </div>
 
           {/* BOX */}
-          <div className="flex flex-col gap-6  font-medium text-[20px] text-blue-love dark:text-dark-love/70 mt-[40px] border rounded-[8px] bg-white/10 dark:bg-dark-love/10 shadow-xl w-full relative">
-            <div className="text-xl flex justify-between items-center mb-2 bg-blue-love dark:bg-dark-love text-white py-4 px-10 rounded-t-[8px]">
-              BALANCE:{" "}
-              <span className="font-bold">
-                {Number(balances?.balance || 0).toLocaleString("en-us", {
-                  maximumFractionDigits: 2,
-                })}{" "}
-                L2VE
-              </span>
-            </div>
-            <div className="flex flex-col gap-2 px-10">
-              <p className="text-xl flex justify-between items-center">
-                TICKET PRICE:{" "}
-                <span className="font-bold">
-                  {Number(flipInfos?.price || 0).toLocaleString("en-us", {
+          <div className="flex flex-col gap-6 font-medium text-[20px] text-blue-love dark:text-dark-love/70 mt-[40px] border rounded-[20px] bg-white/40 dark:bg-dark-love/10 shadow-xl w-full relative pb-10">
+            <div className="flex justify-between items-center gap-10 bg-blue-love p-8 px-[55px] rounded-t-[20px]">
+              <div className="flex flex-col items-center text-white/50 text-[22px]">
+                BALANCE
+                <span className="font-bold text-2xl text-white">
+                  {Number(balances?.balance || 0).toLocaleString("en-us", {
                     maximumFractionDigits: 2,
                   })}{" "}
                   L2VE
                 </span>
-              </p>
-              <Link
-                target="blank"
-                href="https://app.uniswap.org/swap?inputCurrency=ETH&outputCurrency=0xA19328fb05ce6FD204D16c2a2A98F7CF434c12F4"
-                className="flex items-center justify-center h-[56px] rounded-[10px] shadow-black/25 shadow-md font-semibold text-[14px] tracking-[3px] bg-white dark:bg-[#11151E] text-blue-love dark:text-dark-love px-6 transition-all hover:scale-[1.03] w-full"
-              >
-                BUY $L2VE
-              </Link>
-            </div>
-
-            <div className="flex flex-col gap-2 px-10">
-              <p className="text-xl flex justify-between items-center">
-                MY REWARDS:{" "}
-                <span className="font-bold">
+              </div>
+              <div className="flex flex-col items-center text-white/50 text-[22px]">
+                TICKETS
+                <span className="font-bold text-2xl text-white">
+                  {Number(balances?.tickets || 0).toLocaleString("en-us", {
+                    maximumFractionDigits: 2,
+                  })}
+                </span>
+              </div>
+              <div className="flex flex-col items-center text-white/50 text-[22px]">
+                REWARDS
+                <span className="font-bold text-2xl text-white">
                   {Number(balances?.rewards || 0).toLocaleString("en-us", {
                     maximumFractionDigits: 2,
                   })}{" "}
                   L2VE
                 </span>
-              </p>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={onClaim}
-                  disabled={isLoading || !canClaim}
-                  className={`flex items-center justify-center h-[56px] rounded-[10px] shadow-black/25 shadow-md font-semibold text-[14px] tracking-[3px] bg-blue-love dark:bg-dark-love text-white px-6 transition-all hover:scale-[1.03]`}
+              </div>
+            </div>
+            <div className="flex gap-10 justify-between items-center w-full px-10">
+              <span className="text-7xl w-[50px] text-blue-love/40">1</span>
+              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 gap-10">
+                <p>
+                  GET SOME <span className="font-bold">L2VE</span> TO PLAY
+                </p>
+                <Link
+                  target="blank"
+                  href="https://app.uniswap.org/swap?inputCurrency=ETH&outputCurrency=0xA19328fb05ce6FD204D16c2a2A98F7CF434c12F4"
+                  className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold bg-white dark:bg-dark-love text-blue-love px-12 transition-all hover:scale-[1.03]`}
                 >
-                  CLAIM
-                </button>
-                <button
-                  onClick={onConvertInTickets}
-                  disabled={isLoading || !canClaim}
-                  className={`flex items-center justify-center h-[56px] rounded-[10px] shadow-black/25 shadow-md font-semibold text-[14px] tracking-[3px] bg-blue-love dark:bg-dark-love text-white px-6 transition-all hover:scale-[1.03] w-full`}
-                >
-                  CONVERT IN TICKETS
-                </button>
+                  BUY
+                </Link>
               </div>
             </div>
 
-            <div className="flex flex-col w-full relative px-10">
-              <p className="text-xl flex justify-between items-center mb-2">
-                MY TICKETS:{" "}
-                <span className="font-bold">
-                  {Number(balances?.tickets || 0).toLocaleString("en-us", {
-                    maximumFractionDigits: 2,
-                  })}
-                </span>
-              </p>
-              <button
-                onClick={walletHasAllowance ? onBuy : onApprove}
-                disabled={isLoading || !canBuy}
-                className={`flex items-center justify-center h-[56px] rounded-[10px] shadow-black/25 shadow-md font-semibold text-[14px] tracking-[3px] bg-blue-love dark:bg-dark-love text-white px-6 transition-all hover:scale-[1.03] w-full`}
-              >
-                {walletHasAllowance ? "BUY" : "APPROVE"}
-                <span
-                  className={`${walletHasAllowance ? "hidden" : "block"} ml-2`}
-                >
-                  {flipInfos ? ticketsToBuy * flipInfos?.price : 0} L2VE for{" "}
-                  {ticketsToBuy} {ticketsToBuy === 1 ? "TICKET" : "TICKETS"}
-                </span>
-                <span
-                  className={`${walletHasAllowance ? "block" : "hidden"} ml-2`}
-                >
-                  {ticketsToBuy} {ticketsToBuy === 1 ? "TICKET" : "TICKETS"} for{" "}
-                  {flipInfos ? ticketsToBuy * flipInfos?.price : 0} L2VE
-                </span>
-              </button>
+            <div className="flex gap-10 justify-between items-center w-full px-10">
+              <span className="text-7xl w-[50px] text-blue-love/40">2</span>
+              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 gap-10">
+                <span>GET TICKETS</span>
 
-              <button
-                onClick={() =>
-                  ticketsToBuy > 1 && setTicketsToBuy(ticketsToBuy - 1)
-                }
-                className="flex justify-center items-center bg-white p-4 rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80 absolute top-12 left-14"
-              >
-                -
-              </button>
-
-              <button
-                onClick={() => setTicketsToBuy(ticketsToBuy + 1)}
-                className="flex justify-center items-center bg-white p-4 rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80 absolute top-12 right-14"
-              >
-                +
-              </button>
-            </div>
-
-            <div className="flex flex-col w-full mt-4 bg-blue-love/20 dark:bg-black/30 p-10">
-              <div className="flex items-center justify-between mb-4 bg-white/40 dark:bg-black/30 px-4 py-3 gap-3 rounded-[10px]">
-                <button
-                  onClick={() => setSide(true)}
-                  className={`font-semibold text-[14px] tracking-[3px] text-center ${
-                    side === true
-                      ? "bg-blue-love dark:bg-dark-love text-white"
-                      : "bg-white text-blue-love dark:text-dark-love"
-                  } p-2 px-4 rounded-[10px] shadow-xl w-full transition-all hover:scale-[1.03]`}
-                >
-                  HEAD
-                </button>
-                <button
-                  onClick={() => setSide(false)}
-                  className={`font-semibold text-[14px] tracking-[3px] text-center ${
-                    side === false
-                      ? "bg-blue-love dark:bg-dark-love text-white"
-                      : "bg-white text-blue-love dark:text-dark-love"
-                  } p-2 px-4 rounded-[10px] shadow-xl w-full transition-all hover:scale-[1.03]`}
-                >
-                  TAILS
-                </button>
-              </div>
-
-              <div className="flex flex-col w-full relative">
-                <button
-                  disabled={isLoading || !canFlip}
-                  onClick={onPlay}
-                  className={`flex items-center justify-center h-[56px] rounded-[10px] shadow-black/25 shadow-md font-semibold text-[14px] tracking-[3px] bg-red-500 text-white px-6 transition-all hover:scale-[1.03] w-full `}
-                >
-                  BET {ticketsToBet} {ticketsToBet === 1 ? "TICKET" : "TICKETS"}{" "}
-                  AND FLIP
-                </button>
-                <button
-                  onClick={() =>
-                    ticketsToBet > 1 && setTicketsToBet(ticketsToBet - 1)
-                  }
-                  className="flex justify-center items-center bg-white p-4 rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80 absolute top-3 left-4"
-                >
-                  -
-                </button>
-
-                <button
-                  onClick={() => setTicketsToBet(ticketsToBet + 1)}
-                  className="flex justify-center items-center bg-white p-4 rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80 absolute top-3 right-4"
-                >
-                  +
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() =>
+                      ticketsToBuy > 1 && setTicketsToBuy(ticketsToBuy - 1)
+                    }
+                    className="flex justify-center items-center text-blue-love rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80"
+                  >
+                    <svg
+                      data-slot="icon"
+                      fill="none"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                      ></path>
+                    </svg>
+                  </button>
+                  <button
+                    onClick={walletHasAllowance ? onBuy : onApprove}
+                    disabled={isLoading || !canBuy}
+                    className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold bg-blue-love dark:bg-dark-love text-white px-6 transition-all hover:scale-[1.03]`}
+                  >
+                    {walletHasAllowance ? "BUY" : "APPROVE"}
+                    <span className="ml-2">
+                      {ticketsToBuy} {ticketsToBuy === 1 ? "TICKET" : "TICKETS"}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() =>
+                      flipInfos &&
+                      balances &&
+                      balances.balance >= ticketsToBuy * flipInfos?.price &&
+                      setTicketsToBuy(ticketsToBuy + 1)
+                    }
+                    className="flex justify-center items-center text-blue-love rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80"
+                  >
+                    <svg
+                      data-slot="icon"
+                      fill="none"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div
-              className={`${
-                isLoading ? "flex" : "hidden"
-              } flex-col justify-center items-center rounded-[8px] py-10 bg-dark-love/70 backdrop-blur-sm dark:bg-dark-love/10 shadow-xl w-full h-full absolute top-0 left-0`}
-            >
-              <Image
-                src="/heart-blue.svg"
-                alt="Stage 1"
-                width={190}
-                height={295}
-                className="animation-heart dark:hue-rotate-30"
-              />
+            <div className="flex gap-10 justify-between items-center w-full px-10">
+              <span className="text-7xl w-[50px] text-blue-love/40">3</span>
+              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 gap-10">
+                <span>FLIP IT</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    disabled={isLoading}
+                    onClick={() =>
+                      ticketsToBet > 1 && setTicketsToBet(ticketsToBet - 1)
+                    }
+                    className="flex justify-center items-center text-[#FF0000] rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80"
+                  >
+                    <svg
+                      data-slot="icon"
+                      fill="none"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                      ></path>
+                    </svg>
+                  </button>
+                  <button
+                    disabled={isLoading || !canFlip}
+                    onClick={onPlay}
+                    className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold bg-[#FF0000] dark:bg-dark-love text-white px-6 transition-all hover:scale-[1.03]`}
+                  >
+                    <span
+                      className={`${
+                        walletHasAllowance ? "hidden" : "block"
+                      } ml-2`}
+                    >
+                      BET {ticketsToBet}{" "}
+                      {ticketsToBet === 1 ? "TICKET" : "TICKETS"} AND FLIP
+                    </span>
+                    <span
+                      className={`${
+                        walletHasAllowance ? "block" : "hidden"
+                      } ml-2`}
+                    >
+                      {ticketsToBuy} {ticketsToBuy === 1 ? "TICKET" : "TICKETS"}{" "}
+                      for {flipInfos ? ticketsToBuy * flipInfos?.price : 0} L2VE
+                    </span>
+                  </button>
+
+                  <button
+                    disabled={isLoading}
+                    onClick={() =>
+                      balances &&
+                      balances.tickets >= ticketsToBet + 1 &&
+                      setTicketsToBet(ticketsToBet + 1)
+                    }
+                    className="flex justify-center items-center text-[#FF0000] rounded-full shadow-2xl w-8 h-8 text-2xl transition-all hover:scale-[1.03] hover:opacity-80"
+                  >
+                    <svg
+                      data-slot="icon"
+                      fill="none"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
+
+            <div className="flex gap-10 justify-between items-center w-full px-10">
+              <span className="text-7xl w-[50px] text-blue-love/40">4</span>
+              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 gap-10">
+                <span>CLAIM</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={onClaim}
+                    disabled={isLoading || !canClaim}
+                    className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold bg-blue-love dark:bg-dark-love text-white px-6 transition-all hover:scale-[1.03]`}
+                  >
+                    CLAIM
+                  </button>
+                  <button
+                    onClick={onConvertInTickets}
+                    disabled={isLoading || !canClaim}
+                    className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold text-blue-love bg-white dark:bg-dark-love px-6 transition-all hover:scale-[1.03]`}
+                  >
+                    CONVERT IN TICKETS
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* WIN OR LOSE */}
+            {isWinner !== null && (
+              <div className="absolute top-0-left-0 flex flex-col justify-center items-center w-full h-full bg-white/70 rounded-[20px]">
+                <Image
+                  src={isWinner ? "/win.png" : "/lose.png"}
+                  alt="you win"
+                  width={330}
+                  height={331}
+                />
+                <div className="flex flex-col bg-white justify-center items-center py-4 px-16 rounded-[20px] border-2 border-blue-love mt-[-40px]">
+                  <span className="font-bold text-6xl">
+                    {isWinner ? "YOU WIN" : "YOU LOSE"}
+                  </span>
+                  <span>{isWinner ? "FUCKING LEGEND" : "MCDONALD'S NEXT"}</span>
+                  <button
+                    onClick={() => setIsWinner(null)}
+                    className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold bg-[#FF0000] dark:bg-dark-love text-white px-6 transition-all hover:scale-[1.03] mt-3`}
+                  >
+                    FLIP AGAIN
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <Image
@@ -422,35 +524,14 @@ export default function Game() {
           height={775}
           className="absolute top-0 right-0 lg:hidden z-0 opacity-20 dark:hue-rotate-[15deg]"
         />
-        <div
-          className={`flex flex-col justify-center items-center absolute top-[240px] right-[400px] ${
+        <button
+          onClick={() => setSide(!side)}
+          className={`flex flex-col justify-center items-center absolute top-[210px] right-[400px] ${
             isPlaying ? "coinFlip" : "animate-bounce"
           }`}
         >
-          {isPlaying
-            ? theme === Theme.light
-              ? coinflip
-              : coinflipDark
-            : side
-            ? theme === Theme.light
-              ? head
-              : headDark
-            : theme === Theme.light
-            ? tails
-            : tailsDark}
-
-          <div
-            className={`absolute top-[140px] left-0 w-[210px] justify-center font-bold ${
-              isPlaying ? "hidden" : "flex"
-            } ${
-              isWinner
-                ? "text-green-600 dark:text-green-300"
-                : "text-red-500 dark:text-red-200"
-            }`}
-          >
-            {isWinner === null ? "" : isWinner ? "YOU WIN!" : "YOU LOSE!"}
-          </div>
-        </div>
+          {coin}
+        </button>
       </div>
 
       <div

@@ -6,7 +6,7 @@ import {
   parseEther,
 } from "ethers";
 import { L2VE_ABI, L2VE_FLIP_COIN_ABI } from "../utils/abis";
-import { CONTRACTS, EXPLORER_LINKS } from "@/app/utils/consts";
+import { CONTRACTS } from "@/app/utils/consts";
 import handleError from "../utils/handleErrors";
 import { balanceOf } from "./balanceOf";
 import { getAllowance } from "./allowance";
