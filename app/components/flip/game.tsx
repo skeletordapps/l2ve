@@ -236,9 +236,9 @@ export default function Game() {
           height={295}
           className="hidden 2xl:block dark:hue-rotate-[200deg] dark:invert"
         />
-        <div className="flex flex-col w-full px-6 sm:px-14 xl:px-0 xl:max-w-[405px] 2xl:max-w-[665px] justify-center items-start z-20">
+        <div className="flex flex-col w-full sm:px-14 2xl:px-0 xl:max-w-[765px] 2xl:max-w-[665px] justify-center items-start z-20">
           {/* TITLE */}
-          <div className="flex flex-col text-blue-love dark:text-dark-love leading-[80px] sm:leading-[90px]">
+          <div className="hidden sm:flex flex-col sm:items-start w-full text-blue-love dark:text-dark-love leading-[80px] sm:leading-[90px]">
             <p className="flex">
               <span className="font-bold text-[96px] tracking-[-2px]">L</span>
               <span className="font-bold text-[96px] tracking-[-2px] scale-x-[-1] text-blue-love/40 dark:text-dark-love/20 ml-[3px] mr-[-20px]">
@@ -252,28 +252,28 @@ export default function Game() {
           </div>
 
           {/* BOX */}
-          <div className="flex flex-col gap-6 font-medium text-[20px] text-blue-love dark:text-dark-love/70 mt-[40px] border dark:border-dark-love/50 rounded-[20px] bg-white/40 dark:bg-dark-love/10 shadow-xl w-full relative pb-10">
-            <div className="flex justify-between items-center gap-10 bg-blue-love dark:bg-dark-love p-8 px-[55px] rounded-t-[20px]">
-              <div className="flex flex-col items-center text-white/50 dark:text-white/70 text-[22px]">
+          <div className="flex flex-col gap-6 font-medium text-[14px] 2xl:text-[20px] text-blue-love dark:text-dark-love/70 mt-[200px] sm:mt-[40px] sm:border dark:border-dark-love/50 sm:rounded-[20px] sm:bg-white/40 sm:dark:bg-dark-love/10 sm:shadow-xl w-full relative pb-10">
+            <div className="flex justify-between items-center gap-10 bg-blue-love dark:bg-dark-love p-4 px-6 sm:p-8 sm:px-[55px] sm:rounded-t-[20px]">
+              <div className="flex flex-col items-center text-white/50 dark:text-white/70 sm:text-[22px]">
                 BALANCE
-                <span className="font-bold text-2xl text-white">
+                <span className="font-bold text-xl sm:text-2xl text-white">
                   {Number(balances?.balance || 0).toLocaleString("en-us", {
                     maximumFractionDigits: 2,
                   })}{" "}
                   L2VE
                 </span>
               </div>
-              <div className="flex flex-col items-center text-white/50 dark:text-white/70 text-[22px]">
+              <div className="flex flex-col items-center text-white/50 dark:text-white/70 sm:text-[22px]">
                 TICKETS
-                <span className="font-bold text-2xl text-white">
+                <span className="font-bold text-xl sm:text-2xl text-white">
                   {Number(balances?.tickets || 0).toLocaleString("en-us", {
                     maximumFractionDigits: 2,
                   })}
                 </span>
               </div>
-              <div className="flex flex-col items-center text-white/50 dark:text-white/70 text-[22px]">
+              <div className="flex flex-col items-center text-white/50 dark:text-white/70 sm:text-[22px]">
                 REWARDS
-                <span className="font-bold text-2xl text-white">
+                <span className="font-bold text-xl sm:text-2xl text-white">
                   {Number(balances?.rewards || 0).toLocaleString("en-us", {
                     maximumFractionDigits: 2,
                   })}{" "}
@@ -281,11 +281,11 @@ export default function Game() {
                 </span>
               </div>
             </div>
-            <div className="flex gap-10 justify-between items-center w-full px-10">
-              <span className="text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
+            <div className="flex gap-10 justify-between items-center w-full px-2 sm:px-10">
+              <span className="hidden sm:block md:hidden lg:block xl:block text-5xl 2xl:text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
                 1
               </span>
-              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 dark:bg-black/60 gap-10">
+              <div className="flex flex-col sm:flex-row justify-between items-center w-full p-6 sm:rounded-[20px] bg-white/50 dark:bg-black/60 gap-2 sm:gap-10 text-xl sm:text-auto">
                 <p>
                   GET SOME <span className="font-bold">L2VE</span> TO PLAY
                 </p>
@@ -299,11 +299,11 @@ export default function Game() {
               </div>
             </div>
 
-            <div className="flex gap-10 justify-between items-center w-full px-10">
-              <span className="text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
+            <div className="flex gap-10 justify-between items-center w-full px-2 sm:px-10">
+              <span className="hidden sm:block md:hidden lg:block xl:block text-5xl 2xl:text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
                 2
               </span>
-              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 dark:bg-black/60 gap-10 relative">
+              <div className="flex flex-col sm:flex-row justify-between items-center w-full p-6 sm:rounded-[20px] bg-white/50 dark:bg-black/60 gap-2 sm:gap-10 text-xl sm:text-auto">
                 <div className="flex items-center gap-2">
                   GET TICKETS{" "}
                   <Tooltip
@@ -331,14 +331,6 @@ export default function Game() {
                     </div>
                   </Tooltip>
                 </div>
-
-                {/* <span className="absolute top-14 left-6 text-xs text-blue-love/50">
-                  Ticket Price:{" "}
-                  {(flipInfos?.price || 0).toLocaleString("en-us", {
-                    maximumFractionDigits: 2,
-                  })}{" "}
-                  L2VE
-                </span> */}
 
                 <div className="flex items-center gap-2">
                   <button
@@ -402,11 +394,11 @@ export default function Game() {
               </div>
             </div>
 
-            <div className="flex gap-10 justify-between items-center w-full px-10">
-              <span className="text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
+            <div className="flex gap-10 justify-between items-center w-full px-2 sm:px-10">
+              <span className="hidden sm:block md:hidden lg:block xl:block text-5xl 2xl:text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
                 3
               </span>
-              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 dark:bg-black/60 gap-10">
+              <div className="flex flex-col sm:flex-row justify-between items-center w-full p-6 sm:rounded-[20px] bg-white/50 dark:bg-black/60 gap-2 sm:gap-10 text-xl sm:text-auto">
                 <span>FLIP IT</span>
                 <div className="flex items-center gap-2">
                   <button
@@ -484,11 +476,11 @@ export default function Game() {
               </div>
             </div>
 
-            <div className="flex gap-10 justify-between items-center w-full px-10">
-              <span className="text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
+            <div className="flex gap-10 justify-between items-center w-full px-2 sm:px-10">
+              <span className="hidden sm:block md:hidden lg:block xl:block text-5xl 2xl:text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
                 4
               </span>
-              <div className="flex justify-between items-center w-full p-6 rounded-[20px] bg-white/50 dark:bg-black/60 gap-10">
+              <div className="flex flex-col sm:flex-row justify-between items-center w-full p-6 sm:rounded-[20px] bg-white/50 dark:bg-black/60 gap-2 sm:gap-10 text-xl sm:text-auto">
                 <span>CLAIM</span>
                 <div className="flex items-center gap-2">
                   <button
@@ -539,25 +531,39 @@ export default function Game() {
           alt="Mascout"
           width={592}
           height={775}
-          className="hidden lg:block dark:hue-rotate-[15deg]"
+          className="
+            hidden lg:flex self-end dark:hue-rotate-[15deg] 
+            lg:w-[392px] lg:h-[575px] 
+            xl:w-[492px] xl:h-[675px] 
+            2xl:w-[592px] 2xl:h-[775px]
+          "
         />
         <Image
           src="/mascout2.svg"
           alt="Mascout"
           width={592}
           height={775}
-          className="absolute top-0 right-0 lg:hidden z-0 opacity-20 dark:hue-rotate-[15deg]"
+          className="absolute top-0 right-0 lg:hidden z-0 opacity-20 dark:hue-rotate-[15deg]  w-[392px] h-[575px] 2xl:w-[592px] 2xl:h-[775px]"
         />
         <button
           onClick={() => setSide(!side)}
-          className={`flex flex-col justify-center items-center absolute top-[210px] right-[400px] ${
-            isPlaying ? "coinFlip" : "animate-bounce"
-          }`}
+          className={`
+            flex flex-col justify-center items-center absolute 
+            top-[20px]
+            sm:top-0 sm:right-10
+            lg:top-[370px] lg:right-[230px] 
+            xl:top-[270px] xl:right-[300px] 
+            2xl:top-[210px] 2xl:right-[400px] 
+            z-30 
+            size-[183px] xl:size-[203px] 2xl:size-[243px]
+            ${isPlaying ? "coinFlip" : "animate-bounce"}
+          `}
         >
           {coin}
         </button>
       </div>
 
+      {/* MANAGER */}
       <div
         className={`${
           isOwner ? "flex" : "hidden"
@@ -566,7 +572,7 @@ export default function Game() {
         <p className="font-medium text-[38px] xl:text-[44px] 2xl:text-[64px] text-white">
           MANAGER
         </p>
-        <div className="flex justify-center gap-10 bg-blue-love p-10">
+        <div className="flex justify-center gap-10 bg-blue-love p-10 flex-wrap">
           <button
             disabled={isLoading}
             onClick={onTogglePause}
