@@ -50,7 +50,7 @@ export default function Nav() {
   return (
     <>
       {/* DESKTOP */}
-      <main className="hidden xl:flex items-center justify-between py-[32px] w-full px-[104px]">
+      <main className="hidden xl:flex items-center justify-between py-[32px] w-full px-[50px] 2xl:px-[104px]">
         <Link href="/" className="hover:opacity-75">
           <Image
             src={"/logo.svg"}
@@ -61,7 +61,7 @@ export default function Nav() {
           />
         </Link>
         <div className="flex items-center justify-center font-semibold w-full">
-          <div className="flex items-center gap-[56px] text-[14px]">
+          <div className="flex items-center gap-[26px] 2xl:gap-[56px] text-[14px]">
             {ROUTES.map((item, index) => (
               <Link
                 key={index}
@@ -69,7 +69,7 @@ export default function Nav() {
                 className={`transition-all tracking-[3px] ${
                   item.href === page
                     ? "text-blue-love dark:text-dark-love"
-                    : "text-blue-love dark:text-dark-love/40 hover:hover:text-blue-love dark:hover:text-dark-love"
+                    : "text-blue-love/40 dark:text-dark-love/40 hover:hover:text-blue-love dark:hover:text-dark-love"
                 }`}
               >
                 {item.title}
@@ -77,23 +77,17 @@ export default function Nav() {
             ))}
           </div>
         </div>
-
+        {page === "/flip" && <CustomConnectButton />}
         <button
+          className="pl-4 2xl:pl-10"
           onClick={() =>
             changeTheme(theme === Theme.light ? Theme.dark : Theme.light)
           }
         >
-          <div className="w-[24px] h-[24px] text-blue-love dark:text-dark-love">
+          <div className="w-[32px] h-[32px] text-blue-love dark:text-dark-love">
             {options.find((option) => option.theme === theme)?.image}
           </div>
         </button>
-        {/* <CustomConnectButton /> */}
-        {/* <button
-          className="flex justify-center items-center transition-all bg-button hover:scale-[1.02] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] tracking-[3px] text-blue-love dark:text-dark-love"
-          onClick={() => {}}
-        >
-          BUY $L2VE
-        </button> */}
       </main>
       {/* MOBILE */}
       <main className="flex xl:hidden w-full sm:px-4 relative z-30">
@@ -109,19 +103,19 @@ export default function Nav() {
               className="w-[140px] sm:w-[180px] dark:hue-rotate-[15deg]"
             />
           </Link>
-          <div className="flex items-center justify-center flex-1"></div>
+          {/* <div className="flex items-center justify-center flex-1"></div> */}
           <div className="flex flex-row items-center gap-3">
             <button
               onClick={() =>
                 changeTheme(theme === Theme.light ? Theme.dark : Theme.light)
               }
             >
-              <div className="w-[24px] h-[24px] text-blue-love dark:text-dark-love">
+              <div className="flex items-center justify-center w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] text-blue-love dark:text-dark-love">
                 {options.find((option) => option.theme === theme)?.image}
               </div>
             </button>
             <button
-              className="w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] text-blue-love dark:text-dark-love"
+              className="flex items-center justify-center w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] text-blue-love dark:text-dark-love"
               onClick={() => setOpen(!open)}
             >
               <svg

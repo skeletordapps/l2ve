@@ -15,14 +15,38 @@ import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { base } from "wagmi/chains";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import Image from "next/image";
+import { defineChain } from "viem";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+export const localhost = /*#__PURE__*/ defineChain({
+  id: 31337,
+  name: "Localhost",
+  network: "localhost",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ether",
+    symbol: "ETH",
+  },
+  rpcUrls: {
+    default: { http: ["http://127.0.0.1:8545"] },
+    public: { http: ["http://127.0.0.1:8545"] },
+  },
+});
 
 const { chains, publicClient } = configureChains(
   [base],
   [
     jsonRpcProvider({
-      rpc: () => ({
-        http: process.env.NEXT_PUBLIC_RPC_HTTPS as string,
-        webSocket: process.env.NEXT_PUBLIC_RPC_WSS as string,
+      rpc: (chain) => ({
+        http:
+          chain.id === 31337
+            ? localhost.rpcUrls.default.http.toString()
+            : (process.env.NEXT_PUBLIC_RPC_HTTPS as string),
+        webSocket:
+          chain.id === 31337
+            ? localhost.rpcUrls.default.http.toString()
+            : (process.env.NEXT_PUBLIC_RPC_WSS as string),
       }),
     }),
   ]
@@ -30,7 +54,7 @@ const { chains, publicClient } = configureChains(
 
 const { connectors } = getDefaultWallets({
   appName: "L2VE",
-  projectId: "xxxxx",
+  projectId: "bf9ad4133ecde7abdc33300ab3e68895",
   chains,
 });
 
@@ -71,7 +95,8 @@ export default function RootLayout({
       <body
         className={`flex flex-col bg-gradient-to-b bg-no-repeat from-white dark:from-[#11151E] to-blue-love dark:to-blue-900 ${poppins.className}`}
       >
-        <div className="flex flex-col bg-main bg-cover bg-no-repeat bg-center-top max-w-[1800px] xl:self-center">
+        <ToastContainer theme="dark" />
+        <div className="flex flex-col bg-main bg-cover bg-no-repeat bg-center-top w-full max-w-[1800px] xl:self-center">
           <WagmiConfig config={wagmiConfig}>
             <RainbowKitProvider chains={chains} avatar={CustomAvatar}>
               <StateProvider>

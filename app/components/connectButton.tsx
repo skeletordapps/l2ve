@@ -55,7 +55,7 @@ export const CustomConnectButton = () => {
                 );
               }
               return (
-                <div className="flex items-center gap-12 text-[18px]">
+                <div className="flex items-center gap-6 2xl:gap-12 text-[18px]">
                   <button
                     onClick={openChainModal}
                     type="button"
