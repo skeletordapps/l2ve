@@ -281,7 +281,7 @@ export default function Game() {
                 </span>
               </div>
             </div>
-            <div className="flex gap-10 justify-between items-center w-full px-2 sm:px-10">
+            <div className="flex gap-10 lg:gap-5 2xl:gap-10 justify-between items-center w-full px-2 sm:px-10">
               <span className="hidden sm:block md:hidden lg:block xl:block text-5xl 2xl:text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
                 1
               </span>
@@ -299,7 +299,7 @@ export default function Game() {
               </div>
             </div>
 
-            <div className="flex gap-10 justify-between items-center w-full px-2 sm:px-10">
+            <div className="flex gap-10 lg:gap-5 2xl:gap-10 justify-between items-center w-full px-2 sm:px-10">
               <span className="hidden sm:block md:hidden lg:block xl:block text-5xl 2xl:text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
                 2
               </span>
@@ -394,7 +394,7 @@ export default function Game() {
               </div>
             </div>
 
-            <div className="flex gap-10 justify-between items-center w-full px-2 sm:px-10">
+            <div className="flex gap-10 lg:gap-5 2xl:gap-10 justify-between items-center w-full px-2 sm:px-10">
               <span className="hidden sm:block md:hidden lg:block xl:block text-5xl 2xl:text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
                 3
               </span>
@@ -476,7 +476,7 @@ export default function Game() {
               </div>
             </div>
 
-            <div className="flex gap-10 justify-between items-center w-full px-2 sm:px-10">
+            <div className="flex gap-10 lg:gap-5 2xl:gap-10 justify-between items-center w-full px-2 sm:px-10">
               <span className="hidden sm:block md:hidden lg:block xl:block text-5xl 2xl:text-7xl w-[50px] text-blue-love/40 dark:text-dark-love text-center">
                 4
               </span>
