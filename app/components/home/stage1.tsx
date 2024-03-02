@@ -42,10 +42,17 @@ export default function Stage1() {
           </Link>
           <Link
             target="blank"
-            href="https://app.uniswap.org/swap?inputCurrency=ETH&outputCurrency=0xA19328fb05ce6FD204D16c2a2A98F7CF434c12F4"
+            href="https://aerodrome.finance/swap?from=eth&to=0xa19328fb05ce6fd204d16c2a2a98f7cf434c12f4"
             className="flex items-center justify-center h-[56px] rounded-[10px] shadow-black/25 shadow-md font-semibold text-[14px] tracking-[3px] bg-white dark:bg-[#11151E] text-blue-love dark:text-dark-love px-6  transition-all hover:scale-[1.03]"
           >
             BUY $L2VE
+          </Link>
+          <Link
+            target="blank"
+            href="https://dexscreener.com/base/0x253da544f498b85429f6acdc6e98b36b36c1c824"
+            className="flex items-center justify-center h-[56px] rounded-[10px] shadow-black/25 shadow-md font-semibold text-[14px] tracking-[3px] bg-white dark:bg-[#11151E] text-blue-love dark:text-dark-love px-6  transition-all hover:scale-[1.03]"
+          >
+            CHART
           </Link>
         </div>
       </div>

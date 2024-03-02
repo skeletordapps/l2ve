@@ -291,7 +291,7 @@ export default function Game() {
                 </p>
                 <Link
                   target="blank"
-                  href="https://app.uniswap.org/swap?inputCurrency=ETH&outputCurrency=0xA19328fb05ce6FD204D16c2a2A98F7CF434c12F4"
+                  href="https://aerodrome.finance/swap?from=eth&to=0xa19328fb05ce6fd204d16c2a2a98f7cf434c12f4"
                   className={`flex items-center justify-center text-[14px] py-2 rounded-full shadow-black/25 shadow-md font-semibold bg-white dark:bg-dark-love text-blue-love dark:text-white px-12 transition-all hover:scale-[1.03]`}
                 >
                   BUY
