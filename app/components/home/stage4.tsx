@@ -21,7 +21,7 @@ export default function Stage4() {
 
         {/* GRAPHFICS */}
         <div className="flex flex-col font-bold text-[28px] xl:text-[48px] xl:tracking-[-4%] text-blue-love dark:text-dark-love xl:max-w-[1143px] mt-20 gap-14 px-4 xl:px-0">
-          <Slider title="veAERO" start={0} goal={100000} current={0} />
+          <Slider title="veAERO" start={0} goal={100000} current={30} />
           <Slider
             title="MCap"
             start={0}
