@@ -9,8 +9,8 @@ import { CustomConnectButton } from "./connectButton";
 import { dark, light } from "@/public/svgs";
 
 export default function Nav() {
-  const { page, theme, setTheme } = useContext(StateContext);
-  const [open, setOpen] = useState(false);
+  const { navOpen, page, theme, setNavOpen, setTheme } =
+    useContext(StateContext);
   const [options, _] = useState<{ image: React.ReactElement; theme: Theme }[]>([
     { image: light, theme: Theme.light },
     { image: dark, theme: Theme.dark },
@@ -116,7 +116,7 @@ export default function Nav() {
             </button>
             <button
               className="flex items-center justify-center w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] text-blue-love dark:text-dark-love"
-              onClick={() => setOpen(!open)}
+              onClick={() => setNavOpen(!navOpen)}
             >
               <svg
                 fill="none"
@@ -137,17 +137,18 @@ export default function Nav() {
         </div>
 
         <Transition
-          show={open}
+          show={navOpen}
           enter="transition-opacity duration-150"
           enterFrom="opacity-0"
           enterTo="opacity-100"
           leave="transition-opacity duration-150"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
-          onMouseLeave={() => setOpen(false)}
+          onMouseLeave={() => setNavOpen(false)}
+          onClick={() => setNavOpen(!navOpen)}
         >
           <div className="absolute top-[75px] right-0 w-full px-4">
-            <div className="text-slate-600 dark:text-slate-400 flex justify-center items-center flex-wrap gap-10 text-[14px] bg-white dark:bg-[#11151E]/40 dark:bg-blue-love dark:bg-dark-love/30 backdrop-blur-[8px] shadow-2xl py-10 rounded-b-xl">
+            <div className="text-slate-600 dark:text-slate-400 flex justify-center items-center flex-wrap gap-10 text-[14px] bg-white dark:bg-blue-love dark:bg-dark-love/30 backdrop-blur-[8px] shadow-2xl py-10 rounded-b-xl">
               {ROUTES.filter((item) => item.title !== "Legal Disclaimer").map(
                 (item, index) => (
                   <Link

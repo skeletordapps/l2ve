@@ -23,6 +23,9 @@ export const StateContext = createContext({
 
   theme: Theme.light,
   setTheme: (value: Theme) => {},
+
+  navOpen: false,
+  setNavOpen: (value: boolean) => {},
 });
 
 type Props = {
@@ -36,6 +39,7 @@ export const StateProvider = ({ children }: Props) => {
   const [provider, setProvider] = useState<any>(undefined);
   const [signer, setSigner] = useState<any>(undefined);
   const [theme, setTheme] = useState(Theme.light);
+  const [navOpen, setNavOpen] = useState(false);
 
   const jsonProvider = useEthersProvider();
   const walletSigner = useEthersSigner();
@@ -73,6 +77,8 @@ export const StateProvider = ({ children }: Props) => {
         setSigner,
         theme,
         setTheme,
+        navOpen,
+        setNavOpen,
       }}
     >
       {children}

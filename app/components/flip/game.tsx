@@ -37,7 +37,7 @@ export default function Game() {
   const [walletHasAllowance, setWalletHasAllowance] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [coin, setCoin] = useState<JSX.Element>(head);
-  const { provider, signer } = useContext(StateContext);
+  const { navOpen, provider, signer } = useContext(StateContext);
 
   const network = useNetwork();
   const { address } = useAccount();
@@ -554,9 +554,9 @@ export default function Game() {
             lg:top-[370px] lg:right-[230px] 
             xl:top-[270px] xl:right-[300px] 
             2xl:top-[210px] 2xl:right-[400px] 
-            z-30 
             size-[183px] xl:size-[203px] 2xl:size-[243px]
             ${isPlaying ? "coinFlip" : "animate-bounce"}
+            ${navOpen ? "z-10" : "z-30"}
           `}
         >
           {coin}

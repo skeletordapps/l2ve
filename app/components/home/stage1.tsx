@@ -32,7 +32,7 @@ export default function Stage1() {
           </p>
         </div>
         {/* BUTTONS */}
-        <div className="flex items-center gap-[37px] mt-[26px]">
+        <div className="flex items-center gap-[37px] mt-[26px] flex-wrap">
           <Link
             target="blank"
             href="https://medium.com/@L2veofficial"
