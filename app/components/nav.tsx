@@ -145,7 +145,6 @@ export default function Nav() {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
           onMouseLeave={() => setNavOpen(false)}
-          onClick={() => setNavOpen(!navOpen)}
         >
           <div className="absolute top-[75px] right-0 w-full px-4">
             <div className="text-slate-600 dark:text-slate-400 flex justify-center items-center flex-wrap gap-10 text-[14px] bg-white dark:bg-blue-love dark:bg-dark-love/30 backdrop-blur-[8px] shadow-2xl py-10 rounded-b-xl">
@@ -158,6 +157,7 @@ export default function Nav() {
                       item.href === page &&
                       "text-blue-love dark:text-dark-love border-b"
                     }`}
+                    onClick={() => setNavOpen(!navOpen)}
                   >
                     {item.title}
                   </Link>
