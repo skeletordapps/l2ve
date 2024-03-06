@@ -26,7 +26,7 @@ export type social = { title: string; href: string; src: string };
 
 export const EXPLORER_LINKS: { [key: string]: string } = {
   31337: "https://localhost/tx/",
-  8543: "https://basescan.org/tx/",
+  8453: "https://basescan.org/tx/",
 };
 
 export const CONTRACTS = {
