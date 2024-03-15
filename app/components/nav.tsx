@@ -100,7 +100,7 @@ export default function Nav() {
               width={180}
               height={71}
               alt="logo"
-              className="w-[140px] sm:w-[180px] dark:hue-rotate-[15deg]"
+              className="w-[140px] sm:w-[180px] dark:hue-rotate-[200deg] dark:invert"
             />
           </Link>
           {/* <div className="flex items-center justify-center flex-1"></div> */}

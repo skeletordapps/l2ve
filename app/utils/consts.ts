@@ -20,6 +20,11 @@ export const ROUTES: route[] = [
     title: "L2VE FLIP",
     href: "/flip",
   },
+
+  {
+    title: "ANY LOCKER",
+    href: "/any-locker",
+  },
 ];
 
 export type social = { title: string; href: string; src: string };
