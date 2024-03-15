@@ -96,6 +96,23 @@ export default function Footer() {
           </Link>
         ))}
       </p>
+      <p className="flex flex-col gap-1 mt-10">
+        <Link
+          href="https://basescan.org/token/0xa19328fb05ce6fd204d16c2a2a98f7cf434c12f4"
+          target="blank"
+          className="font-bold transition-all hover:underline"
+        >
+          <span className="text-white/50">CA:</span>{" "}
+          0xA19328fb05ce6FD204D16c2a2A98F7CF434c12F4
+        </Link>
+        <Link
+          href="mailto:l2vee@proton.me"
+          target="blank"
+          className="font-bold transition-all hover:underline"
+        >
+          <span className="text-white/50">EMAIL</span> l2vee@proton.me
+        </Link>
+      </p>
     </div>
   );
 }
