@@ -55,6 +55,15 @@ export default function Stage1() {
             CHART
           </Link>
         </div>
+        <p className="my-10 text-blue-love">
+          <Link
+            href="https://basescan.org/token/0xa19328fb05ce6fd204d16c2a2a98f7cf434c12f4"
+            target="blank"
+            className="font-bold transition-all hover:underline"
+          >
+            CA: 0xA19328fb05ce6FD204D16c2a2A98F7CF434c12F4
+          </Link>
+        </p>
       </div>
       <Image
         src="/mascout.svg"
