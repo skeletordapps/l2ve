@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
@@ -96,7 +97,7 @@ export default function Footer() {
           </Link>
         ))}
       </p>
-      <p className="flex flex-col gap-1 mt-10">
+      <p className="flex flex-col gap-1 mt-6">
         <Link
           href="https://basescan.org/token/0xa19328fb05ce6fd204d16c2a2a98f7cf434c12f4"
           target="blank"
@@ -111,6 +112,21 @@ export default function Footer() {
           className="font-bold transition-all hover:underline"
         >
           <span className="text-white/50">EMAIL</span> l2vee@proton.me
+        </Link>
+      </p>
+
+      <p className="flex flex-col gap-1 mt-6">
+        <Link
+          href="https://www.dextools.io/app/en/base/pair-explorer/0x253da544f498b85429f6acdc6e98b36b36c1c824?t=1710605809467"
+          target="blank"
+          className="font-bold transition-all hover:underline"
+        >
+          <Image
+            src="/DEXTools_ white.png"
+            alt="DEXTOOLS"
+            width={200}
+            height={100}
+          />
         </Link>
       </p>
     </div>
