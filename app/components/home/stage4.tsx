@@ -21,12 +21,20 @@ export default function Stage4() {
 
         {/* GRAPHFICS */}
         <div className="flex flex-col font-bold text-[28px] xl:text-[48px] xl:tracking-[-4%] text-blue-love dark:text-dark-love xl:max-w-[1143px] mt-20 gap-14 px-4 xl:px-0">
-          <Slider title="veAERO" start={0} goal={100000} current={30} />
+          {/* 178618.9952 */}
+          <Slider
+            title="veAERO"
+            start={0}
+            goal={1000000}
+            current={17.86189952}
+            currentAmount={178618.9952}
+          />
           <Slider
             title="MCap"
             start={0}
-            goal={5000000}
-            current={20}
+            goal={5_000_000}
+            current={56}
+            currentAmount={2_800_000}
             currency="$"
           />
         </div>

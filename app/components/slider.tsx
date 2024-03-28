@@ -7,6 +7,7 @@ interface Slider {
   start: number;
   goal: number;
   current: number;
+  currentAmount: number;
   currency?: string;
 }
 
@@ -15,6 +16,7 @@ export default function Slider({
   start,
   goal,
   current,
+  currentAmount,
   currency,
 }: Slider) {
   const [progress, setProgress] = useState("");
@@ -28,7 +30,7 @@ export default function Slider({
   return (
     <div className="flex flex-col">
       <div className="text-white dark:text-dark-love text-center">{title}</div>
-      <div className="w-full xl:px-12">
+      <div className="w-full xl:px-12 mt-32">
         <div className="flex w-full h-[50px] bg-white dark:bg-[#11151E] rounded-[20px] relative">
           <div
             className={`absolute top-0 left-0 flex h-[50px] bg-blue-love dark:bg-dark-love rounded-[20px]`}
@@ -42,6 +44,14 @@ export default function Slider({
             className={`absolute top-[-10px]`}
             style={{ left: rocketProgress }}
           />
+          <span
+            className={`absolute bottom-16 font-bold text-blue-love text-[24px]`}
+            style={{ left: rocketProgress }}
+          >
+            {currency}
+            {currentAmount.toLocaleString("en-us")} (
+            {current.toLocaleString("en-us", { maximumFractionDigits: 2 })}%)
+          </span>
         </div>
       </div>
       <div className="flex justify-between">
