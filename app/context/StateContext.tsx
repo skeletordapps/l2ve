@@ -63,7 +63,7 @@ export const StateProvider = ({ children }: Props) => {
         : pathname === item.href
     )!;
 
-    setPage(route.href);
+    if (route) setPage(route.href);
   }, [pathname]);
 
   return (
