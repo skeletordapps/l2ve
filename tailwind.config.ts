@@ -19,6 +19,7 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         main: "url('/background.png')",
+        "main-v2": "url('/v2/home-bg.png')",
         button: "url('/bg-button.png')",
         separator: "url('/separator.svg')",
       },

@@ -1,8 +1,7 @@
 "use client";
-import { Poppins } from "next/font/google";
+import { VT323 } from "next/font/google";
 import "./globals.css";
-import StateProvider from "./context/StateContext";
-import Nav from "./components/nav";
+import StateProvider from "../app/context/StateContext";
 
 import "@rainbow-me/rainbowkit/styles.css";
 
@@ -72,9 +71,9 @@ const CustomAvatar: AvatarComponent = ({ address, ensImage, size }) => {
   );
 };
 
-const poppins = Poppins({
+const vt323 = VT323({
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["400"],
 });
 
 export default function RootLayout({
@@ -93,16 +92,13 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`flex flex-col bg-gradient-to-b bg-no-repeat from-white dark:from-[#11151E] to-blue-love dark:to-blue-900 ${poppins.className}`}
+        className={`flex flex-col bg-gradient-to-b bg-no-repeat from-white dark:from-[#11151E] to-blue-love dark:to-blue-900 ${vt323.className}`}
       >
         <ToastContainer theme="dark" />
-        <div className="flex flex-col bg-main bg-cover bg-no-repeat bg-center-top w-full max-w-[1800px] xl:self-center">
+        <div className="flex flex-col bg-main-v2 bg-cover bg-no-repeat bg-center-top w-full max-w-[1800px] xl:self-center h-screen">
           <WagmiConfig config={wagmiConfig}>
             <RainbowKitProvider chains={chains} avatar={CustomAvatar}>
-              <StateProvider>
-                <Nav />
-                {children}
-              </StateProvider>
+              <StateProvider>{children}</StateProvider>
             </RainbowKitProvider>
           </WagmiConfig>
         </div>

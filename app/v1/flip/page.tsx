@@ -1,5 +1,5 @@
-import Game from "../components/flip/game";
-import Footer from "../components/home/footer";
+import Game from "../../components/flip/game";
+import Footer from "../../components/home/footer";
 
 export default function Flip() {
   return (

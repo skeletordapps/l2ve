@@ -2,23 +2,23 @@ export type route = { title: string; href: string };
 export const ROUTES: route[] = [
   {
     title: "ABOUT $L2VE",
-    href: "/",
+    href: "/v1",
   },
   {
     title: "SPACEMAP",
-    href: "/#spacemap",
+    href: "/v1/#spacemap",
   },
   {
     title: "PROGRESS",
-    href: "/#progress",
+    href: "/v1/#progress",
   },
   {
     title: "TOKENOMICS",
-    href: "/#tokenomics",
+    href: "/v1/#tokenomics",
   },
   {
     title: "L2VE FLIP",
-    href: "/flip",
+    href: "/v1/flip",
   },
 ];
 
