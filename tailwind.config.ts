@@ -13,6 +13,7 @@ const config: Config = {
       colors: {
         "blue-love": "#0052FF",
         "dark-love": "#8794FE",
+        v2: "#CDCDCD",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -22,6 +23,11 @@ const config: Config = {
         "main-v2": "url('/v2/home-bg.png')",
         button: "url('/bg-button.png')",
         separator: "url('/separator.svg')",
+        box: "url('/v2/eligibility-box.png')",
+        "box-error": "url('/v2/eligibility-box-error.png')",
+        "button-v2": "url('/v2/button.png')",
+        "wallet-connected-v2": "url('/v2/wallet-connected.svg')",
+        "wallet-connected-v2-hover": "url('/v2/wallet-connected-move.svg')",
       },
     },
   },

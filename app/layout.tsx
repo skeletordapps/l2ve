@@ -70,11 +70,9 @@ export default function RootLayout({
           key="desc"
         />
       </head>
-      <body
-        className={`flex flex-col bg-gradient-to-b bg-no-repeat from-white dark:from-[#11151E] to-blue-love dark:to-blue-900 ${vt323.className}`}
-      >
+      <body className={`flex flex-col bg-v2 ${vt323.className}`}>
         <ToastContainer theme="dark" />
-        <div className="flex flex-col bg-main-v2 bg-cover bg-no-repeat bg-center-top w-full max-w-[1800px] xl:self-center h-screen">
+        <div className="flex flex-col w-full max-w-[1800px] xl:self-center">
           <WagmiConfig config={wagmiConfig}>
             <RainbowKitProvider chains={chains} avatar={CustomAvatar}>
               <StateProvider>{children}</StateProvider>

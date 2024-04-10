@@ -13,6 +13,13 @@ export default function Home() {
         >
           V1
         </Link>
+        <Link
+          target="blank"
+          href="/nft"
+          className="transition-all hover:opacity-80 hover:underline"
+        >
+          NFT
+        </Link>
       </div>
     </>
   );
