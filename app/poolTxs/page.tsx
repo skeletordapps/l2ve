@@ -1,7 +1,7 @@
 "use client";
 import { Fragment, useEffect, useState } from "react";
 import { Transaction, l2veTxs } from "../api/basescan";
-import ExportExcel from "../components/excelExport";
+// import ExportExcel from "../components/excelExport";
 import ExportCSV from "../components/excelExport";
 import Link from "next/link";
 
