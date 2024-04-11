@@ -100,7 +100,7 @@ export default function Stage3() {
                 to next L2 with Airdrop.
               </p>
             </div>
-            <div className="absolute top-0 left-0 bg-white/80 dark:bg-[#11151E]/90 backdrop-blur-[5px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] 2xl:text-[48px] p-24 text-blue-love dark:text-dark-love/50"></div>
+            {/* <div className="absolute top-0 left-0 bg-white/80 dark:bg-[#11151E]/90 backdrop-blur-[5px] w-full h-full rounded-[20px] flex justify-center items-center text-[38px] 2xl:text-[48px] p-24 text-blue-love dark:text-dark-love/50"></div> */}
           </div>
         </div>
 
