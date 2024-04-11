@@ -100,7 +100,6 @@ export async function handleApproval(
 }
 
 export async function togglePause(signer: JsonRpcSigner) {
-  console.log("toggle pause");
   const contract = new Contract(CONTRACTS.flipCoin, L2VE_FLIP_COIN_ABI, signer);
 
   try {

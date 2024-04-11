@@ -4,9 +4,11 @@ import Nav from "../components/v2/nav";
 import Image from "next/image";
 import { useCallback, useContext, useEffect, useState } from "react";
 import BoxModal from "../components/v2/boxModal";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useConnectModal, useChainModal } from "@rainbow-me/rainbowkit";
 import { useAccount, useNetwork, useDisconnect } from "wagmi";
 import { StateContext } from "../context/StateContext";
+import { WalletInfos, walletInfos } from "../contracts/nft";
+import { CustomConnectButtonV2 } from "../components/connectButtonV2";
 
 const friends = [
   {
@@ -41,31 +43,33 @@ const friends = [
   },
 ];
 
+const text =
+  "PLEASE CONNECT YOUR WALLET TO CHECK IF YOU ARE ELIGIBLE FOR ROUND 1!";
+const textError = "SORRY... YOU ARE NOT ELIGIBLE";
+
+const buttonText = "CONNECT WALLET";
+const buttonTextError = "CONNECT ANOTHER WALLET";
+
 export default function Home() {
   let [isOpen, setIsOpen] = useState(false);
-  let [eligible, setEligible] = useState<boolean | null>(null);
-  let [l2veHolder, setL2veHolder] = useState(false);
-  let [communityHolder, setCommunityHolder] = useState(false);
+  let [hasError, setHasError] = useState(false);
+  let [userWallet, setUserWallet] = useState<WalletInfos | undefined>(
+    undefined
+  );
+  let [modalText, setModalText] = useState(text);
+  let [modalButtonText, setModalButtonText] = useState(buttonText);
 
   const account = useAccount();
   const { chain } = useNetwork();
   const { openConnectModal } = useConnectModal();
+  const { openChainModal } = useChainModal();
   const { signer } = useContext(StateContext);
   const { disconnectAsync } = useDisconnect();
 
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  function openModal() {
-    setIsOpen(true);
-  }
-
   const onCheckEligibility = useCallback(async () => {
-    if (signer && account && chain && !chain.unsupported) {
-      // setEligible(false);
-      // setL2veHolder(false);
-      // setCommunityHolder(false);
+    if (signer && chain && !chain.unsupported) {
+      const wallet: WalletInfos | undefined = await walletInfos(signer);
+      if (wallet) setUserWallet(wallet);
     }
   }, [signer, account, chain]);
 
@@ -74,8 +78,38 @@ export default function Home() {
   }, [signer]);
 
   useEffect(() => {
-    setIsOpen(account.address === undefined || !eligible);
-  }, [account, eligible, setIsOpen]);
+    if (signer && chain && userWallet && !userWallet.isEligibleForRoundOne) {
+      setHasError(true);
+      setModalText(textError);
+      setModalButtonText(buttonTextError);
+      return;
+    }
+
+    setModalText(text);
+    setModalButtonText(buttonText);
+    setHasError(false);
+
+    if (chain && chain.unsupported) setHasError(true);
+  }, [chain, signer, userWallet]);
+
+  useEffect(() => {
+    if (
+      !chain ||
+      !signer ||
+      chain.unsupported ||
+      !userWallet ||
+      !userWallet.isEligibleForRoundOne
+    ) {
+      setIsOpen(true);
+      return;
+    }
+
+    if (userWallet && !userWallet.isEligibleForRoundOne) {
+      return setIsOpen(true);
+    }
+
+    setIsOpen(false);
+  }, [chain, signer, userWallet]);
 
   return (
     <>
@@ -84,7 +118,13 @@ export default function Home() {
         <div className="flex flex-row px-[54px] pt-[36px]">
           {/* LEFT */}
           <div className="flex flex-col w-full text-[#0F61FF]">
-            <div className={`${eligible ? "flex" : "hidden"} flex-col`}>
+            <div
+              className={`${
+                userWallet && userWallet.isEligibleForRoundOne
+                  ? "flex"
+                  : "hidden"
+              } flex-col`}
+            >
               <Image
                 src="/v2/rocket.svg"
                 width={32.03}
@@ -99,52 +139,63 @@ export default function Home() {
                 </p>
 
                 {/* L2VE HOLDER */}
-                <p className="text-[28px] leading-[30px]">
-                  AS A L2VE HOLDER YOU CAN MINT 5 NFTS!
-                </p>
+                {userWallet &&
+                  userWallet.isEligibleForRoundOne &&
+                  userWallet.holderType === "L2VE" && (
+                    <p className="text-[28px] leading-[30px]">
+                      AS A L2VE HOLDER YOU CAN MINT 5 NFTS!
+                    </p>
+                  )}
 
                 {/* COMMUNITY HOLDER */}
-                <p className="hidden text-[28px] leading-[30px]">
-                  AS A COMMUNITY HOLDER YOU CAN MINT 2 NFTS!
-                </p>
+                {userWallet &&
+                  userWallet.isEligibleForRoundOne &&
+                  userWallet.holderType === "community" && (
+                    <p className="text-[28px] leading-[30px]">
+                      AS A COMMUNITY HOLDER YOU CAN MINT 2 NFTS!
+                    </p>
+                  )}
               </div>
 
               {/* L2VE HOLDER */}
-              {l2veHolder && (
-                <Image
-                  src="/v2/logo-space-sm.svg"
-                  width={65.39}
-                  height={44.52}
-                  alt="logo-space-sm"
-                  className="mt-10"
-                />
-              )}
+              {userWallet &&
+                userWallet.isEligibleForRoundOne &&
+                userWallet.holderType === "L2VE" && (
+                  <Image
+                    src="/v2/logo-space-sm.svg"
+                    width={65.39}
+                    height={44.52}
+                    alt="logo-space-sm"
+                    className="mt-10"
+                  />
+                )}
 
               {/* COMMUNITY HOLDER */}
-              {communityHolder && (
-                <div className="flex items-center gap-[22.5px] mt-10">
-                  {friends.map((item, index) => (
-                    <Link
-                      key={index}
-                      href={item.href}
-                      target="blank"
-                      className="transition-all hover:animate-bounce"
-                    >
-                      <Image
-                        src={item.src}
-                        width={item.w}
-                        height={item.h}
-                        alt="friends"
-                      />
-                    </Link>
-                  ))}
-                </div>
-              )}
+              {userWallet &&
+                userWallet.isEligibleForRoundOne &&
+                userWallet.holderType === "community" && (
+                  <div className="flex items-center gap-[22.5px] mt-10">
+                    {friends.map((item, index) => (
+                      <Link
+                        key={index}
+                        href={item.href}
+                        target="blank"
+                        className="transition-all hover:animate-bounce"
+                      >
+                        <Image
+                          src={item.src}
+                          width={item.w}
+                          height={item.h}
+                          alt="friends"
+                        />
+                      </Link>
+                    ))}
+                  </div>
+                )}
 
               <button
                 type="button"
-                className="inline-flex justify-center items-center w-[131px] h-[33.5px] rounded-md  bg-button-v2 text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 mt-10  hover:animate-pulse "
-                onClick={closeModal}
+                className="inline-flex justify-center items-center w-[131px] h-[33.5px] rounded-md  bg-button-v2-sm text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 mt-10  hover:animate-pulse "
               >
                 MINT HERE
               </button>
@@ -163,7 +214,6 @@ export default function Home() {
           </div>
 
           {/* RIGHT */}
-
           <div className="flex flex-col w-full">
             {signer && (
               <div className="flex flex-col items-end w-full">
@@ -182,24 +232,27 @@ export default function Home() {
         </div>
       </div>
 
-      <BoxModal isOpen={isOpen}>
-        <div className="flex flex-col justify-center items-center w-full h-full text-center px-[82px] gap-[30px] pt-8">
+      <BoxModal isOpen={isOpen} error={hasError}>
+        <div className="flex flex-col justify-center items-center w-full h-full text-center px-[72px] gap-[30px] pt-8">
           <Image
             src="/v2/logo-space.svg"
             width={79.32}
             height={54.01}
             alt="logo-space"
           />
-          <p className="text-[#F5F5F5]">
-            PLEASE CONNECT YOUR WALLET TO CHECK IF YOU ARE ELIGIBLE!
-          </p>
-          <button
+          <p className="text-[#F5F5F5]">{modalText}</p>
+
+          <CustomConnectButtonV2 />
+
+          {/* <button
             type="button"
-            className="inline-flex justify-center items-center w-[131px] h-[33.5px] rounded-md  bg-button-v2  text-[#F0EFEF] focus:outline-none focus-visible:ring-0"
-            onClick={openConnectModal || undefined}
+            className={`inline-flex justify-center items-center ${
+              modalButtonText === buttonText ? "w-[131px]" : "w-[188.45px]"
+            } h-[33.5px] rounded-md  bg-button-v2-lg  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 z-20`}
+            onClick={chain?.unsupported ? openChainModal : openConnectModal}
           >
-            CONNECT WALLET
-          </button>
+            {chain?.unsupported ? "WRONG CHAIN" : modalButtonText}
+          </button> */}
         </div>
       </BoxModal>
     </>

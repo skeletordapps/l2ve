@@ -18,13 +18,34 @@ import { defineChain } from "viem";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+export const localhost = /*#__PURE__*/ defineChain({
+  id: 31337,
+  name: "Localhost",
+  network: "localhost",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ether",
+    symbol: "ETH",
+  },
+  rpcUrls: {
+    default: { http: ["http://127.0.0.1:8545"] },
+    public: { http: ["http://127.0.0.1:8545"] },
+  },
+});
+
 const { chains, publicClient } = configureChains(
-  [base],
+  [localhost],
   [
     jsonRpcProvider({
       rpc: (chain) => ({
-        http: process.env.NEXT_PUBLIC_RPC_HTTPS as string,
-        webSocket: process.env.NEXT_PUBLIC_RPC_WSS as string,
+        http:
+          chain !== base
+            ? localhost.rpcUrls.default.http.toString()
+            : (process.env.NEXT_PUBLIC_RPC_HTTPS as string),
+        webSocket:
+          chain !== base
+            ? localhost.rpcUrls.default.http.toString()
+            : (process.env.NEXT_PUBLIC_RPC_WSS as string),
       }),
     }),
   ]
