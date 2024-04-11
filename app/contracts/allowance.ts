@@ -1,4 +1,4 @@
-import { ethers, formatEther } from "ethers";
+import { ethers } from "ethers";
 
 export async function getAllowance(
   abi: any,

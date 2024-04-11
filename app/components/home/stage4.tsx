@@ -25,16 +25,16 @@ export default function Stage4() {
           <Slider
             title="veAERO"
             start={0}
-            goal={1000000}
-            current={17.86189952}
-            currentAmount={178618.9952}
+            goal={1_000_000}
+            current={21}
+            currentAmount={210_000}
           />
           <Slider
             title="MCap"
             start={0}
             goal={5_000_000}
-            current={56}
-            currentAmount={2_800_000}
+            current={70}
+            currentAmount={3_500_000}
             currency="$"
           />
         </div>
