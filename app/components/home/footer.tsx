@@ -59,7 +59,7 @@ export default function Footer() {
           </defs>
         </svg>
       ),
-      href: "https://warpcast.com/l2ve",
+      href: "https://warpcast.com/love-doctor",
     },
     {
       svg: (
