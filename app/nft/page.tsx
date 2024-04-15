@@ -4,11 +4,20 @@ import Nav from "../components/v2/nav";
 import Image from "next/image";
 import { useCallback, useContext, useEffect, useState } from "react";
 import BoxModal from "../components/v2/boxModal";
-import { useConnectModal, useChainModal } from "@rainbow-me/rainbowkit";
 import { useAccount, useNetwork, useDisconnect } from "wagmi";
 import { StateContext } from "../context/StateContext";
-import { WalletInfos, walletInfos } from "../contracts/nft";
+import type { WalletInfos, NftInfos } from "../contracts/nft";
+import {
+  initialize,
+  // listenMints,
+  mint,
+  nftInfos,
+  togglePause,
+  walletInfos,
+} from "../contracts/nft";
 import { CustomConnectButtonV2 } from "../components/connectButtonV2";
+import { fromUnixTime } from "date-fns";
+import { now } from "../utils/time";
 
 const friends = [
   {
@@ -16,30 +25,35 @@ const friends = [
     href: "https://basescan.org/token/0x0d97f261b1e88845184f678e2d1e7a98d9fd38de",
     w: 33,
     h: 33,
+    style: "min-w-[33px] min-h-[33px]",
   },
   {
     src: "/v2/friends/logos/degen.svg",
     href: "https://basescan.org/address/0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed",
     w: 28.51,
     h: 24.12,
+    style: "min-w-[28.51px] min-h-[24.12px]",
   },
   {
     src: "/v2/friends/logos/normie.svg",
     href: "https://basescan.org/token/0x7f12d13b34f5f4f0a9449c16bcd42f0da47af200",
     w: 33,
     h: 33,
+    style: "min-w-[33px] min-h-[33px]",
   },
   {
     src: "/v2/friends/logos/doginme.svg",
     href: "https://basescan.org/token/0x6921B130D297cc43754afba22e5EAc0FBf8Db75b",
     w: 81.13,
     h: 20.41,
+    style: "min-w-[81.13px] min-h-[20.41px]",
   },
   {
     src: "/v2/friends/logos/brett.svg",
     href: "https://basescan.org/token/0x532f27101965dd16442e59d40670faf5ebb142e4",
     w: 38.67,
     h: 12.07,
+    style: "min-w-[38.67px] min-h-[12.07px]",
   },
 ];
 
@@ -47,24 +61,44 @@ const text =
   "PLEASE CONNECT YOUR WALLET TO CHECK IF YOU ARE ELIGIBLE FOR ROUND 1!";
 const textError = "SORRY... YOU ARE NOT ELIGIBLE";
 
-const buttonText = "CONNECT WALLET";
-const buttonTextError = "CONNECT ANOTHER WALLET";
-
 export default function Home() {
   let [isOpen, setIsOpen] = useState(false);
   let [hasError, setHasError] = useState(false);
+  let [data, setData] = useState<NftInfos | undefined>();
   let [userWallet, setUserWallet] = useState<WalletInfos | undefined>(
     undefined
   );
   let [modalText, setModalText] = useState(text);
-  let [modalButtonText, setModalButtonText] = useState(buttonText);
+  let [canMint, setCanMint] = useState(false);
 
   const account = useAccount();
   const { chain } = useNetwork();
-  const { openConnectModal } = useConnectModal();
-  const { openChainModal } = useChainModal();
-  const { signer } = useContext(StateContext);
+  const { provider, signer } = useContext(StateContext);
   const { disconnectAsync } = useDisconnect();
+
+  const onMint = useCallback(async () => {
+    if (signer) {
+      await mint(signer);
+      await getNftsInfos();
+      await onCheckEligibility();
+    }
+  }, [signer]);
+
+  const onTogglePause = useCallback(async () => {
+    if (signer) {
+      await togglePause(signer);
+      await getNftsInfos();
+      await onCheckEligibility();
+    }
+  }, [signer]);
+
+  const onInitialize = useCallback(async () => {
+    if (signer) {
+      await initialize(signer);
+      await getNftsInfos();
+      await onCheckEligibility();
+    }
+  }, [signer]);
 
   const onCheckEligibility = useCallback(async () => {
     if (signer && chain && !chain.unsupported) {
@@ -74,19 +108,57 @@ export default function Home() {
   }, [signer, account, chain]);
 
   useEffect(() => {
+    // if (signer) {
+    //   listenMints(signer)
+    //     .then((eventData) => {
+    //       // Handle event data (optional)
+    //       console.log("Minted event!", eventData);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error listening for events:", error);
+    //     });
+    // }
+
     onCheckEligibility();
   }, [signer]);
+
+  const checkIfCanMint = useCallback(() => {
+    if (data && userWallet) {
+      const datetime = now();
+
+      if (data.isPaused || data.startAt === 0) return setCanMint(false);
+
+      if (
+        userWallet.isEligibleForRoundOne &&
+        userWallet.mintedsCount === 0 &&
+        datetime <= data.roundOneFinishAt
+      ) {
+        return setCanMint(true);
+      } else if (
+        userWallet.isEligibleForRoundTwo &&
+        datetime > data.roundOneFinishAt &&
+        datetime <= data.roundTwoFinishAt &&
+        (userWallet.mintedsCount === 2 || userWallet.mintedsCount === 5)
+      ) {
+        return setCanMint(true);
+      }
+    }
+
+    setCanMint(false);
+  }, [data, userWallet]);
+
+  useEffect(() => {
+    checkIfCanMint();
+  }, [data, userWallet]);
 
   useEffect(() => {
     if (signer && chain && userWallet && !userWallet.isEligibleForRoundOne) {
       setHasError(true);
       setModalText(textError);
-      setModalButtonText(buttonTextError);
       return;
     }
 
     setModalText(text);
-    setModalButtonText(buttonText);
     setHasError(false);
 
     if (chain && chain.unsupported) setHasError(true);
@@ -111,19 +183,30 @@ export default function Home() {
     setIsOpen(false);
   }, [chain, signer, userWallet]);
 
+  const getNftsInfos = useCallback(async () => {
+    if (provider) {
+      const response = await nftInfos(provider);
+      setData(response as NftInfos);
+    }
+  }, [provider]);
+
+  useEffect(() => {
+    getNftsInfos();
+  }, [provider]);
+
   return (
     <>
       <Nav />
-      <div className="flex flex-col">
-        <div className="flex flex-row px-[54px] pt-[36px]">
+      <div className="flex flex-col relative">
+        <div className="flex flex-col lg:flex-row px-[20px] lg:px-[54px] pt-[36px]">
           {/* LEFT */}
-          <div className="flex flex-col w-full text-[#0F61FF]">
+          <div className="flex items-center lg:items-start flex-col w-full text-[#0F61FF]">
             <div
               className={`${
                 userWallet && userWallet.isEligibleForRoundOne
                   ? "flex"
                   : "hidden"
-              } flex-col`}
+              } flex-col items-center lg:items-start`}
             >
               <Image
                 src="/v2/rocket.svg"
@@ -133,8 +216,8 @@ export default function Home() {
                 className="mb-[-30px]"
               />
               <h1 className="text-[42px]">CONGRATS!</h1>
-              <div className="flex flex-col max-w-[240px] gap-4">
-                <p className="mt-4 text-[28px] leading-[30px]">
+              <div className="flex flex-col lg:max-w-[240px] lg:gap-4">
+                <p className="mt-4 text-[28px] leading-[30px] text-center lg:text-start">
                   YOU ARE eligible FOR THE FREE MINT.
                 </p>
 
@@ -142,8 +225,10 @@ export default function Home() {
                 {userWallet &&
                   userWallet.isEligibleForRoundOne &&
                   userWallet.holderType === "L2VE" && (
-                    <p className="text-[28px] leading-[30px]">
-                      AS A L2VE HOLDER YOU CAN MINT 5 NFTS!
+                    <p className="text-[28px] leading-[30px] text-center lg:text-start">
+                      AS A L2VE HOLDER YOU CAN MINT{" "}
+                      {data?.currentRound === 1 ? "5" : "2"} NFTS IN ROUND{" "}
+                      {data?.currentRound}!
                     </p>
                   )}
 
@@ -151,8 +236,9 @@ export default function Home() {
                 {userWallet &&
                   userWallet.isEligibleForRoundOne &&
                   userWallet.holderType === "community" && (
-                    <p className="text-[28px] leading-[30px]">
-                      AS A COMMUNITY HOLDER YOU CAN MINT 2 NFTS!
+                    <p className="text-[28px] leading-[30px] text-center lg:text-start">
+                      AS A COMMUNITY HOLDER YOU CAN MINT 2 NFTS IN ROUND{" "}
+                      {data?.currentRound}!
                     </p>
                   )}
               </div>
@@ -174,7 +260,7 @@ export default function Home() {
               {userWallet &&
                 userWallet.isEligibleForRoundOne &&
                 userWallet.holderType === "community" && (
-                  <div className="flex items-center gap-[22.5px] mt-10">
+                  <div className="flex items-center gap-[22.5px] mt-4 lg:mt-10">
                     {friends.map((item, index) => (
                       <Link
                         key={index}
@@ -187,34 +273,75 @@ export default function Home() {
                           width={item.w}
                           height={item.h}
                           alt="friends"
+                          className={item.style}
                         />
                       </Link>
                     ))}
                   </div>
                 )}
 
-              <button
-                type="button"
-                className="inline-flex justify-center items-center w-[131px] h-[33.5px] rounded-md  bg-button-v2-sm text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 mt-10  hover:animate-pulse "
-              >
-                MINT HERE
-              </button>
+              <div className="flex flex-col mt-10 text-[22px] text-black gap-4">
+                {data?.isPaused ? (
+                  <div>Mint is currently paused...</div>
+                ) : !data?.isPaused && data?.roundOneFinishAt === 0 ? (
+                  <div>Round 1 is about to start soon...</div>
+                ) : (
+                  <button
+                    disabled={!canMint}
+                    onClick={onMint}
+                    type="button"
+                    className={`inline-flex justify-center items-center w-[131px] h-[33.5px] rounded-md  ${
+                      canMint
+                        ? "bg-button-v2-sm hover:animate-pulse"
+                        : "bg-button-v2-sm opacity-30"
+                    } text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 `}
+                  >
+                    MINT HERE
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
           {/* CENTER */}
-          <div className="flex flex-col w-full pt-[137px]">
+          <div className="flex flex-col items-center lg:items-start w-full pt-[37px] lg:pt-[137px] relative">
             <Image
               src="/v2/computer.svg"
               width={756.3}
               height={627}
               alt="computer"
-              className="min-w-[756.3px] min-h-[627px]"
+              className="w-full min-w-[590px] lg:min-w-[756.3px] lg:min-h-[627px]"
             />
+
+            <div className="absolute bottom-[170px] left-[182px]">
+              {userWallet && userWallet?.mintedsCount > 0 && (
+                <div className="">Minted: {userWallet?.mintedsCount}</div>
+              )}
+            </div>
+
+            {userWallet && userWallet.isOwner && (
+              <div className="flex items-center gap-3 absolute bottom-0 left-0 pl-10 pb-10">
+                <button
+                  disabled={!data}
+                  onClick={onTogglePause}
+                  className="hover:opacity-75 hover:underline"
+                >
+                  {data && data?.isPaused ? "Unpause" : "Pause"}
+                </button>
+                <div className="h-3 w-1 bg-black" />
+                <button
+                  onClick={onInitialize}
+                  disabled={!data || data.startAt > 0}
+                  className="hover:opacity-75 hover:underline"
+                >
+                  {data && data?.startAt > 0 ? "Initialized" : "Initialize"}
+                </button>
+              </div>
+            )}
           </div>
 
           {/* RIGHT */}
-          <div className="flex flex-col w-full">
+          <div className="hidden lg:flex flex-col w-full">
             {signer && (
               <div className="flex flex-col items-end w-full">
                 <button
@@ -230,6 +357,11 @@ export default function Home() {
             )}
           </div>
         </div>
+
+        {/* COPYRIGHTS */}
+        <span className="absolute bottom-[240px] lg:bottom-0 left-[-40px] lg:left-0 -rotate-90 text-black text-[12px]">
+          2024® ALL RIGHTS RESERVED
+        </span>
       </div>
 
       <BoxModal isOpen={isOpen} error={hasError}>
@@ -242,17 +374,11 @@ export default function Home() {
           />
           <p className="text-[#F5F5F5]">{modalText}</p>
 
-          <CustomConnectButtonV2 />
-
-          {/* <button
-            type="button"
-            className={`inline-flex justify-center items-center ${
-              modalButtonText === buttonText ? "w-[131px]" : "w-[188.45px]"
-            } h-[33.5px] rounded-md  bg-button-v2-lg  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 z-20`}
-            onClick={chain?.unsupported ? openChainModal : openConnectModal}
-          >
-            {chain?.unsupported ? "WRONG CHAIN" : modalButtonText}
-          </button> */}
+          <CustomConnectButtonV2
+            isEligible={
+              userWallet && userWallet.isEligibleForRoundOne ? true : false
+            }
+          />
         </div>
       </BoxModal>
     </>

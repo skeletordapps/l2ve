@@ -1,12 +1,18 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Image from "next/image";
-export const CustomConnectButtonV2 = () => {
+import { useDisconnect } from "wagmi";
+export interface CustomConnectButtonV2 {
+  isEligible: boolean;
+}
+export const CustomConnectButtonV2 = ({
+  isEligible,
+}: CustomConnectButtonV2) => {
+  const { disconnectAsync } = useDisconnect();
+
   return (
     <ConnectButton.Custom>
       {({
         account,
         chain,
-        openAccountModal,
         openChainModal,
         openConnectModal,
         authenticationStatus,
@@ -48,51 +54,23 @@ export const CustomConnectButtonV2 = () => {
                   <button
                     onClick={openChainModal}
                     type="button"
-                    className="inline-flex justify-center items-center transition-all bg-button-v2-lg hover:scale-[1.03] hover:opacity-80 bg-no-repeat w-[189px] h-[33.5px] text-[18px] text-red-500  focus:outline-none focus-visible:ring-0 z-20"
+                    className="inline-flex justify-center items-center transition-all bg-button-v2-lg hover:scale-[1.03] hover:opacity-80 bg-no-repeat w-[189px] h-[33.5px] text-[18px] text-yellow-200  focus:outline-none focus-visible:ring-0 z-20"
                   >
                     WRONG NETWORK
                   </button>
                 );
               }
-              return (
-                <div className="flex items-center gap-6 2xl:gap-12 text-[18px]">
+              if (!isEligible) {
+                return (
                   <button
-                    onClick={openChainModal}
+                    onClick={() => disconnectAsync()}
                     type="button"
-                    className="flex items-center gap-1 text-blue-love dark:text-dark-love"
+                    className="inline-flex justify-center items-center transition-all bg-button-v2-lg hover:scale-[1.03] hover:opacity-80 bg-no-repeat w-[189px] h-[33.5px] text-[18px] text-[#F0EFEF] focus:outline-none focus-visible:ring-0 z-20"
                   >
-                    {chain.hasIcon && (
-                      <div
-                        style={{
-                          background: chain.iconBackground,
-                          width: 24,
-                          height: 24,
-                          borderRadius: 999,
-                          overflow: "hidden",
-                          marginRight: 4,
-                        }}
-                      >
-                        {chain.iconUrl && (
-                          <Image
-                            alt={chain.name ?? "Chain icon"}
-                            src={chain.iconUrl}
-                            width={24}
-                            height={24}
-                          />
-                        )}
-                      </div>
-                    )}
-                    {chain.name?.toUpperCase()}
+                    CONNECT ANOTHER WALLET
                   </button>
-                  <button
-                    onClick={openAccountModal}
-                    type="button"
-                    className="flex justify-center items-center transition-all bg-button hover:scale-[1.03] hover:opacity-80 bg-contain bg-no-repeat min-w-[212px] max-w-[212px] h-[56px] font-semibold text-[14px] text-blue-love dark:text-dark-love"
-                  >
-                    {account.displayName}
-                  </button>
-                </div>
-              );
+                );
+              }
             })()}
           </div>
         );

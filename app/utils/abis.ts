@@ -907,6 +907,7 @@ export const L2VE_NFT = [
     type: "function",
     name: "initialize",
     inputs: [
+      { name: "_startAt", type: "uint256", internalType: "uint256" },
       {
         name: "_roundOneFinishAt",
         type: "uint256",
@@ -1078,6 +1079,13 @@ export const L2VE_NFT = [
     ],
     outputs: [],
     stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "startAt",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
   },
   {
     type: "function",
@@ -1507,6 +1515,8 @@ export const L2VE_NFT = [
   },
   { type: "error", name: "EnforcedPause", inputs: [] },
   { type: "error", name: "ExpectedPause", inputs: [] },
+  { type: "error", name: "L2VENFT__Already_Initialized", inputs: [] },
+  { type: "error", name: "L2VENFT__Cannot_Be_Zero", inputs: [] },
   {
     type: "error",
     name: "L2VENFT__Cannot_Mint_Zero_Tokens",
@@ -1518,6 +1528,7 @@ export const L2VE_NFT = [
     name: "L2VENFT__Missing_Permitted_Tokens",
     inputs: [],
   },
+  { type: "error", name: "L2VENFT__Not_Initialized", inputs: [] },
   { type: "error", name: "L2VENFT__Reached_Max_For_Tx", inputs: [] },
   { type: "error", name: "L2VENFT__Reached_Max_Supply", inputs: [] },
   { type: "error", name: "L2VENFT__Wallet_Blacklisted", inputs: [] },

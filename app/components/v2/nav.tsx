@@ -23,7 +23,7 @@ export default function Nav() {
 
       const formattedTime = format(
         addMinutes(date, date.getTimezoneOffset()),
-        "hh:mm:ss"
+        "hh:mm:ss a"
       );
 
       setDay(formattedDay);
@@ -31,15 +31,21 @@ export default function Nav() {
     }, 60);
   }, []);
   return (
-    <div className="h-[40px] bg-white flex items-center justify-between px-[40px] text-[23px] text-black">
+    <div className="h-[40px] bg-white flex items-center justify-between px-[20px] lg:px-[40px] text-[23px] text-black">
       <div className="flex items-center gap-[25px] w-full">
         <Image src="/v2/heart.svg" width={19} height={16} alt="heart" />
         <span>NFTS GENERATOR COMPUTER</span>
       </div>
       <div className="w-max">
-        <Image src="/v2/logo.svg" width={90} height={21} alt="logo" />
+        <Image
+          src="/v2/logo.svg"
+          width={90}
+          height={21}
+          alt="logo"
+          className="w-[50px] lg:w-[90px]"
+        />
       </div>
-      <div className="flex items-center justify-end text-[23px] gap-8 w-full">
+      <div className="hidden lg:flex items-center justify-end text-[23px] gap-8 w-full">
         <Image
           src="/v2/battery-charging.svg"
           width={21}
