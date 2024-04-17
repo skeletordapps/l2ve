@@ -13,6 +13,8 @@ export type NftInfos = {
   currentRound: number;
 };
 
+const pinataURL = process.env.NEXT_PUBLIC_PINATA_URL;
+
 export async function nftInfos(provider: JsonRpcProvider) {
   const contract = new Contract(CONTRACTS.nft, L2VE_NFT, provider);
 
@@ -63,10 +65,8 @@ export async function initialize(signer: JsonRpcSigner) {
 
     const timestamp = now();
     const startAt = timestamp;
-    // const roundOneFinishAt = timestamp + 86400 * 3; // 3 days
-    // const roundTwoFinishAt = roundOneFinishAt + 86400 * 5; // 5 days
-    const roundOneFinishAt = timestamp + 3600; // 1 hour
-    const roundTwoFinishAt = roundOneFinishAt + 3600 * 3; // 3 hours
+    const roundOneFinishAt = timestamp + 86400 * 3; // 3 days
+    const roundTwoFinishAt = roundOneFinishAt + 86400 * 5; // 5 days
 
     if (userAddress === owner) {
       const tx = await contract.initialize(
@@ -139,12 +139,58 @@ export async function mint(signer: JsonRpcSigner) {
   }
 }
 
-// export async function listenMints(signer: JsonRpcSigner) {
-//   const contract = new Contract(CONTRACTS.nft, L2VE_NFT, signer);
-//   // event Minted(address indexed wallet, uint256 tokenId, string tokenUri);
-//   contract.on("Minted", (wallet: string, tokenId: string, tokenUri: string) => {
-//     // Handle the event with arguments (arg1, arg2, ...)
-//     console.log("Event triggered!", wallet, tokenId, tokenUri);
-//     // Update your component state or perform actions based on the event data
-//   });
-// }
+export type Token = {
+  id: number;
+  tokenUri: string;
+  url: string;
+};
+
+export type TokenMetadata = {
+  name: string;
+  description: string;
+  image: string;
+  edition: number;
+  date: number;
+  attributes: { trait_type: string; value: string }[];
+  compiler: string;
+  imageUrl?: string;
+  id?: number;
+};
+
+export async function getPastMints(
+  signer: JsonRpcSigner
+): Promise<TokenMetadata[] | undefined> {
+  const contract = new Contract(CONTRACTS.nft, L2VE_NFT, signer);
+
+  try {
+    const baseURI = await contract.baseURI();
+    const userAddress = await signer.getAddress();
+    const filter = contract.filters.Minted(userAddress, null, null); // Filter for user's mints
+    const pastMints = await contract.queryFilter(filter);
+
+    let tokens: Token[] = [];
+    pastMints.map((item: any) => {
+      tokens.push({
+        id: Number(item?.args[1]),
+        tokenUri: item?.args[2],
+        url: baseURI + item?.args[2],
+      });
+    });
+
+    let tokensMetadata: TokenMetadata[] = [];
+
+    for (let i = 0; i < tokens.length; i++) {
+      const token: Token = tokens[i];
+      const response = await fetch(pinataURL + "ipfs/" + token.url.slice(7));
+      const metadata: TokenMetadata = await response.json();
+      metadata.imageUrl = pinataURL + "ipfs/" + metadata.image.slice(7);
+      metadata.id = token.id;
+      tokensMetadata.push(metadata);
+    }
+
+    return tokensMetadata as TokenMetadata[];
+  } catch (error) {
+    console.log(error);
+    return undefined;
+  }
+}

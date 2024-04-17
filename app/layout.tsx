@@ -34,7 +34,7 @@ export const localhost = /*#__PURE__*/ defineChain({
 });
 
 const { chains, publicClient } = configureChains(
-  [localhost],
+  [base],
   [
     jsonRpcProvider({
       rpc: (chain) => ({
@@ -74,6 +74,7 @@ const CustomAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 const vt323 = VT323({
   subsets: ["latin"],
   weight: ["400"],
+  display: "swap",
 });
 
 export default function RootLayout({
