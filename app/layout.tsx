@@ -2,19 +2,23 @@
 import { VT323 } from "next/font/google";
 import "./globals.css";
 import StateProvider from "../app/context/StateContext";
-
 import "@rainbow-me/rainbowkit/styles.css";
 
 import {
-  getDefaultWallets,
   RainbowKitProvider,
   AvatarComponent,
+  connectorsForWallets,
 } from "@rainbow-me/rainbowkit";
+import {
+  metaMaskWallet,
+  walletConnectWallet,
+  injectedWallet,
+} from "@rainbow-me/rainbowkit/wallets";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { base } from "wagmi/chains";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import Image from "next/image";
-import { defineChain } from "viem";
+// import { defineChain } from "viem";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -32,6 +36,8 @@ import "react-toastify/dist/ReactToastify.css";
 //     public: { http: ["http://127.0.0.1:8545"] },
 //   },
 // });
+
+const walletConnectId = "bf9ad4133ecde7abdc33300ab3e68895";
 
 const { chains, publicClient } = configureChains(
   [base],
@@ -57,11 +63,22 @@ const { chains, publicClient } = configureChains(
   ]
 );
 
-const { connectors } = getDefaultWallets({
-  appName: "L2VE",
-  projectId: "bf9ad4133ecde7abdc33300ab3e68895",
-  chains,
-});
+const connectors = connectorsForWallets([
+  {
+    groupName: "Wallets",
+    wallets: [
+      injectedWallet({ chains }),
+      metaMaskWallet({
+        chains: chains,
+        projectId: walletConnectId,
+      }),
+      walletConnectWallet({
+        projectId: walletConnectId,
+        chains,
+      }),
+    ],
+  },
+]);
 
 const wagmiConfig = createConfig({
   autoConnect: true,
