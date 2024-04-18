@@ -92,7 +92,12 @@ export default function RootLayout({
           key="desc"
         />
       </head>
-      <body className={`flex flex-col bg-v2 ${vt323.className}`}>
+      <body className={`flex flex-col bg-v2 relative ${vt323.className}`}>
+        <div className="flex w-full h-full absolute top-0 left-0">
+          <div className="relative w-screen h-screen">
+            <Image src="/tv.gif" fill alt="tv" className="opacity-[0.07]" />
+          </div>
+        </div>
         <ToastContainer theme="dark" />
         <div className="flex flex-col w-full max-w-[1800px] xl:self-center">
           <WagmiConfig config={wagmiConfig}>

@@ -232,7 +232,7 @@ export default function Home() {
               />
               <h1 className="text-[42px]">CONGRATS!</h1>
               <div className="flex flex-col lg:max-w-[240px] lg:gap-4">
-                <p className="mt-4 text-[24px] lg:text-[28px] leading-[30px] text-center lg:text-start">
+                <p className="lg:mt-4 text-[24px] lg:text-[28px] leading-[30px] text-center lg:text-start">
                   YOU ARE eligible FOR THE FREE MINT.
                 </p>
 
@@ -323,13 +323,13 @@ export default function Home() {
           </div>
 
           {/* CENTER */}
-          <div className="flex flex-col items-center lg:items-start w-full relative lg:h-screen">
+          <div className="flex flex-col items-center w-full mt-11 min-h-[100%] relative">
             <Image
               src="/v2/computer.svg"
               width={756.3}
               height={627}
               alt="computer"
-              className="lg:absolute lg:bottom-0 lg:left-0 w-full lg:w-[1056.3px] lg:h-[827px] mt-10 lg:mt-0"
+              className="w-full lg:w-[950px] lg:h-[810px] opacity-85"
             />
 
             {userWallet && userWallet.isOwner && (
