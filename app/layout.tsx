@@ -38,7 +38,7 @@ import "react-toastify/dist/ReactToastify.css";
 //   },
 // });
 
-const walletConnectId = "bf9ad4133ecde7abdc33300ab3e68895";
+const walletConnectId = "034912533f2acb4e9dcd810ae4a2a134";
 
 const { chains, publicClient } = configureChains(
   [base],
