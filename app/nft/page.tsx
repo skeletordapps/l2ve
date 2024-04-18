@@ -122,10 +122,10 @@ export default function Home() {
   }, [signer, account, chain]);
 
   const onCheckEvents = useCallback(async () => {
-    // if (signer) {
-    //   const pastMints = await getPastMints(signer);
-    //   setTokens(pastMints);
-    // }
+    if (signer) {
+      const pastMints = await getPastMints(signer);
+      setTokens(pastMints);
+    }
   }, [signer]);
 
   useEffect(() => {

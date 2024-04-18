@@ -165,8 +165,9 @@ export async function getPastMints(
   try {
     const baseURI = await contract.baseURI();
     const userAddress = await signer.getAddress();
+    const startBlock = 13294754;
     const filter = contract.filters.Minted(userAddress, null, null); // Filter for user's mints
-    const pastMints = await contract.queryFilter(filter);
+    const pastMints = await contract.queryFilter(filter, startBlock);
 
     let tokens: Token[] = [];
     pastMints.map((item: any) => {
