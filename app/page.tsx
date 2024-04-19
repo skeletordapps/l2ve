@@ -22,9 +22,6 @@ import {
 } from "./contracts/nft";
 import { CustomConnectButtonV2 } from "./components/connectButtonV2";
 import { now } from "./utils/time";
-import { MY_NFTS_QUERY } from "../app/queries/nfts";
-import useSWR from "swr";
-import { request } from "graphql-request";
 
 const friends = [
   {
@@ -79,34 +76,12 @@ export default function Home() {
   let [canMint, setCanMint] = useState(false);
   let [tokens, setTokens] = useState<TokenMetadata[] | undefined>();
   let [loading, setLoading] = useState(false);
-  // let [userNfts, setUserNfts] = useState<Nfts | []>([]);
 
   const account = useAccount();
   const { chain } = useNetwork();
   const { provider, signer } = useContext(StateContext);
   const { disconnectAsync } = useDisconnect();
 
-  // const fetcher = (query: string, variables: any) => {
-  //   return request(
-  //     `https://api.studio.thegraph.com/query/38777/l2ve-nft/version/latest`,
-  //     query,
-  //     variables
-  //   );
-  // };
-
-  // const variables = {
-  //   wallet: account.address?.toLowerCase(),
-  // };
-
-  // const { data: queryData, error: queryError } = useSWR(
-  //   [MY_NFTS_QUERY, variables],
-  //   fetcher,
-  //   {
-  //     refreshInterval: 5000,
-  //   }
-  // );
-
-  // console.log(queryData);
   const imageLoader = ({ src, width, quality }: any) => {
     return `${src}?w=${width}&q=${quality || 75}`;
   };
@@ -237,36 +212,6 @@ export default function Home() {
   useEffect(() => {
     getLogs();
   }, [account.address]);
-
-  // useEffect(() => {
-  //   setUserNfts([]);
-  //   const fetchSrcForNfts = async () => {
-  //     const list = { ...(queryData as { minteds: Nfts }) };
-  //     setUserNfts(list.minteds);
-
-  //     if (
-  //       data &&
-  //       userWallet &&
-  //       list &&
-  //       list.minteds &&
-  //       list.minteds.length > 0
-  //     ) {
-  //       const updatedUserNfts = await Promise.all(
-  //         list.minteds.map(async (nft) => {
-  //           const { imageUrl, metadata } = await getNFTData(
-  //             data.baseUri,
-  //             nft.tokenUri
-  //           );
-  //           return { ...nft, src: imageUrl, metadata };
-  //         })
-  //       );
-
-  //       setUserNfts(updatedUserNfts);
-  //     }
-  //   };
-
-  //   fetchSrcForNfts();
-  // }, [queryData, userWallet, data]);
 
   return (
     <>
