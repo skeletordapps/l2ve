@@ -205,7 +205,9 @@ export default function Home() {
 
   const getLogs = useCallback(async () => {
     if (account.address) {
-      const response = fetch("/api/basescan");
+      const response = await fetch("/api/basescan");
+      const json = await response.json();
+      console.log(json);
     }
   }, [account.address]);
 
