@@ -22,9 +22,9 @@ import {
 } from "./contracts/nft";
 import { CustomConnectButtonV2 } from "./components/connectButtonV2";
 import { now } from "./utils/time";
-// import { MY_NFTS_QUERY } from "../queries/nfts";
-// import useSWR from "swr";
-// import { request } from "graphql-request";
+import { MY_NFTS_QUERY } from "../app/queries/nfts";
+import useSWR from "swr";
+import { request } from "graphql-request";
 
 const friends = [
   {
@@ -94,18 +94,19 @@ export default function Home() {
   //   );
   // };
 
-  // const myNftsVariables = {
-  //   wallet: account?.address,
+  // const variables = {
+  //   wallet: account.address?.toLowerCase(),
   // };
 
   // const { data: queryData, error: queryError } = useSWR(
-  //   [MY_NFTS_QUERY, myNftsVariables],
+  //   [MY_NFTS_QUERY, variables],
   //   fetcher,
   //   {
   //     refreshInterval: 5000,
   //   }
   // );
 
+  // console.log(queryData);
   const imageLoader = ({ src, width, quality }: any) => {
     return `${src}?w=${width}&q=${quality || 75}`;
   };
@@ -420,7 +421,7 @@ export default function Home() {
                     DISCONNECT
                   </span>
                 </button>
-
+                {/* 
                 {tokens && (
                   <div className="flex flex-col gap-8 w-full max-w-[80px] mt-10 justify-end">
                     {tokens.map((item, index) => (
@@ -440,7 +441,7 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
-                )}
+                )} */}
               </div>
             )}
           </div>
@@ -463,7 +464,7 @@ export default function Home() {
           </div>
 
           {/* NFTS MOBILE */}
-          {tokens && (
+          {/* {tokens && (
             <div className="flex lg:hidden justify-center items-center flex-wrap w-full my-10 gap-4">
               {tokens.map((item, index) => (
                 <div key={index} className="flex flex-col items-center">
@@ -482,7 +483,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-          )}
+          )} */}
         </div>
 
         {/* COPYRIGHTS */}
