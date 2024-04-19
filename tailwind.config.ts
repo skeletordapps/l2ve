@@ -29,6 +29,7 @@ const config: Config = {
         "button-v2-lg": "url('/v2/button2.png')",
         "wallet-connected-v2": "url('/v2/wallet-connected.svg')",
         "wallet-connected-v2-hover": "url('/v2/wallet-connected-move.svg')",
+        opensea: "url('/opensea.svg')",
       },
     },
   },

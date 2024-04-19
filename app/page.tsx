@@ -356,16 +356,27 @@ export default function Home() {
           {/* RIGHT */}
           <div className="hidden lg:flex flex-col w-full lg:max-w-[20%] pt-[36px]">
             {signer && (
-              <div className="flex flex-col items-end w-full h-full pb-24">
+              <div className="flex flex-col items-end w-full h-full pb-24 gap-5">
                 <button
                   onClick={() => disconnectAsync()}
-                  className="flex flex-col items-center gap-[20px]"
+                  className="flex flex-col items-center gap-[10px]"
                 >
                   <div className="w-[46.48px] h-[32.18px] transition-all bg-wallet-connected-v2 hover:bg-wallet-connected-v2-hover" />
                   <span className="px-[12px] transition-all bg-[#F9F9F9] hover:bg-[#F9F9F9]/80 hover:shadow-inner text-black text-[14.62px] font-bold">
                     DISCONNECT
                   </span>
                 </button>
+
+                <Link
+                  href="https://opensea.io/collection/l2ve-nft"
+                  target="blank"
+                  className="flex flex-col items-center gap-[10px]"
+                >
+                  <div className="w-[66.48px] h-[76.48px] transition-all bg-opensea bg-no-repeat bg-cover hover:opacity-80" />
+                  <span className="px-[12px] transition-all bg-[#F9F9F9] hover:bg-[#F9F9F9]/80 hover:shadow-inner text-black text-[14.62px] font-bold">
+                    COLLECTION
+                  </span>
+                </Link>
                 {/* 
                 {tokens && (
                   <div className="flex flex-col gap-8 w-full max-w-[80px] mt-10 justify-end">
