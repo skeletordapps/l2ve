@@ -228,6 +228,16 @@ export default function Home() {
     getNftsInfos();
   }, [provider]);
 
+  const getLogs = useCallback(async () => {
+    if (account.address) {
+      const response = fetch("/api/basescan");
+    }
+  }, [account.address]);
+
+  useEffect(() => {
+    getLogs();
+  }, [account.address]);
+
   // useEffect(() => {
   //   setUserNfts([]);
   //   const fetchSrcForNfts = async () => {
