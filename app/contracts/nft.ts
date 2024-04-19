@@ -11,6 +11,7 @@ export type NftInfos = {
   roundOneFinishAt: number;
   roundTwoFinishAt: number;
   currentRound: number;
+  baseURI: string;
 };
 
 const pinataURL = process.env.NEXT_PUBLIC_PINATA_URL;
@@ -24,6 +25,7 @@ export async function nftInfos(provider: JsonRpcProvider) {
     const roundOneFinishAt = Number(await contract.roundOneFinishAt());
     const roundTwoFinishAt = Number(await contract.roundTwoFinishAt());
     const currentRound = Number(await contract.currentRound()) + 1;
+    const baseURI = await contract.baseURI();
 
     return {
       isPaused,
@@ -31,6 +33,7 @@ export async function nftInfos(provider: JsonRpcProvider) {
       roundOneFinishAt,
       roundTwoFinishAt,
       currentRound,
+      baseURI,
     } as NftInfos;
   } catch (error) {
     handleError({ e: error as Error, notificate: false });
@@ -66,7 +69,7 @@ export async function initialize(signer: JsonRpcSigner) {
     const timestamp = now();
     const startAt = timestamp;
     const roundOneFinishAt = timestamp + 86400 * 3; // 3 days
-    const roundTwoFinishAt = roundOneFinishAt + 86400 * 5; // 5 days
+    const roundTwoFinishAt = roundOneFinishAt + 86400 * 2; // 2 days
 
     if (userAddress === owner) {
       const tx = await contract.initialize(
@@ -158,16 +161,20 @@ export type TokenMetadata = {
 };
 
 export async function getPastMints(
-  signer: JsonRpcSigner
+  signer: JsonRpcSigner,
+  provider: JsonRpcProvider
 ): Promise<TokenMetadata[] | undefined> {
   const contract = new Contract(CONTRACTS.nft, L2VE_NFT, signer);
 
   try {
     const baseURI = await contract.baseURI();
     const userAddress = await signer.getAddress();
-    const startBlock = 13294754;
+    const latestBlock = await provider.getBlockNumber();
+    // console.log(latestBlock);
+
+    const startBlock = 13345914;
     const filter = contract.filters.Minted(userAddress, null, null); // Filter for user's mints
-    const pastMints = await contract.queryFilter(filter, startBlock);
+    const pastMints = await contract.queryFilter(filter, startBlock, "latest");
 
     let tokens: Token[] = [];
     pastMints.map((item: any) => {
@@ -194,4 +201,44 @@ export async function getPastMints(
     console.log(error);
     return undefined;
   }
+}
+
+export type NFTMetadata = {
+  compiler: string;
+  description: string;
+  edition: number;
+  image: string;
+  name: string;
+  symbol: string;
+};
+
+export type Nfts = {
+  id: string;
+  tokenId: string;
+  tokenUri: string;
+  wallet: string;
+  src?: string;
+  metadata?: NFTMetadata;
+}[];
+
+export async function getNFTData(ipfsUrl: string, tokenUri: string) {
+  const gateway = process.env.NEXT_PUBLIC_IPFS_GATEWAY as string;
+
+  const metadataUrl =
+    gateway +
+    "/ipfs/" +
+    ipfsUrl.substring(ipfsUrl.indexOf("ipfs://") + 7, ipfsUrl.length) +
+    tokenUri;
+  const metadataResponse = await fetch(metadataUrl);
+  const metadata: NFTMetadata = await metadataResponse.json();
+
+  const imageUrl =
+    gateway +
+    "/ipfs/" +
+    metadata.image.substring(
+      metadata.image.indexOf("ipfs://") + 7,
+      metadata.image.length
+    );
+
+  return { metadata, imageUrl };
 }
