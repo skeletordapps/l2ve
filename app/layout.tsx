@@ -77,10 +77,10 @@ const connectors = connectorsForWallets([
       //   projectId: walletConnectId,
       //   chains,
       // }),
-      // coinbaseWallet({
-      //   appName: "L2VE DAPP",
-      //   chains,
-      // }),
+      coinbaseWallet({
+        appName: "L2VE DAPP",
+        chains,
+      }),
     ],
   },
 ]);

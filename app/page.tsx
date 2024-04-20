@@ -170,7 +170,13 @@ export default function Home() {
   }, [chain, signer, userWallet]);
 
   useEffect(() => {
-    if (userWallet && userWallet.mintedsCount > 0) {
+    if (
+      signer &&
+      chain &&
+      !chain.unsupported &&
+      userWallet &&
+      userWallet.mintedsCount > 0
+    ) {
       return setIsOpen(false);
     }
 
