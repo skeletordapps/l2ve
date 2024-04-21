@@ -11,9 +11,9 @@ import {
 } from "@rainbow-me/rainbowkit";
 import {
   metaMaskWallet,
-  walletConnectWallet,
   injectedWallet,
   coinbaseWallet,
+  zerionWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { base } from "wagmi/chains";
@@ -73,14 +73,11 @@ const connectors = connectorsForWallets([
         chains: chains,
         projectId: walletConnectId,
       }),
-      // walletConnectWallet({
-      //   projectId: walletConnectId,
-      //   chains,
-      // }),
       coinbaseWallet({
         appName: "L2VE DAPP",
         chains,
       }),
+      zerionWallet({ chains: chains, projectId: walletConnectId }),
     ],
   },
 ]);
