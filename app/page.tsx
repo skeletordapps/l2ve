@@ -315,10 +315,8 @@ export default function Home() {
                     disabled={loading || !canMint}
                     onClick={onMint}
                     type="button"
-                    className={`inline-flex justify-center items-center w-[131px] h-[33.5px] rounded-md  ${
-                      canMint
-                        ? "bg-button-v2-sm hover:animate-pulse"
-                        : "bg-button-v2-sm opacity-30"
+                    className={`inline-flex justify-center items-center w-[131px] h-[43.5px] rounded-md bg-blue-love ${
+                      canMint ? "" : "opacity-30"
                     } text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 `}
                   >
                     {loading ? "LOADING..." : "MINT HERE"}
