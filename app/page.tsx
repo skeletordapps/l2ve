@@ -11,9 +11,11 @@ import type {
   NftInfos,
   TokenMetadata,
   Nfts,
+  NFT,
 } from "./contracts/nft";
 import {
   getNFTData,
+  getOpenseaData,
   initialize,
   mint,
   nftInfos,
@@ -22,6 +24,7 @@ import {
 } from "./contracts/nft";
 import { CustomConnectButtonV2 } from "./components/connectButtonV2";
 import { now } from "./utils/time";
+import NftList from "./components/v2/nftList";
 
 const friends = [
   {
@@ -81,10 +84,6 @@ export default function Home() {
   const { chain } = useNetwork();
   const { provider, signer } = useContext(StateContext);
   const { disconnectAsync } = useDisconnect();
-
-  const imageLoader = ({ src, width, quality }: any) => {
-    return `${src}?w=${width}&q=${quality || 75}`;
-  };
 
   const onMint = useCallback(async () => {
     setLoading(true);
@@ -436,27 +435,7 @@ export default function Home() {
                     COLLECTION
                   </span>
                 </Link>
-                {/* 
-                {tokens && (
-                  <div className="flex flex-col gap-8 w-full max-w-[80px] mt-10 justify-end">
-                    {tokens.map((item, index) => (
-                      <div key={index} className="flex flex-col items-center">
-                        <Image
-                          loader={imageLoader}
-                          src={item?.imageUrl || "/button.png"}
-                          width={40}
-                          height={40}
-                          alt={item?.id?.toString() || "nft"}
-                          loading="lazy"
-                          className="transition-all hover:-rotate-12 border-2 border-black/20"
-                        />
-                        <div className="flex justify-center items-center self-center text-center mt-4 w-[79px] h-[20px] px-[12px] transition-all bg-[#F9F9F9] hover:bg-[#F9F9F9]/80 hover:shadow-inner text-black text-[14.62px] font-bold">
-                          {item?.id}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )} */}
+                <NftList />
               </div>
             )}
           </div>
@@ -479,26 +458,7 @@ export default function Home() {
           </div>
 
           {/* NFTS MOBILE */}
-          {/* {tokens && (
-            <div className="flex lg:hidden justify-center items-center flex-wrap w-full my-10 gap-4">
-              {tokens.map((item, index) => (
-                <div key={index} className="flex flex-col items-center">
-                  <Image
-                    loader={imageLoader}
-                    src={item?.imageUrl || "/button.png"}
-                    width={40}
-                    height={40}
-                    alt={item?.id?.toString() || "nft"}
-                    loading="lazy"
-                    className="transition-all hover:-rotate-12 border-2 border-black/20"
-                  />
-                  <div className="flex justify-center items-center self-center text-center mt-4 w-[79px] h-[20px] px-[12px] transition-all bg-[#F9F9F9] hover:bg-[#F9F9F9]/80 hover:shadow-inner text-black text-[14.62px] font-bold">
-                    {item?.id}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )} */}
+          <NftList mobile />
         </div>
 
         {/* COPYRIGHTS */}
