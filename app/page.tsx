@@ -127,6 +127,15 @@ export default function Home() {
     onCheckEligibility();
   }, [signer]);
 
+  const round2IsOver = useCallback(() => {
+    if (data) {
+      const datetime = now();
+      if (datetime >= data.roundTwoFinishAt) return true;
+    }
+
+    return false;
+  }, [data]);
+
   const checkIfCanMint = useCallback(() => {
     if (data && userWallet) {
       const datetime = now();
@@ -150,14 +159,34 @@ export default function Home() {
     }
 
     setCanMint(false);
-  }, [data, userWallet]);
+  }, [data, userWallet, setCanMint]);
 
   useEffect(() => {
     checkIfCanMint();
   }, [data, userWallet]);
 
   useEffect(() => {
-    if (signer && chain && userWallet && !userWallet.isEligibleForRoundOne) {
+    if (
+      signer &&
+      chain &&
+      data &&
+      data.currentRound === 1 &&
+      userWallet &&
+      !userWallet.isEligibleForRoundOne
+    ) {
+      setHasError(true);
+      setModalText(textError);
+      return;
+    }
+
+    if (
+      signer &&
+      chain &&
+      data &&
+      data.currentRound === 2 &&
+      userWallet &&
+      !userWallet.isEligibleForRoundTwo
+    ) {
       setHasError(true);
       setModalText(textError);
       return;
@@ -167,7 +196,7 @@ export default function Home() {
     setHasError(false);
 
     if (chain && chain.unsupported) setHasError(true);
-  }, [chain, signer, userWallet]);
+  }, [chain, signer, userWallet, data]);
 
   useEffect(() => {
     if (
@@ -180,19 +209,17 @@ export default function Home() {
       return setIsOpen(false);
     }
 
-    if (
-      !chain ||
-      !signer ||
-      chain.unsupported ||
-      !userWallet ||
-      !userWallet.isEligibleForRoundOne
-    ) {
+    if (!chain || !signer || chain.unsupported || !data || !userWallet) {
       setIsOpen(true);
       return;
     }
 
-    if (userWallet && !userWallet.isEligibleForRoundOne) {
+    if (data.currentRound === 1 && !userWallet.isEligibleForRoundOne) {
       return setIsOpen(true);
+    }
+    if (data.currentRound === 2 && !userWallet.isEligibleForRoundTwo) {
+      setIsOpen(true);
+      return;
     }
 
     setIsOpen(false);
@@ -216,9 +243,33 @@ export default function Home() {
         <div className="flex flex-col lg:flex-row  lg:px-[54px] ">
           {/* LEFT */}
           <div className="flex items-center lg:items-start flex-col w-full text-[#0F61FF] lg:max-w-[20%] pt-[70px] lg:pt-[36px] px-4">
+            {/* MINT IS OVER */}
             <div
               className={`${
-                userWallet && userWallet.isEligibleForRoundOne
+                round2IsOver() ? "flex" : "hidden"
+              } flex-col items-center lg:items-start`}
+            >
+              <Image
+                src="/v2/rocket.svg"
+                width={32.03}
+                height={60.06}
+                alt="rocket"
+                className="mb-[-30px]"
+              />
+              <h1 className="text-[42px]">THANK YOU!</h1>
+              <div className="flex flex-col lg:max-w-[240px] lg:gap-4">
+                <p className="lg:mt-4 text-[24px] lg:text-[28px] leading-[30px] text-center lg:text-start">
+                  THE MINT PERIOD IS OVER.
+                </p>
+              </div>
+            </div>
+
+            {/* MINT IS HAPPENING */}
+            <div
+              className={`${
+                userWallet &&
+                userWallet.isEligibleForRoundTwo &&
+                !round2IsOver()
                   ? "flex"
                   : "hidden"
               } flex-col items-center lg:items-start`}
@@ -263,8 +314,10 @@ export default function Home() {
               {/* L2VE HOLDER */}
               {!data?.isPaused &&
                 userWallet &&
-                userWallet?.isEligibleForRoundOne &&
-                userWallet?.holderType === "L2VE" && (
+                ((userWallet?.isEligibleForRoundOne &&
+                  userWallet?.holderType === "L2VE") ||
+                  userWallet.mintedsCount === 5 ||
+                  userWallet.mintedsCount === 7) && (
                   <Image
                     src="/v2/logo-space-sm.svg"
                     width={65.39}
@@ -277,8 +330,10 @@ export default function Home() {
               {/* COMMUNITY HOLDER */}
               {!data?.isPaused &&
                 userWallet &&
-                userWallet?.isEligibleForRoundOne &&
-                userWallet?.holderType === "community" && (
+                ((userWallet?.isEligibleForRoundOne &&
+                  userWallet?.holderType === "community") ||
+                  userWallet.mintedsCount === 2 ||
+                  userWallet.mintedsCount === 4) && (
                   <div className="flex items-center gap-[22.5px] mt-4 lg:mt-10">
                     {friends.map((item, index) => (
                       <Link
@@ -464,7 +519,18 @@ export default function Home() {
 
           <CustomConnectButtonV2
             isEligible={
-              userWallet && userWallet.isEligibleForRoundOne ? true : false
+              (data &&
+              data.currentRound === 1 &&
+              userWallet &&
+              userWallet.isEligibleForRoundOne
+                ? true
+                : false) ||
+              (data &&
+              data.currentRound === 2 &&
+              userWallet &&
+              userWallet.isEligibleForRoundTwo
+                ? true
+                : false)
             }
           />
         </div>
