@@ -13,31 +13,71 @@ import type {
   Nfts,
   NFT,
 } from "./contracts/nft";
-import { getOpenseaData } from "./contracts/nft";
-
 import {
+  getNFTData,
+  getOpenseaData,
   initialize,
   mint,
   nftInfos,
   togglePause,
   walletInfos,
-} from "./contracts/publicNft";
+} from "./contracts/nft";
 import { CustomConnectButtonV2 } from "./components/connectButtonV2";
 import { now } from "./utils/time";
 import NftList from "./components/v2/nftList";
-import { PublicNftInfos, PublicWalletInfos } from "./contracts/publicNft";
 
-const text = "PLEASE CONNECT YOUR WALLET";
+const friends = [
+  {
+    src: "/v2/friends/logos/tybg.svg",
+    href: "https://basescan.org/token/0x0d97f261b1e88845184f678e2d1e7a98d9fd38de",
+    w: 33,
+    h: 33,
+    style: "min-w-[33px] min-h-[33px]",
+  },
+  {
+    src: "/v2/friends/logos/degen.svg",
+    href: "https://basescan.org/address/0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed",
+    w: 28.51,
+    h: 24.12,
+    style: "min-w-[28.51px] min-h-[24.12px]",
+  },
+  {
+    src: "/v2/friends/logos/normie.svg",
+    href: "https://basescan.org/token/0x7f12d13b34f5f4f0a9449c16bcd42f0da47af200",
+    w: 33,
+    h: 33,
+    style: "min-w-[33px] min-h-[33px]",
+  },
+  {
+    src: "/v2/friends/logos/doginme.svg",
+    href: "https://basescan.org/token/0x6921B130D297cc43754afba22e5EAc0FBf8Db75b",
+    w: 81.13,
+    h: 20.41,
+    style: "min-w-[81.13px] min-h-[20.41px]",
+  },
+  {
+    src: "/v2/friends/logos/brett.svg",
+    href: "https://basescan.org/token/0x532f27101965dd16442e59d40670faf5ebb142e4",
+    w: 38.67,
+    h: 12.07,
+    style: "min-w-[38.67px] min-h-[12.07px]",
+  },
+];
+
+const text =
+  "PLEASE CONNECT YOUR WALLET TO CHECK IF YOU ARE ELIGIBLE FOR ROUND 1!";
+const textError = "SORRY... YOU ARE NOT ELIGIBLE";
 
 export default function Home() {
   let [isOpen, setIsOpen] = useState(false);
   let [hasError, setHasError] = useState(false);
-  let [data, setData] = useState<PublicNftInfos | undefined>();
-  let [userWallet, setUserWallet] = useState<PublicWalletInfos | undefined>(
+  let [data, setData] = useState<NftInfos | undefined>();
+  let [userWallet, setUserWallet] = useState<WalletInfos | undefined>(
     undefined
   );
   let [modalText, setModalText] = useState(text);
   let [canMint, setCanMint] = useState(false);
+  let [tokens, setTokens] = useState<TokenMetadata[] | undefined>();
   let [loading, setLoading] = useState(false);
 
   const account = useAccount();
@@ -50,6 +90,7 @@ export default function Home() {
     if (signer) {
       await mint(signer);
       await getNftsInfos();
+      await onCheckEligibility();
     }
     setLoading(false);
   }, [signer, setLoading]);
@@ -59,6 +100,7 @@ export default function Home() {
     if (signer) {
       await togglePause(signer);
       await getNftsInfos();
+      await onCheckEligibility();
     }
     setLoading(false);
   }, [signer, setLoading]);
@@ -68,15 +110,28 @@ export default function Home() {
     if (signer) {
       await initialize(signer);
       await getNftsInfos();
+      await onCheckEligibility();
     }
     setLoading(true);
   }, [signer, setLoading]);
 
-  const mintIsOver = useCallback(() => {
+  const onCheckEligibility = useCallback(async () => {
+    if (signer && chain && !chain.unsupported) {
+      const wallet: WalletInfos | undefined = await walletInfos(signer);
+      if (wallet) setUserWallet(wallet);
+    }
+  }, [signer, account, chain]);
+
+  useEffect(() => {
+    onCheckEligibility();
+  }, [signer]);
+
+  const round2IsOver = useCallback(() => {
     if (data) {
       const datetime = now();
-      // if (data.startAt )
+      if (datetime >= data.roundTwoFinishAt) return true;
     }
+
     return false;
   }, [data]);
 
@@ -86,10 +141,19 @@ export default function Home() {
 
       if (data.isPaused || data.startAt === 0) return setCanMint(false);
 
-      if (userWallet.mintedsCount === 0 && datetime <= data.roundOneFinishAt) {
+      if (
+        userWallet.isEligibleForRoundOne &&
+        userWallet.mintedsCount === 0 &&
+        datetime <= data.roundOneFinishAt
+      ) {
         return setCanMint(true);
-      } else if (userWallet.mintedsCount === 5) {
-        return setCanMint(false);
+      } else if (
+        userWallet.isEligibleForRoundTwo &&
+        datetime > data.roundOneFinishAt &&
+        datetime <= data.roundTwoFinishAt &&
+        (userWallet.mintedsCount === 2 || userWallet.mintedsCount === 5)
+      ) {
+        return setCanMint(true);
       }
     }
 
@@ -101,6 +165,32 @@ export default function Home() {
   }, [data, userWallet]);
 
   useEffect(() => {
+    if (
+      signer &&
+      chain &&
+      data &&
+      data.currentRound === 1 &&
+      userWallet &&
+      !userWallet.isEligibleForRoundOne
+    ) {
+      setHasError(true);
+      setModalText(textError);
+      return;
+    }
+
+    if (
+      signer &&
+      chain &&
+      data &&
+      data.currentRound === 2 &&
+      userWallet &&
+      !userWallet.isEligibleForRoundTwo
+    ) {
+      setHasError(true);
+      setModalText(textError);
+      return;
+    }
+
     setModalText(text);
     setHasError(false);
 
@@ -123,13 +213,21 @@ export default function Home() {
       return;
     }
 
+    if (data.currentRound === 1 && !userWallet.isEligibleForRoundOne) {
+      return setIsOpen(true);
+    }
+    if (data.currentRound === 2 && !userWallet.isEligibleForRoundTwo) {
+      setIsOpen(true);
+      return;
+    }
+
     setIsOpen(false);
   }, [chain, signer, userWallet]);
 
   const getNftsInfos = useCallback(async () => {
     if (provider) {
       const response = await nftInfos(provider);
-      setData(response as PublicNftInfos);
+      setData(response as NftInfos);
     }
   }, [provider]);
 
@@ -147,7 +245,7 @@ export default function Home() {
             {/* MINT IS OVER */}
             <div
               className={`${
-                mintIsOver() ? "flex" : "hidden"
+                round2IsOver() ? "flex" : "hidden"
               } flex-col items-center lg:items-start`}
             >
               <Image
@@ -168,7 +266,11 @@ export default function Home() {
             {/* MINT IS HAPPENING */}
             <div
               className={`${
-                !mintIsOver() ? "flex" : "hidden"
+                userWallet &&
+                userWallet.isEligibleForRoundTwo &&
+                !round2IsOver()
+                  ? "flex"
+                  : "hidden"
               } flex-col items-center lg:items-start`}
             >
               <Image
@@ -178,20 +280,78 @@ export default function Home() {
                 alt="rocket"
                 className="mb-[-30px]"
               />
-              <h1 className="text-[42px]">PUBLIC MINT!</h1>
+              <h1 className="text-[42px]">CONGRATS!</h1>
               <div className="flex flex-col lg:max-w-[240px] lg:gap-4">
                 <p className="lg:mt-4 text-[24px] lg:text-[28px] leading-[30px] text-center lg:text-start">
-                  Everyone is can mint up to 5 tokens.
+                  YOU ARE eligible FOR THE FREE MINT.
                 </p>
+
+                {/* L2VE HOLDER */}
+                {!data?.isPaused &&
+                  userWallet &&
+                  userWallet.isEligibleForRoundOne &&
+                  userWallet.holderType === "L2VE" && (
+                    <p className="text-[24px] lg:text-[28px] leading-[30px] text-center lg:text-start">
+                      AS A L2VE HOLDER YOU CAN MINT{" "}
+                      {data?.currentRound === 1 ? "5" : "2"} NFTS IN ROUND{" "}
+                      {data?.currentRound}!
+                    </p>
+                  )}
+
+                {/* COMMUNITY HOLDER */}
+                {!data?.isPaused &&
+                  userWallet &&
+                  userWallet?.isEligibleForRoundOne &&
+                  userWallet?.holderType === "community" && (
+                    <p className="text-[24px] lg:text-[28px] leading-[30px] text-center lg:text-start">
+                      AS A COMMUNITY HOLDER YOU CAN MINT 2 NFTS IN ROUND{" "}
+                      {data?.currentRound}!
+                    </p>
+                  )}
               </div>
 
-              <Image
-                src="/v2/logo-space-sm.svg"
-                width={65.39}
-                height={44.52}
-                alt="logo-space-sm"
-                className="mt-10"
-              />
+              {/* L2VE HOLDER */}
+              {!data?.isPaused &&
+                userWallet &&
+                ((userWallet?.isEligibleForRoundOne &&
+                  userWallet?.holderType === "L2VE") ||
+                  userWallet.mintedsCount === 5 ||
+                  userWallet.mintedsCount === 7) && (
+                  <Image
+                    src="/v2/logo-space-sm.svg"
+                    width={65.39}
+                    height={44.52}
+                    alt="logo-space-sm"
+                    className="mt-10"
+                  />
+                )}
+
+              {/* COMMUNITY HOLDER */}
+              {!data?.isPaused &&
+                userWallet &&
+                ((userWallet?.isEligibleForRoundOne &&
+                  userWallet?.holderType === "community") ||
+                  userWallet.mintedsCount === 2 ||
+                  userWallet.mintedsCount === 4) && (
+                  <div className="flex items-center gap-[22.5px] mt-4 lg:mt-10">
+                    {friends.map((item, index) => (
+                      <Link
+                        key={index}
+                        href={item.href}
+                        target="blank"
+                        className="transition-all hover:animate-bounce"
+                      >
+                        <Image
+                          src={item.src}
+                          width={item.w}
+                          height={item.h}
+                          alt="friends"
+                          className={item.style}
+                        />
+                      </Link>
+                    ))}
+                  </div>
+                )}
 
               {userWallet && userWallet?.mintedsCount > 0 && (
                 <div className="text-black/90 mt-5 text-xl">
@@ -203,7 +363,7 @@ export default function Home() {
                 {data?.isPaused ? (
                   <div>Mint is currently paused...</div>
                 ) : !data?.isPaused && data?.roundOneFinishAt === 0 ? (
-                  <div>Public Round is about to start soon...</div>
+                  <div>Round 1 is about to start soon...</div>
                 ) : (
                   <button
                     disabled={loading || !canMint}
@@ -317,7 +477,22 @@ export default function Home() {
           />
           <p className="text-[#F5F5F5] text-[18px]">{modalText}</p>
 
-          <CustomConnectButtonV2 isEligible />
+          <CustomConnectButtonV2
+            isEligible={
+              (data &&
+              data.currentRound === 1 &&
+              userWallet &&
+              userWallet.isEligibleForRoundOne
+                ? true
+                : false) ||
+              (data &&
+              data.currentRound === 2 &&
+              userWallet &&
+              userWallet.isEligibleForRoundTwo
+                ? true
+                : false)
+            }
+          />
         </div>
       </BoxModal>
     </>
