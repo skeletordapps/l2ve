@@ -113,9 +113,13 @@ export default function Home() {
   }, [signer, chain, setUserWallet]);
 
   useEffect(() => {
-    getUserInfos();
-    onCheckNfts();
-  }, [signer]);
+    if (signer) {
+      getUserInfos();
+      onCheckNfts();
+    } else {
+      setTotalMinted(0);
+    }
+  }, [signer, setTotalMinted]);
 
   const getNftsInfos = useCallback(async () => {
     setLoading(true);
@@ -137,7 +141,7 @@ export default function Home() {
         <div className="flex flex-col lg:flex-row  lg:px-[54px] relative">
           {/* LEFT */}
           <div className="flex items-center lg:items-start flex-col w-full text-[#0F61FF] lg:max-w-[25%] pt-[70px] lg:pt-[36px] px-4">
-            <div className="flex-col items-center lg:items-start">
+            <div className="flex-col items-center lg:items-start text-center lg:text-start">
               <Image
                 src="/v2/rocket.svg"
                 width={32.03}
@@ -160,13 +164,15 @@ export default function Home() {
                 </p>
               </div>
 
-              <Image
-                src="/v2/logo-space-sm.svg"
-                width={65.39}
-                height={44.52}
-                alt="logo-space-sm"
-                className="mt-10"
-              />
+              <div className="flex justify-center lg:justify-start">
+                <Image
+                  src="/v2/logo-space-sm.svg"
+                  width={65.39}
+                  height={44.52}
+                  alt="logo-space-sm"
+                  className="mt-10"
+                />
+              </div>
 
               {signer && totalMinted > 0 && (
                 <div className="text-black/90 mt-5 text-xl">
@@ -174,7 +180,7 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="flex flex-col mt-10 text-[22px] text-black gap-4">
+              <div className="flex flex-col items-center lg:items-start mt-10 text-[22px] text-black gap-4">
                 <button
                   disabled={loading || !canMint}
                   onClick={onMint}
