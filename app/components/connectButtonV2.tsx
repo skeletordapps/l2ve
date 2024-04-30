@@ -43,7 +43,7 @@ export const CustomConnectButtonV2 = ({
                   <button
                     onClick={openConnectModal}
                     type="button"
-                    className="inline-flex justify-center items-center transition-all bg-button-v2-lg hover:scale-[1.03] hover:opacity-80 bg-no-repeat w-[189px] h-[33.5px] text-[18px] text-[#F0EFEF] focus:outline-none focus-visible:ring-0 z-20"
+                    className="inline-flex justify-center items-center transition-all bg-blue-love hover:scale-[1.03] hover:opacity-80 bg-no-repeat h-[33.5px] text-[18px] text-[#F0EFEF] focus:outline-none focus-visible:ring-0 z-20"
                   >
                     CONNECT WALLET
                   </button>
@@ -65,7 +65,7 @@ export const CustomConnectButtonV2 = ({
                   <button
                     onClick={() => disconnectAsync()}
                     type="button"
-                    className="inline-flex justify-center items-center transition-all bg-button-v2-lg hover:scale-[1.03] hover:opacity-80 bg-no-repeat w-[189px] h-[33.5px] text-[18px] text-[#F0EFEF] focus:outline-none focus-visible:ring-0 z-20"
+                    className="inline-flex justify-center items-center transition-all bg-blue-love hover:scale-[1.03] hover:opacity-80 bg-no-repeat h-[33.5px] text-[18px] text-[#F0EFEF] focus:outline-none focus-visible:ring-0 z-20 px-4 rounded-lg"
                   >
                     CONNECT ANOTHER WALLET
                   </button>

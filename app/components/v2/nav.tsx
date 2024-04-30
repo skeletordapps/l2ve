@@ -34,7 +34,7 @@ export default function Nav() {
     <div className="h-[40px] bg-white flex items-center justify-between px-[20px] text-[23px] text-black/80  border-b border-black">
       <div className="flex items-center gap-[25px] w-full">
         <Image src="/v2/heart.svg" width={19} height={16} alt="heart" />
-        <span>NFTS GENERATOR COMPUTER</span>
+        <span className="text-xs xl:text-[23px]">NFTS GENERATOR COMPUTER</span>
       </div>
       <div className="w-max">
         <Image

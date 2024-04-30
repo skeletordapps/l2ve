@@ -3,53 +3,52 @@ import Link from "next/link";
 import Nav from "./components/v2/nav";
 import Image from "next/image";
 import { useCallback, useContext, useEffect, useState } from "react";
-import BoxModal from "./components/v2/boxModal";
-import { useAccount, useNetwork, useDisconnect } from "wagmi";
 import { StateContext } from "./context/StateContext";
-import type {
-  WalletInfos,
-  NftInfos,
-  TokenMetadata,
-  Nfts,
-  NFT,
-} from "./contracts/nft";
-import { getOpenseaData } from "./contracts/nft";
 
 import {
+  getOpenseaDataForPublic,
   initialize,
   mint,
   nftInfos,
   togglePause,
   walletInfos,
 } from "./contracts/publicNft";
-import { CustomConnectButtonV2 } from "./components/connectButtonV2";
+
 import { now } from "./utils/time";
 import NftList from "./components/v2/nftList";
 import { PublicNftInfos, PublicWalletInfos } from "./contracts/publicNft";
+import { CustomConnectButtonV3 } from "./components/connectButtonV3";
+import { useAccount, useNetwork } from "wagmi";
+import {
+  NFT,
+  getOpenseaData,
+  walletInfos as pastWalletInfos,
+} from "./contracts/nft";
 
-const text = "PLEASE CONNECT YOUR WALLET";
+import type { WalletInfos } from "./contracts/nft";
 
 export default function Home() {
-  let [isOpen, setIsOpen] = useState(false);
-  let [hasError, setHasError] = useState(false);
   let [data, setData] = useState<PublicNftInfos | undefined>();
   let [userWallet, setUserWallet] = useState<PublicWalletInfos | undefined>(
     undefined
   );
-  let [modalText, setModalText] = useState(text);
+
   let [canMint, setCanMint] = useState(false);
   let [loading, setLoading] = useState(false);
+  let [list, setList] = useState<NFT[] | null>(null);
+  let [totalMinted, setTotalMinted] = useState(0);
 
-  const account = useAccount();
-  const { chain } = useNetwork();
   const { provider, signer } = useContext(StateContext);
-  const { disconnectAsync } = useDisconnect();
+
+  const { chain } = useNetwork();
+  const account = useAccount();
 
   const onMint = useCallback(async () => {
     setLoading(true);
     if (signer) {
       await mint(signer);
       await getNftsInfos();
+      await getUserInfos();
     }
     setLoading(false);
   }, [signer, setLoading]);
@@ -59,6 +58,7 @@ export default function Home() {
     if (signer) {
       await togglePause(signer);
       await getNftsInfos();
+      await getUserInfos();
     }
     setLoading(false);
   }, [signer, setLoading]);
@@ -68,70 +68,63 @@ export default function Home() {
     if (signer) {
       await initialize(signer);
       await getNftsInfos();
+      await getUserInfos();
     }
-    setLoading(true);
+    setLoading(false);
   }, [signer, setLoading]);
 
-  const mintIsOver = useCallback(() => {
-    if (data) {
-      const datetime = now();
-      // if (data.startAt )
+  const onCheckNfts = useCallback(async () => {
+    if (signer && chain && !chain.unsupported && account) {
+      const response = await getOpenseaData(signer);
+      const publicResponse = await getOpenseaDataForPublic(signer);
+      if (response && publicResponse) setList(response.concat(publicResponse));
     }
-    return false;
+  }, [signer, account, chain, setList]);
+
+  const isMintAvailable = useCallback(() => {
+    if (!data) return false;
+    if (data?.isPaused) return false;
+    if (data?.startAt === 0) return false;
+    if (now() < data?.startAt) return false;
+
+    return true;
   }, [data]);
 
   const checkIfCanMint = useCallback(() => {
-    if (data && userWallet) {
-      const datetime = now();
-
-      if (data.isPaused || data.startAt === 0) return setCanMint(false);
-
-      if (userWallet.mintedsCount === 0 && datetime <= data.roundOneFinishAt) {
-        return setCanMint(true);
-      } else if (userWallet.mintedsCount === 5) {
-        return setCanMint(false);
-      }
-    }
+    if (!signer || !data || !userWallet) return setCanMint(false);
+    if (userWallet.mintedsCount === 0 && isMintAvailable())
+      return setCanMint(true);
 
     setCanMint(false);
-  }, [data, userWallet, setCanMint]);
+  }, [signer, data, userWallet, setCanMint]);
 
   useEffect(() => {
     checkIfCanMint();
-  }, [data, userWallet]);
+  }, [signer, data, userWallet]);
+
+  const getUserInfos = useCallback(async () => {
+    if (signer && chain && !chain.unsupported) {
+      const pastWallet: WalletInfos | undefined = await pastWalletInfos(signer);
+      const wallet: PublicWalletInfos | undefined = await walletInfos(signer);
+      if (wallet) setUserWallet(wallet);
+      if (pastWallet && wallet)
+        setTotalMinted(pastWallet.mintedsCount + wallet.mintedsCount);
+    }
+  }, [signer, chain, setUserWallet]);
 
   useEffect(() => {
-    setModalText(text);
-    setHasError(false);
-
-    if (chain && chain.unsupported) setHasError(true);
-  }, [chain, signer, userWallet, data]);
-
-  useEffect(() => {
-    if (
-      signer &&
-      chain &&
-      !chain.unsupported &&
-      userWallet &&
-      userWallet.mintedsCount > 0
-    ) {
-      return setIsOpen(false);
-    }
-
-    if (!chain || !signer || chain.unsupported || !data || !userWallet) {
-      setIsOpen(true);
-      return;
-    }
-
-    setIsOpen(false);
-  }, [chain, signer, userWallet]);
+    getUserInfos();
+    onCheckNfts();
+  }, [signer]);
 
   const getNftsInfos = useCallback(async () => {
+    setLoading(true);
     if (provider) {
       const response = await nftInfos(provider);
       setData(response as PublicNftInfos);
     }
-  }, [provider]);
+    setLoading(false);
+  }, [provider, setLoading]);
 
   useEffect(() => {
     getNftsInfos();
@@ -141,15 +134,10 @@ export default function Home() {
     <>
       <Nav />
       <div className="flex flex-col relative">
-        <div className="flex flex-col lg:flex-row  lg:px-[54px] ">
+        <div className="flex flex-col lg:flex-row  lg:px-[54px] relative">
           {/* LEFT */}
-          <div className="flex items-center lg:items-start flex-col w-full text-[#0F61FF] lg:max-w-[20%] pt-[70px] lg:pt-[36px] px-4">
-            {/* MINT IS OVER */}
-            <div
-              className={`${
-                mintIsOver() ? "flex" : "hidden"
-              } flex-col items-center lg:items-start`}
-            >
+          <div className="flex items-center lg:items-start flex-col w-full text-[#0F61FF] lg:max-w-[25%] pt-[70px] lg:pt-[36px] px-4">
+            <div className="flex-col items-center lg:items-start">
               <Image
                 src="/v2/rocket.svg"
                 width={32.03}
@@ -157,31 +145,18 @@ export default function Home() {
                 alt="rocket"
                 className="mb-[-30px]"
               />
-              <h1 className="text-[42px]">THANK YOU!</h1>
-              <div className="flex flex-col lg:max-w-[240px] lg:gap-4">
+              <h1 className="text-[42px] leading-tight">
+                {!data || loading
+                  ? "LOADING..."
+                  : data?.isPaused ||
+                    data?.startAt === 0 ||
+                    now() < data?.startAt
+                  ? "MINT NOT AVAILABLE"
+                  : "PUBLIC MINT!"}
+              </h1>
+              <div className="flex flex-col lg:max-w-[340px] lg:gap-4">
                 <p className="lg:mt-4 text-[24px] lg:text-[28px] leading-[30px] text-center lg:text-start">
-                  THE MINT PERIOD IS OVER.
-                </p>
-              </div>
-            </div>
-
-            {/* MINT IS HAPPENING */}
-            <div
-              className={`${
-                !mintIsOver() ? "flex" : "hidden"
-              } flex-col items-center lg:items-start`}
-            >
-              <Image
-                src="/v2/rocket.svg"
-                width={32.03}
-                height={60.06}
-                alt="rocket"
-                className="mb-[-30px]"
-              />
-              <h1 className="text-[42px]">PUBLIC MINT!</h1>
-              <div className="flex flex-col lg:max-w-[240px] lg:gap-4">
-                <p className="lg:mt-4 text-[24px] lg:text-[28px] leading-[30px] text-center lg:text-start">
-                  Everyone is can mint up to 5 tokens.
+                  Everyone will be up to mint 5 tokens max.
                 </p>
               </div>
 
@@ -193,30 +168,38 @@ export default function Home() {
                 className="mt-10"
               />
 
-              {userWallet && userWallet?.mintedsCount > 0 && (
+              {signer && totalMinted > 0 && (
                 <div className="text-black/90 mt-5 text-xl">
-                  Minted {userWallet?.mintedsCount} tokens
+                  Minted {totalMinted} tokens
                 </div>
               )}
 
               <div className="flex flex-col mt-10 text-[22px] text-black gap-4">
-                {data?.isPaused ? (
-                  <div>Mint is currently paused...</div>
-                ) : !data?.isPaused && data?.roundOneFinishAt === 0 ? (
-                  <div>Public Round is about to start soon...</div>
-                ) : (
-                  <button
-                    disabled={loading || !canMint}
-                    onClick={onMint}
-                    type="button"
-                    className={`inline-flex justify-center items-center w-[131px] h-[43.5px] rounded-md bg-blue-love ${
-                      canMint ? "" : "opacity-30"
-                    } text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 `}
-                  >
-                    {loading ? "LOADING..." : "MINT HERE"}
-                  </button>
-                )}
+                <button
+                  disabled={loading || !canMint}
+                  onClick={onMint}
+                  type="button"
+                  className={`inline-flex justify-center items-center w-[131px] h-[43.5px] rounded-md bg-blue-love ${
+                    canMint ? "" : "opacity-30"
+                  } text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 `}
+                >
+                  {loading ? "LOADING..." : "MINT HERE"}
+                </button>
               </div>
+
+              {/* <Image
+                src="/v2/rocket.svg"
+                width={32.03}
+                height={60.06}
+                alt="rocket"
+                className="mb-[-30px]"
+              />
+              <h1 className="text-[42px]">THANK YOU!</h1>
+              <div className="flex flex-col lg:max-w-[240px] lg:gap-4">
+                <p className="lg:mt-4 text-[24px] lg:text-[28px] leading-[30px] text-center lg:text-start">
+                  THE MINT PERIOD IS OVER.
+                </p>
+              </div> */}
             </div>
           </div>
 
@@ -227,7 +210,7 @@ export default function Home() {
               width={756.3}
               height={627}
               alt="computer"
-              className="w-full lg:w-[950px] lg:h-[810px] opacity-85"
+              className="w-full xl:w-[850px] xl:h-[710px] opacity-85"
             />
 
             {userWallet && userWallet.isOwner && (
@@ -250,55 +233,36 @@ export default function Home() {
               </div>
             )}
           </div>
-
           {/* RIGHT */}
-          <div className="hidden lg:flex flex-col w-full lg:max-w-[20%] pt-[36px]">
-            {signer && (
-              <div className="flex flex-col items-end w-full h-full pb-24 gap-5">
-                <button
-                  onClick={() => disconnectAsync()}
-                  className="flex flex-col items-center gap-[10px]"
-                >
-                  <div className="w-[46.48px] h-[32.18px] transition-all bg-wallet-connected-v2 hover:bg-wallet-connected-v2-hover" />
-                  <span className="px-[12px] transition-all bg-[#F9F9F9] hover:bg-[#F9F9F9]/80 hover:shadow-inner text-black text-[14.62px] font-bold">
-                    DISCONNECT
-                  </span>
-                </button>
+          <div className="hidden lg:flex flex-col w-full lg:max-w-[25%] pt-[36px]">
+            <div className="flex flex-col items-end w-full h-full pb-24 gap-5">
+              <CustomConnectButtonV3 />
 
-                <Link
-                  href="https://opensea.io/collection/l2ve-nft"
-                  target="blank"
-                  className="flex flex-col items-center gap-[10px]"
-                >
-                  <div className="w-[66.48px] h-[76.48px] transition-all bg-opensea bg-no-repeat bg-cover hover:opacity-80" />
-                  <span className="px-[12px] transition-all bg-[#F9F9F9] hover:bg-[#F9F9F9]/80 hover:shadow-inner text-black text-[14.62px] font-bold">
-                    COLLECTION
-                  </span>
-                </Link>
-                <NftList />
-              </div>
-            )}
+              {signer && (
+                <>
+                  <Link
+                    href="https://opensea.io/collection/l2ve-nft"
+                    target="blank"
+                    className="flex flex-col items-center gap-[10px]"
+                  >
+                    <div className="w-[66.48px] h-[76.48px] transition-all bg-opensea bg-no-repeat bg-cover hover:opacity-80" />
+                    <span className="px-[12px] transition-all bg-[#F9F9F9] hover:bg-[#F9F9F9]/80 hover:shadow-inner text-black text-[14.62px] font-bold">
+                      COLLECTION
+                    </span>
+                  </Link>
+                  <NftList list={list} />
+                </>
+              )}
+            </div>
           </div>
 
           {/* RIGHT MOBILE */}
-          <div className="absolute top-0 right-4 flex lg:hidden flex-col w-full pt-5 lg:pt-[36px]">
-            {signer && (
-              <div className="flex flex-col flex-wrap items-end w-full h-full pb-24">
-                <button
-                  onClick={() => disconnectAsync()}
-                  className="flex flex-col items-center gap-[20px]"
-                >
-                  <div className="w-[46.48px] h-[32.18px] transition-all bg-wallet-connected-v2 hover:bg-wallet-connected-v2-hover" />
-                  <span className="px-[12px] transition-all bg-[#F9F9F9] hover:bg-[#F9F9F9]/80 hover:shadow-inner text-black text-[14.62px] font-bold">
-                    DISCONECT
-                  </span>
-                </button>
-              </div>
-            )}
+          <div className="absolute top-0 right-4 flex items-end lg:hidden flex-col w-full pt-5 lg:pt-[36px]">
+            <CustomConnectButtonV3 />
           </div>
 
           {/* NFTS MOBILE */}
-          <NftList mobile />
+          <NftList list={list} mobile />
         </div>
 
         {/* COPYRIGHTS */}
@@ -306,20 +270,6 @@ export default function Home() {
           2024® ALL RIGHTS RESERVED
         </span>
       </div>
-
-      <BoxModal isOpen={isOpen} error={hasError}>
-        <div className="flex flex-col justify-center items-center w-full h-full text-center lg:px-[72px] gap-[30px] pt-8">
-          <Image
-            src="/v2/logo-space.svg"
-            width={79.32}
-            height={54.01}
-            alt="logo-space"
-          />
-          <p className="text-[#F5F5F5] text-[18px]">{modalText}</p>
-
-          <CustomConnectButtonV2 isEligible />
-        </div>
-      </BoxModal>
     </>
   );
 }

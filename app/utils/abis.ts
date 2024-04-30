@@ -1684,6 +1684,13 @@ export const L2VE_PUBLIC_NFT = [
   },
   {
     type: "function",
+    name: "overallSupply",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "owner",
     inputs: [],
     outputs: [{ name: "", type: "address", internalType: "address" }],
@@ -1821,6 +1828,13 @@ export const L2VE_PUBLIC_NFT = [
   {
     type: "function",
     name: "totalSupply",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "totalSupplyPhase1",
     inputs: [],
     outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     stateMutability: "view",

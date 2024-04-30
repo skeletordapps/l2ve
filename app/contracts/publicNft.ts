@@ -4,6 +4,7 @@ import { CONTRACTS } from "@/app/utils/consts";
 import handleError from "../utils/handleErrors";
 import NotificateTx from "../utils/notificateTx";
 import { now } from "../utils/time";
+import { NFT } from "./nft";
 
 export type PublicNftInfos = {
   isPaused: boolean;
@@ -15,7 +16,7 @@ export type PublicNftInfos = {
 };
 
 export async function nftInfos(provider: JsonRpcProvider) {
-  const contract = new Contract(CONTRACTS.nft, L2VE_PUBLIC_NFT, provider);
+  const contract = new Contract(CONTRACTS.publicNft, L2VE_PUBLIC_NFT, provider);
 
   try {
     const isPaused = await contract.paused();
@@ -105,5 +106,36 @@ export async function mint(signer: JsonRpcSigner) {
     await NotificateTx(network, tx);
   } catch (error) {
     handleError({ e: error as Error, notificate: true });
+  }
+}
+
+export async function getOpenseaDataForPublic(signer: JsonRpcSigner) {
+  try {
+    const userAddress = await signer.getAddress();
+    const network = await signer.provider?.getNetwork();
+
+    const chainName = network.name.toLowerCase();
+    const collection = "l2ve-nft-public";
+    const apiKey = process.env.NEXT_PUBLIC_OPENSEA_API_KEY as string;
+
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "x-api-key": apiKey,
+      },
+    };
+
+    const response = await fetch(
+      `https://api.opensea.io/api/v2/chain/${chainName}/account/${userAddress}/nfts?collection=${collection}`,
+      options
+    );
+
+    const json = await response.json();
+
+    return json.nfts as NFT[];
+  } catch (error) {
+    console.log(error);
+    return undefined;
   }
 }
