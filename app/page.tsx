@@ -174,7 +174,7 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="flex flex-col items-center lg:items-start mt-10 text-[22px] text-black gap-4">
+              {/* <div className="flex flex-col items-center lg:items-start mt-10 text-[22px] text-black gap-4">
                 <button
                   disabled={loading || !canMint}
                   onClick={onMint}
@@ -185,7 +185,7 @@ export default function Home() {
                 >
                   {loading ? "LOADING..." : "MINT HERE"}
                 </button>
-              </div>
+              </div> */}
 
               {/* <Image
                 src="/v2/rocket.svg"
