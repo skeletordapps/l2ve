@@ -150,17 +150,11 @@ export default function Home() {
                 className="mb-[-30px]"
               />
               <h1 className="text-[42px] leading-tight">
-                {!data || loading
-                  ? "LOADING..."
-                  : data?.isPaused ||
-                    data?.startAt === 0 ||
-                    now() < data?.startAt
-                  ? "MINT NOT AVAILABLE"
-                  : "PUBLIC MINT!"}
+                PUBLIC MINT IS SOLD OUT!
               </h1>
               <div className="flex flex-col lg:max-w-[340px] lg:gap-4">
                 <p className="lg:mt-4 text-[24px] lg:text-[28px] leading-[30px] text-center lg:text-start">
-                  Everyone will be up to mint 5 tokens max.
+                  THANKS FOR PARTICIPATING.
                 </p>
               </div>
 
