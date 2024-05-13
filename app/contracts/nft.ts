@@ -242,3 +242,49 @@ export async function getNFTData(ipfsUrl: string, tokenUri: string) {
 
   return { metadata, imageUrl };
 }
+
+export type NFT = {
+  collection: string;
+  contract: string;
+  description: string;
+  identifier: string;
+  image_url: string;
+  is_disabled: boolean;
+  is_nsfw: boolean;
+  metadata_url: string;
+  name: string;
+  opensea_url: string;
+  token_standard: string;
+  updated_at: string;
+};
+
+export async function getOpenseaData(signer: JsonRpcSigner) {
+  try {
+    const userAddress = await signer.getAddress();
+    const network = await signer.provider?.getNetwork();
+
+    const chainName = network.name.toLowerCase();
+    const collection = "l2ve-nft";
+    const apiKey = process.env.NEXT_PUBLIC_OPENSEA_API_KEY as string;
+
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "x-api-key": apiKey,
+      },
+    };
+
+    const response = await fetch(
+      `https://api.opensea.io/api/v2/chain/${chainName}/account/${userAddress}/nfts?collection=${collection}`,
+      options
+    );
+
+    const json = await response.json();
+
+    return json.nfts as NFT[];
+  } catch (error) {
+    console.log(error);
+    return undefined;
+  }
+}
