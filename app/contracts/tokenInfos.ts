@@ -1,8 +1,8 @@
-import { Contract, JsonRpcSigner, formatEther } from "ethers";
+import { Contract, JsonRpcSigner, formatEther, formatUnits } from "ethers";
 import { L2VE_ABI } from "../utils/abis";
-import { balanceOf } from "./balanceOf";
 
 export type TokenInfos = {
+  token: string;
   symbol: string;
   decimals: number;
   balance: number;
@@ -11,6 +11,7 @@ export type TokenInfos = {
 };
 
 export const empty = {
+  token: "",
   symbol: "",
   decimals: 0,
   balance: 0,
@@ -19,6 +20,7 @@ export const empty = {
 } as TokenInfos;
 
 const invalid = {
+  token: "",
   symbol: "",
   decimals: 0,
   balance: 0,
@@ -36,18 +38,12 @@ export async function tokenInfos(signer: JsonRpcSigner, token: string) {
       const contract = new Contract(token, L2VE_ABI, signer);
       const symbol = await contract.symbol();
       const decimals = Number(await contract.decimals());
-      const tokenBalance = await balanceOf(
-        L2VE_ABI,
-        token,
-        userAddress,
-        undefined,
-        signer
+      const balance = Number(
+        formatUnits(await contract.balanceOf(userAddress), decimals)
       );
-
-      const balance = Number(formatEther(tokenBalance));
       const valid = true;
 
-      return { symbol, decimals, balance, valid } as TokenInfos;
+      return { token, symbol, decimals, balance, valid } as TokenInfos;
     }
 
     return invalid;

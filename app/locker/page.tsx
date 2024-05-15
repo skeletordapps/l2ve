@@ -172,13 +172,13 @@ export default function Locker() {
       setLoadedToken(tokenData);
     }
     setLoading(false);
-  }, [chain, inputToken, signer, setLoading]);
+  }, [chain, inputToken, signer, setLoading, setLoadedToken]);
 
   const onApprove = useCallback(async () => {
     setLoading(true);
     if (signer && loadedToken) {
       await handleApproval(
-        inputToken,
+        loadedToken.token,
         loadedToken.decimals,
         inputAmount,
         signer
@@ -186,12 +186,12 @@ export default function Locker() {
       await onCheckAllowance();
     }
     setLoading(false);
-  }, [chain, signer, inputToken, inputAmount, loadedToken, setLoading]);
+  }, [chain, signer, inputAmount, loadedToken, setLoading]);
 
   const onCheckAllowance = useCallback(async () => {
     if (signer && loadedToken) {
       const allowance = await hasAllowance(
-        inputToken,
+        loadedToken.token,
         loadedToken.decimals,
         inputAmount,
         signer
@@ -201,13 +201,13 @@ export default function Locker() {
     }
 
     return setAllowed(false);
-  }, [chain, signer, inputToken, inputAmount, loadedToken]);
+  }, [chain, signer, inputAmount, loadedToken]);
 
   const onLock = useCallback(async () => {
     setLoading(true);
     if (chain && !chain.unsupported && signer) {
       await lock(
-        inputToken,
+        loadedToken.token,
         loadedToken.decimals,
         inputAmount,
         timestamp,
@@ -219,15 +219,7 @@ export default function Locker() {
     }
 
     setLoading(false);
-  }, [
-    chain,
-    signer,
-    inputToken,
-    loadedToken,
-    inputAmount,
-    timestamp,
-    setLoading,
-  ]);
+  }, [chain, signer, loadedToken, inputAmount, timestamp, setLoading]);
 
   const onUnlock = useCallback(
     async (event: Event) => {
@@ -235,14 +227,14 @@ export default function Locker() {
       if (chain && !chain.unsupported && signer) {
         await unlock(event.lockData.token, event.lockData.id, signer);
         await getEvents();
-        if (loadedToken.valid && inputToken === event.lockData.token) {
+        if (loadedToken.valid && loadedToken.token === event.lockData.token) {
           await onLoadToken();
         }
       }
 
       setLoading(false);
     },
-    [chain, signer, inputToken, loadedToken, inputAmount, inputDate, setLoading]
+    [chain, signer, loadedToken, inputAmount, inputDate, setLoading]
   );
 
   useEffect(() => {
@@ -304,8 +296,10 @@ export default function Locker() {
             <button
               disabled={loading || inputToken === ""}
               type="button"
-              className={`inline-flex justify-center items-center w-[131px] h-[43.5px] rounded-md bg-blue-love text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 hover:opacity-80 ${
-                loading || inputToken === "" ? "opacity-20" : "opacity-100"
+              className={`inline-flex justify-center items-center w-[131px] h-[43.5px] rounded-md bg-blue-love text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0  ${
+                loading || inputToken === ""
+                  ? "opacity-20"
+                  : "opacity-100 hover:opacity-80"
               }`}
               onClick={onLoadToken}
             >
