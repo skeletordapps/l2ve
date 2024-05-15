@@ -6,13 +6,13 @@ import {
   parseUnits,
 } from "ethers";
 import { CONTRACTS } from "../utils/consts";
-import { L2VE_ABI, L2VE_ANY_LOCKER } from "../utils/abis";
+import { ERC20_ABI, L2VE_ANY_LOCKER } from "../utils/abis";
 import NotificateTx from "../utils/notificateTx";
 import handleError from "../utils/handleErrors";
 import { getAllowance } from "./allowance";
 import { approve } from "./approve";
 
-const BASE_RPC_URL = process.env.NEXT_PUBLIC_BASE_RPC_HTTPS as string;
+const BASE_RPC_URL = process.env.NEXT_PUBLIC_RPC_HTTPS as string;
 // const TEST_RPC = "http://127.0.0.1:8545";
 
 async function getContract(signer?: JsonRpcSigner) {
@@ -40,7 +40,7 @@ export async function hasAllowance(
   try {
     const allowance = Number(
       formatUnits(
-        await getAllowance(L2VE_ABI, token, CONTRACTS.locker, signer),
+        await getAllowance(ERC20_ABI, token, CONTRACTS.locker, signer),
         decimals
       )
     );
@@ -60,7 +60,7 @@ export async function handleApproval(
 ) {
   try {
     await approve(
-      L2VE_ABI,
+      ERC20_ABI,
       token,
       CONTRACTS.locker,
       signer,
@@ -129,12 +129,12 @@ export async function getAllEvents(signer: JsonRpcSigner) {
   try {
     const contract = await getContract();
     const provider = signer.provider;
-    const startBlock = 0;
+
+    const startBlock = 14496383;
     const currentBlock = await provider.getBlockNumber();
     const blocksPerFilter = 10000;
     let lockingEvents: Event[] = [];
     let unlockingEvents: Event[] = [];
-    let allEvents: Event[] = [];
 
     for (
       let fromBlock = startBlock;
@@ -142,6 +142,7 @@ export async function getAllEvents(signer: JsonRpcSigner) {
       fromBlock += blocksPerFilter
     ) {
       const toBlock = Math.min(fromBlock + blocksPerFilter - 1, currentBlock); // Ensure toBlock doesn't exceed current block
+      console.log(fromBlock, toBlock);
       const lockFilter = contract!.filters.Locked();
 
       const lockEvents = await contract!.queryFilter(

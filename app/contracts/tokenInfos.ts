@@ -1,5 +1,5 @@
 import { Contract, JsonRpcSigner, formatEther, formatUnits } from "ethers";
-import { L2VE_ABI } from "../utils/abis";
+import { ERC20_ABI } from "../utils/abis";
 
 export type TokenInfos = {
   token: string;
@@ -35,7 +35,7 @@ export async function tokenInfos(signer: JsonRpcSigner, token: string) {
     const code = await provider.getCode(token);
 
     if (code !== "0x") {
-      const contract = new Contract(token, L2VE_ABI, signer);
+      const contract = new Contract(token, ERC20_ABI, signer);
       const symbol = await contract.symbol();
       const decimals = Number(await contract.decimals());
       const balance = Number(
