@@ -19,48 +19,48 @@ import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { base } from "wagmi/chains";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import Image from "next/image";
-// import { defineChain } from "viem";
+import { defineChain } from "viem";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// export const localhost = /*#__PURE__*/ defineChain({
-//   id: 31337,
-//   name: "Localhost",
-//   network: "localhost",
-//   nativeCurrency: {
-//     decimals: 18,
-//     name: "Ether",
-//     symbol: "ETH",
-//   },
-//   rpcUrls: {
-//     default: { http: ["http://127.0.0.1:8545"] },
-//     public: { http: ["http://127.0.0.1:8545"] },
-//   },
-// });
+export const localhost = /*#__PURE__*/ defineChain({
+  id: 31337,
+  name: "Localhost",
+  network: "localhost",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ether",
+    symbol: "ETH",
+  },
+  rpcUrls: {
+    default: { http: ["http://127.0.0.1:8545"] },
+    public: { http: ["http://127.0.0.1:8545"] },
+  },
+});
 
 const walletConnectId = "034912533f2acb4e9dcd810ae4a2a134";
 
 const { chains, publicClient } = configureChains(
-  [base],
+  [localhost],
   [
-    jsonRpcProvider({
-      rpc: () => ({
-        http: process.env.NEXT_PUBLIC_RPC_HTTPS as string,
-        webSocket: process.env.NEXT_PUBLIC_RPC_WSS as string,
-      }),
-    }),
     // jsonRpcProvider({
-    //   rpc: (chain) => ({
-    //     http:
-    //       chain !== base
-    //         ? localhost.rpcUrls.default.http.toString()
-    //         : (process.env.NEXT_PUBLIC_RPC_HTTPS as string),
-    //     webSocket:
-    //       chain !== base
-    //         ? localhost.rpcUrls.default.http.toString()
-    //         : (process.env.NEXT_PUBLIC_RPC_WSS as string),
+    //   rpc: () => ({
+    //     http: process.env.NEXT_PUBLIC_RPC_HTTPS as string,
+    //     webSocket: process.env.NEXT_PUBLIC_RPC_WSS as string,
     //   }),
     // }),
+    jsonRpcProvider({
+      rpc: (chain) => ({
+        http:
+          chain !== base
+            ? localhost.rpcUrls.default.http.toString()
+            : (process.env.NEXT_PUBLIC_RPC_HTTPS as string),
+        webSocket:
+          chain !== base
+            ? localhost.rpcUrls.default.http.toString()
+            : (process.env.NEXT_PUBLIC_RPC_WSS as string),
+      }),
+    }),
   ]
 );
 
