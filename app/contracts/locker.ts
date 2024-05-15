@@ -13,11 +13,11 @@ import { getAllowance } from "./allowance";
 import { approve } from "./approve";
 
 const BASE_RPC_URL = process.env.NEXT_PUBLIC_BASE_RPC_HTTPS as string;
-const TEST_RPC = "http://127.0.0.1:8545";
+// const TEST_RPC = "http://127.0.0.1:8545";
 
 async function getContract(signer?: JsonRpcSigner) {
   try {
-    const provider = new JsonRpcProvider(TEST_RPC);
+    const provider = new JsonRpcProvider(BASE_RPC_URL);
     const contractAddress = CONTRACTS.locker;
     const contract = new Contract(
       contractAddress,
@@ -134,6 +134,7 @@ export async function getAllEvents(signer: JsonRpcSigner) {
     const blocksPerFilter = 10000;
     let lockingEvents: Event[] = [];
     let unlockingEvents: Event[] = [];
+    let allEvents: Event[] = [];
 
     for (
       let fromBlock = startBlock;
@@ -156,6 +157,8 @@ export async function getAllEvents(signer: JsonRpcSigner) {
         toBlock
       );
 
+      const wallet = await signer.getAddress();
+
       if (lockEvents && lockEvents?.length > 0) {
         lockEvents.forEach(async (event: any) => {
           const log = event.args as [
@@ -173,20 +176,22 @@ export async function getAllEvents(signer: JsonRpcSigner) {
             ]
           ];
 
-          lockingEvents.push({
-            wallet: log[0],
-            lockData: {
-              id: Number(log[1][0]),
-              wallet: log[1][1],
-              token: log[1][2],
-              symbol: log[1][3],
-              decimals: Number(log[1][4]),
-              amount: Number(formatUnits(log[1][5], Number(log[1][4]))),
-              lockedAt: Number(log[1][6]),
-              lockedUntil: Number(log[1][7]),
-              unlockedAt: Number(log[1][8]),
-            },
-          });
+          if (log[0] === wallet) {
+            lockingEvents.push({
+              wallet: log[0],
+              lockData: {
+                id: Number(log[1][0]),
+                wallet: log[1][1],
+                token: log[1][2],
+                symbol: log[1][3],
+                decimals: Number(log[1][4]),
+                amount: Number(formatUnits(log[1][5], Number(log[1][4]))),
+                lockedAt: Number(log[1][6]),
+                lockedUntil: Number(log[1][7]),
+                unlockedAt: Number(log[1][8]),
+              },
+            });
+          }
         });
       }
 
@@ -207,20 +212,22 @@ export async function getAllEvents(signer: JsonRpcSigner) {
             ]
           ];
 
-          unlockingEvents.push({
-            wallet: log[0],
-            lockData: {
-              id: Number(log[1][0]),
-              wallet: log[1][1],
-              token: log[1][2],
-              symbol: log[1][3],
-              decimals: Number(log[1][4]),
-              amount: Number(formatUnits(log[1][5], Number(log[1][4]))),
-              lockedAt: Number(log[1][6]),
-              lockedUntil: Number(log[1][7]),
-              unlockedAt: Number(log[1][8]),
-            },
-          });
+          if (log[0] === wallet) {
+            unlockingEvents.push({
+              wallet: log[0],
+              lockData: {
+                id: Number(log[1][0]),
+                wallet: log[1][1],
+                token: log[1][2],
+                symbol: log[1][3],
+                decimals: Number(log[1][4]),
+                amount: Number(formatUnits(log[1][5], Number(log[1][4]))),
+                lockedAt: Number(log[1][6]),
+                lockedUntil: Number(log[1][7]),
+                unlockedAt: Number(log[1][8]),
+              },
+            });
+          }
         });
       }
     }

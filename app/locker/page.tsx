@@ -4,7 +4,7 @@ import Nav from "../components/v2/nav";
 import type { CustomFlowbiteTheme } from "flowbite-react";
 import { Carousel, Datepicker } from "flowbite-react";
 import { StateContext } from "../context/StateContext";
-import { useNetwork } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import { TokenInfos, empty, tokenInfos } from "../contracts/tokenInfos";
 import { format, getUnixTime, fromUnixTime, parse } from "date-fns";
 import {
@@ -22,14 +22,16 @@ export default function Locker() {
   const [inputToken, setInputToken] = useState("");
   const [inputAmount, setInputAmount] = useState("");
   const [inputDate, setInputDate] = useState<Date>(new Date());
-  const [inputTime, setInputTime] = useState("00:00");
+  const [inputTime, setInputTime] = useState(format(new Date(), "HH:mm"));
   const [timestamp, setTimestamp] = useState(0);
   const [loadedToken, setLoadedToken] = useState<TokenInfos>(empty);
   const [allowed, setAllowed] = useState(false);
   const [events, setEvents] = useState<Event[] | []>([]);
+  const [wallet, setWallet] = useState("");
 
   const { signer } = useContext(StateContext);
   const { chain } = useNetwork();
+  const { address } = useAccount();
 
   const customTheme: CustomFlowbiteTheme["datepicker"] = {
     root: {
@@ -211,6 +213,7 @@ export default function Locker() {
         timestamp,
         signer
       );
+      await onLoadToken();
       await onCheckAllowance();
       await getEvents();
     }
@@ -232,6 +235,9 @@ export default function Locker() {
       if (chain && !chain.unsupported && signer) {
         await unlock(event.lockData.token, event.lockData.id, signer);
         await getEvents();
+        if (loadedToken.valid && inputToken === event.lockData.token) {
+          await onLoadToken();
+        }
       }
 
       setLoading(false);
@@ -259,6 +265,10 @@ export default function Locker() {
   }, [chain, signer]);
 
   useEffect(() => {
+    setWallet(address ? address : "");
+  }, [address, setWallet]);
+
+  useEffect(() => {
     const parsedTime = parse(inputTime, "HH:mm", inputDate);
     setTimestamp(getUnixTime(parsedTime));
   }, [inputDate, inputTime, setTimestamp]);
@@ -268,10 +278,16 @@ export default function Locker() {
       <Nav />
 
       <div className="flex flex-col relative min-h-[700px]">
-        <div className="flex justify-center items-center w-full text-gray-900 pt-10">
+        <div className="flex flex-col justify-center items-center w-full text-gray-900 pt-10 gap-4">
           <CustomConnectButtonV3 />
+
+          {wallet && (
+            <p className="px-10 lg:px-0 text-sm text-wrap text-center">
+              <span className="font-bold">Wallet:</span> {wallet}
+            </p>
+          )}
         </div>
-        <div className="flex justify-center items-center w-full max-w-[500px] text-gray-900 self-center mt-20 text-lg gap-2">
+        <div className="flex justify-center items-center w-full max-w-[500px] text-gray-900 self-center mt-10 lg:mt-20 text-lg gap-2">
           LOCK ANY TOKEN WITH{" "}
           <span className="text-blue-love">L2VE LOCKER</span>
         </div>
@@ -286,8 +302,11 @@ export default function Locker() {
               onChange={(e) => setInputToken(e.target.value)}
             />
             <button
+              disabled={loading || inputToken === ""}
               type="button"
-              className={`inline-flex justify-center items-center w-[131px] h-[43.5px] rounded-md bg-blue-love text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 hover:opacity-80`}
+              className={`inline-flex justify-center items-center w-[131px] h-[43.5px] rounded-md bg-blue-love text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 hover:opacity-80 ${
+                loading || inputToken === "" ? "opacity-20" : "opacity-100"
+              }`}
               onClick={onLoadToken}
             >
               LOAD
@@ -339,6 +358,7 @@ export default function Locker() {
               value={format(inputDate, "dd/MM/yyyy")}
               onSelectedDateChanged={(e) => setInputDate(e)}
               theme={customTheme}
+              minDate={parse(inputTime, "HH:mm", new Date())}
             />
             {/* TIME PICKER */}
             <div
@@ -408,7 +428,7 @@ export default function Locker() {
         </div>
 
         {events.length > 0 && (
-          <div className="flex flex-col w-full max-w-[500px] gap-4 text-gray-900 self-center mt-10">
+          <div className="flex flex-col w-full max-w-[350px] lg:max-w-[500px] gap-4 text-gray-900 self-center mt-10">
             <div className="flex justify-center items-center w-full  self-center text-lg gap-2">
               MANAGE YOUR LOCKS
             </div>
@@ -416,13 +436,13 @@ export default function Locker() {
             <div className="h-44">
               <Carousel slide={false} theme={carouselTheme}>
                 {events.map((event: Event, index: number) => (
-                  <div key={index} className="flex px-12 h-44">
+                  <div key={index} className="flex px-8 lg:px-12 h-44">
                     <div className="flex flex-col gap-1 py-6">
-                      <p className="font-bold underline">
+                      <p className="font-bold underline text-sm lg:text-[16px]">
                         {event.lockData.symbol}: {event.lockData.token}
                       </p>
 
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-center text-sm lg:text-[16px]">
                         <div>
                           <p>
                             Locked at:{" "}
@@ -459,7 +479,7 @@ export default function Locker() {
                             getUnixTime(new Date()) < event.lockData.lockedUntil
                               ? "hidden"
                               : "inline-flex"
-                          }  justify-center items-center h-[33.5px] rounded-md bg-blue-love text-[16px] text-[#F0EFEF] focus:outline-none focus-visible:ring-0 px-6 hover:opacity-80 ${
+                          }  justify-center items-center rounded-md bg-blue-love text-sm lg:text-[16px] text-[#F0EFEF] focus:outline-none focus-visible:ring-0 py-1 px-3 lg:px-6 hover:opacity-80 ${
                             loading ? "opacity-20" : "opacity-100"
                           }`}
                         >
@@ -471,59 +491,10 @@ export default function Locker() {
                 ))}
               </Carousel>
             </div>
-            {/* <div className="flex flex-col w-full max-h-[400px] gap-4 overflow-y-scroll">
-            {events.map((event: Event, index: number) => (
-              <div
-                key={index}
-                className="flex justify-between items-center gap-2 bg-white/20 px-6"
-              >
-                <div className="flex flex-col gap-1 py-6">
-                  <p>
-                    {event.lockData.symbol}: {event.lockData.token}
-                  </p>
-                  <p>
-                    Locked at:{" "}
-                    {format(
-                      fromUnixTime(event.lockData.lockedAt),
-                      "dd/MM/yyyy - HH:mm"
-                    )}
-                  </p>
-                  <p>
-                    Locked until:{" "}
-                    {format(
-                      fromUnixTime(event.lockData.lockedUntil),
-                      "dd/MM/yyyy - HH:mm"
-                    )}
-                  </p>
-                  {event.lockData.unlockedAt > 0 && (
-                    <p>
-                      Unocked at:{" "}
-                      {format(
-                        fromUnixTime(event.lockData.unlockedAt),
-                        "dd/MM/yyyy - HH:mm"
-                      )}
-                    </p>
-                  )}
-                  <p>Amount: {event.lockData.amount.toLocaleString("en-us")}</p>
-                </div>
-                <button
-                  onClick={() => onUnlock(event)}
-                  className={`${
-                    event.lockData.unlockedAt > 0 ||
-                    getUnixTime(new Date()) < event.lockData.lockedUntil
-                      ? "hidden"
-                      : "inline-flex"
-                  }  justify-center items-center h-[33.5px] rounded-md bg-blue-love text-[16px] text-[#F0EFEF] focus:outline-none focus-visible:ring-0 px-6 hover:opacity-80`}
-                >
-                  UNLOCK
-                </button>
-              </div>
-            ))}
-          </div> */}
           </div>
         )}
         {/* COPYRIGHTS */}
-        <span className="absolute bottom-[340px] lg:bottom-[140px] left-[-40px] lg:left-0 -rotate-90 text-black text-[12px]">
+        <span className="hidden lg:absolute bottom-[340px] lg:bottom-[140px] left-[-40px] lg:left-0 -rotate-90 text-black text-[12px]">
           2024® ALL RIGHTS RESERVED
         </span>
       </div>
