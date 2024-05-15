@@ -117,12 +117,12 @@ export default function Home() {
     setLoading(true);
   }, [signer, setLoading]);
 
-  const onCheckNfts = useCallback(async () => {
-    if (signer && chain && !chain.unsupported && account) {
-      const nfts = await fetch(`/api/nft/${chain.id}/${account.address}`);
-      console.log(nfts);
-    }
-  }, [signer, account, chain]);
+  // const onCheckNfts = useCallback(async () => {
+  //   if (signer && chain && !chain.unsupported && account) {
+  //     const nfts = await fetch(`/api/nft/${chain.id}/${account.address}`);
+  //     console.log(nfts);
+  //   }
+  // }, [signer, account, chain]);
 
   const onCheckEligibility = useCallback(async () => {
     if (signer && chain && !chain.unsupported) {
