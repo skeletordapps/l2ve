@@ -1,100 +1,15 @@
-"use client";
 import { VT323 } from "next/font/google";
+import { Web3Modal } from "./context/web3modal";
+
+export const metadata = {
+  title: "Web3Modal",
+  description: "Web3Modal Example",
+};
 import "./globals.css";
-import StateProvider from "../app/context/StateContext";
-import "@rainbow-me/rainbowkit/styles.css";
-
-import {
-  RainbowKitProvider,
-  AvatarComponent,
-  connectorsForWallets,
-} from "@rainbow-me/rainbowkit";
-import {
-  metaMaskWallet,
-  injectedWallet,
-  coinbaseWallet,
-  zerionWallet,
-} from "@rainbow-me/rainbowkit/wallets";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { base } from "wagmi/chains";
-import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import Image from "next/image";
-// import { defineChain } from "viem";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-// export const localhost = /*#__PURE__*/ defineChain({
-//   id: 31337,
-//   name: "Localhost",
-//   network: "localhost",
-//   nativeCurrency: {
-//     decimals: 18,
-//     name: "Ether",
-//     symbol: "ETH",
-//   },
-//   rpcUrls: {
-//     default: { http: ["http://127.0.0.1:8545"] },
-//     public: { http: ["http://127.0.0.1:8545"] },
-//   },
-// });
 
 const walletConnectId = "946d05f75ca1f092356e4694afe6175b";
-
-const { chains, publicClient } = configureChains(
-  [base],
-  [
-    jsonRpcProvider({
-      rpc: () => ({
-        http: process.env.NEXT_PUBLIC_RPC_HTTPS as string,
-        webSocket: process.env.NEXT_PUBLIC_RPC_WSS as string,
-      }),
-    }),
-    // jsonRpcProvider({
-    //   rpc: (chain) => ({
-    //     http:
-    //       chain !== base
-    //         ? localhost.rpcUrls.default.http.toString()
-    //         : (process.env.NEXT_PUBLIC_RPC_HTTPS as string),
-    //     webSocket:
-    //       chain !== base
-    //         ? localhost.rpcUrls.default.http.toString()
-    //         : (process.env.NEXT_PUBLIC_RPC_WSS as string),
-    //   }),
-    // }),
-  ]
-);
-
-const connectors = connectorsForWallets([
-  {
-    groupName: "Wallets",
-    wallets: [
-      injectedWallet({ chains }),
-      metaMaskWallet({
-        chains: chains,
-        projectId: walletConnectId,
-      }),
-      coinbaseWallet({
-        appName: "L2VE DAPP",
-        chains,
-      }),
-      zerionWallet({ chains: chains, projectId: walletConnectId }),
-    ],
-  },
-]);
-
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient,
-});
-
-const CustomAvatar: AvatarComponent = ({ address, ensImage, size }) => {
-  return ensImage ? (
-    <Image src={ensImage} width={size} height={size} alt="avatar" />
-  ) : (
-    <Image src={"/avatar.png"} width={size} height={size} alt="avatar" />
-  );
-};
 
 const vt323 = VT323({
   subsets: ["latin"],
@@ -125,11 +40,7 @@ export default function RootLayout({
         </div>
         <ToastContainer theme="dark" />
         <div className="flex flex-col w-full max-w-[1800px] xl:self-center">
-          <WagmiConfig config={wagmiConfig}>
-            <RainbowKitProvider chains={chains} avatar={CustomAvatar}>
-              <StateProvider>{children}</StateProvider>
-            </RainbowKitProvider>
-          </WagmiConfig>
+          <Web3Modal>{children}</Web3Modal>
         </div>
       </body>
     </html>

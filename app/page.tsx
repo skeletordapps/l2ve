@@ -2,10 +2,9 @@
 import Link from "next/link";
 import Nav from "./components/v2/nav";
 import Image from "next/image";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import BoxModal from "./components/v2/boxModal";
-import { useAccount, useNetwork, useDisconnect } from "wagmi";
-import { StateContext } from "./context/StateContext";
+
 import type {
   WalletInfos,
   NftInfos,
@@ -20,9 +19,16 @@ import {
   togglePause,
   walletInfos,
 } from "./contracts/nft";
-import { CustomConnectButtonV2 } from "./components/connectButtonV2";
+
 import { now } from "./utils/time";
 import Icons from "./components/v2/icons";
+import {
+  useDisconnect,
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from "@web3modal/ethers/react";
+import { BrowserProvider, JsonRpcSigner } from "ethers";
+import ConnectButtonV4 from "./components/connectbuttonV4";
 
 const friends = [
   {
@@ -75,17 +81,11 @@ export default function Home() {
   );
   let [modalText, setModalText] = useState(text);
   let [canMint, setCanMint] = useState(false);
-  let [tokens, setTokens] = useState<TokenMetadata[] | undefined>();
   let [loading, setLoading] = useState(false);
+  let [signer, setSigner] = useState<JsonRpcSigner | undefined>(undefined);
 
-  const account = useAccount();
-  const { chain } = useNetwork();
-  const { provider, signer } = useContext(StateContext);
-  const { disconnectAsync } = useDisconnect();
-
-  const imageLoader = ({ src, width, quality }: any) => {
-    return `${src}?w=${width}&q=${quality || 75}`;
-  };
+  const { walletProvider } = useWeb3ModalProvider();
+  const { disconnect } = useDisconnect();
 
   const onMint = useCallback(async () => {
     setLoading(true);
@@ -125,11 +125,11 @@ export default function Home() {
   // }, [signer, account, chain]);
 
   const onCheckEligibility = useCallback(async () => {
-    if (signer && chain && !chain.unsupported) {
+    if (signer) {
       const wallet: WalletInfos | undefined = await walletInfos(signer);
       if (wallet) setUserWallet(wallet);
     }
-  }, [signer, account, chain]);
+  }, [signer]);
 
   useEffect(() => {
     onCheckEligibility();
@@ -176,7 +176,6 @@ export default function Home() {
   useEffect(() => {
     if (
       signer &&
-      chain &&
       data &&
       data.currentRound === 1 &&
       userWallet &&
@@ -189,7 +188,6 @@ export default function Home() {
 
     if (
       signer &&
-      chain &&
       data &&
       data.currentRound === 2 &&
       userWallet &&
@@ -202,22 +200,14 @@ export default function Home() {
 
     setModalText(text);
     setHasError(false);
-
-    if (chain && chain.unsupported) setHasError(true);
-  }, [chain, signer, userWallet, data]);
+  }, [signer, userWallet, data]);
 
   useEffect(() => {
-    if (
-      signer &&
-      chain &&
-      !chain.unsupported &&
-      userWallet &&
-      userWallet.mintedsCount > 0
-    ) {
+    if (signer && userWallet && userWallet.mintedsCount > 0) {
       return setIsOpen(false);
     }
 
-    if (!chain || !signer || chain.unsupported || !data || !userWallet) {
+    if (!signer || !data || !userWallet) {
       setIsOpen(true);
       return;
     }
@@ -231,18 +221,30 @@ export default function Home() {
     }
 
     setIsOpen(false);
-  }, [chain, signer, userWallet]);
+  }, [signer, userWallet]);
+
+  const getSigner = useCallback(async () => {
+    if (walletProvider) {
+      const provider = new BrowserProvider(walletProvider);
+      const signer = await provider.getSigner();
+      setSigner(signer);
+    }
+  }, [walletProvider]);
+
+  useEffect(() => {
+    getSigner();
+  }, [walletProvider]);
 
   const getNftsInfos = useCallback(async () => {
-    if (provider) {
-      const response = await nftInfos(provider);
+    {
+      const response = await nftInfos();
       setData(response as NftInfos);
     }
-  }, [provider]);
+  }, []);
 
   useEffect(() => {
     getNftsInfos();
-  }, [provider]);
+  }, []);
 
   return (
     <>
@@ -429,35 +431,6 @@ export default function Home() {
           2024® ALL RIGHTS RESERVED
         </span>
       </div>
-
-      <BoxModal isOpen={isOpen} error={hasError}>
-        <div className="flex flex-col justify-center items-center w-full h-full text-center lg:px-[72px] gap-[30px] pt-8">
-          <Image
-            src="/v2/logo-space.svg"
-            width={79.32}
-            height={54.01}
-            alt="logo-space"
-          />
-          <p className="text-[#F5F5F5] text-[18px]">{modalText}</p>
-
-          <CustomConnectButtonV2
-            isEligible={
-              (data &&
-              data.currentRound === 1 &&
-              userWallet &&
-              userWallet.isEligibleForRoundOne
-                ? true
-                : false) ||
-              (data &&
-              data.currentRound === 2 &&
-              userWallet &&
-              userWallet.isEligibleForRoundTwo
-                ? true
-                : false)
-            }
-          />
-        </div>
-      </BoxModal>
     </>
   );
 }

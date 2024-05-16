@@ -15,7 +15,15 @@ import {
   lock,
   unlock,
 } from "../contracts/locker";
-import { CustomConnectButtonV3 } from "../components/connectButtonV3";
+
+import { JsonRpcSigner } from "ethers";
+import { BrowserProvider } from "ethers";
+import {
+  useWeb3ModalAccount,
+  useSwitchNetwork,
+  useWeb3ModalProvider,
+} from "@web3modal/ethers/react";
+import ConnectButtonV4 from "../components/connectbuttonV4";
 
 export default function Locker() {
   const [loading, setLoading] = useState(false);
@@ -27,11 +35,7 @@ export default function Locker() {
   const [loadedToken, setLoadedToken] = useState<TokenInfos>(empty);
   const [allowed, setAllowed] = useState(false);
   const [events, setEvents] = useState<Event[] | []>([]);
-  const [wallet, setWallet] = useState("");
-
-  const { signer } = useContext(StateContext);
-  const { chain } = useNetwork();
-  const { address } = useAccount();
+  const [signer, setSigner] = useState<JsonRpcSigner | undefined>(undefined);
 
   const customTheme: CustomFlowbiteTheme["datepicker"] = {
     root: {
@@ -155,6 +159,9 @@ export default function Locker() {
     },
   };
 
+  const { address } = useWeb3ModalAccount();
+  const { walletProvider } = useWeb3ModalProvider();
+
   const onInputAmountChange = (value: string) => {
     const re = new RegExp("^[+]?([0-9]+([.][0-9]*)?|[.][0-9]+)$");
 
@@ -172,7 +179,7 @@ export default function Locker() {
       setLoadedToken(tokenData);
     }
     setLoading(false);
-  }, [chain, inputToken, signer, setLoading, setLoadedToken]);
+  }, [inputToken, signer, setLoading, setLoadedToken]);
 
   const onApprove = useCallback(async () => {
     setLoading(true);
@@ -186,7 +193,7 @@ export default function Locker() {
       await onCheckAllowance();
     }
     setLoading(false);
-  }, [chain, signer, inputAmount, loadedToken, setLoading]);
+  }, [signer, inputAmount, loadedToken, setLoading]);
 
   const onCheckAllowance = useCallback(async () => {
     if (signer && loadedToken) {
@@ -201,11 +208,11 @@ export default function Locker() {
     }
 
     return setAllowed(false);
-  }, [chain, signer, inputAmount, loadedToken]);
+  }, [signer, inputAmount, loadedToken]);
 
   const onLock = useCallback(async () => {
     setLoading(true);
-    if (chain && !chain.unsupported && signer) {
+    if (signer) {
       await lock(
         loadedToken.token,
         loadedToken.decimals,
@@ -219,12 +226,12 @@ export default function Locker() {
     }
 
     setLoading(false);
-  }, [chain, signer, loadedToken, inputAmount, timestamp, setLoading]);
+  }, [signer, loadedToken, inputAmount, timestamp, setLoading]);
 
   const onUnlock = useCallback(
     async (event: Event) => {
       setLoading(true);
-      if (chain && !chain.unsupported && signer) {
+      if (signer) {
         await unlock(event.lockData.token, event.lockData.id, signer);
         await getEvents();
         if (loadedToken.valid && loadedToken.token === event.lockData.token) {
@@ -234,7 +241,7 @@ export default function Locker() {
 
       setLoading(false);
     },
-    [chain, signer, loadedToken, inputAmount, inputDate, setLoading]
+    [signer, loadedToken, inputAmount, inputDate, setLoading]
   );
 
   useEffect(() => {
@@ -244,26 +251,34 @@ export default function Locker() {
   }, [inputAmount]);
 
   const getEvents = useCallback(async () => {
-    if (chain && !chain.unsupported && signer) {
+    if (signer) {
       const response: Event[] = await getAllEvents(signer);
       setEvents(response);
     }
-  }, [chain, signer]);
+  }, [signer]);
 
   useEffect(() => {
-    if (chain && !chain.unsupported && signer) {
+    if (signer) {
       getEvents();
     }
-  }, [chain, signer]);
-
-  useEffect(() => {
-    setWallet(address ? address : "");
-  }, [address, setWallet]);
+  }, [signer]);
 
   useEffect(() => {
     const parsedTime = parse(inputTime, "HH:mm", inputDate);
     setTimestamp(getUnixTime(parsedTime));
   }, [inputDate, inputTime, setTimestamp]);
+
+  const getSigner = useCallback(async () => {
+    if (walletProvider) {
+      const provider = new BrowserProvider(walletProvider);
+      const signer = await provider.getSigner();
+      setSigner(signer);
+    }
+  }, [walletProvider]);
+
+  useEffect(() => {
+    getSigner();
+  }, [walletProvider]);
 
   return (
     <>
@@ -271,11 +286,11 @@ export default function Locker() {
 
       <div className="flex flex-col relative min-h-[700px]">
         <div className="flex flex-col justify-center items-center w-full text-gray-900 pt-10 gap-4">
-          <CustomConnectButtonV3 />
+          <ConnectButtonV4 />
 
-          {wallet && (
+          {address && (
             <p className="px-10 lg:px-0 text-sm text-wrap text-center">
-              <span className="font-bold">Wallet:</span> {wallet}
+              <span className="font-bold">Wallet:</span> {address}
             </p>
           )}
         </div>
