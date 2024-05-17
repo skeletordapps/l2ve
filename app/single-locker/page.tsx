@@ -44,6 +44,8 @@ export default function SingleLocker() {
         if (ownerChecked) setOwner(ownerChecked);
       }
     };
+
+    checkOwner();
   }, [signer]);
 
   return (
