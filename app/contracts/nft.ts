@@ -16,7 +16,8 @@ export type NftInfos = {
 
 const pinataURL = process.env.NEXT_PUBLIC_PINATA_URL;
 
-export async function nftInfos(provider: JsonRpcProvider) {
+export async function nftInfos() {
+  const provider = new JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_HTTPS);
   const contract = new Contract(CONTRACTS.nft, L2VE_NFT, provider);
 
   try {
