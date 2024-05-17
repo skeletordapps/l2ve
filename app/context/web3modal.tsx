@@ -17,10 +17,11 @@ const base = {
 
 // 3. Create a metadata object
 const metadata = {
-  name: "My Website",
-  description: "My Website description",
-  url: "https://mywebsite.com", // origin must match your domain & subdomain
-  icons: ["https://avatars.mywebsite.com/"],
+  name: "L2VE",
+  description:
+    "Cupid Inu has landed on BASE! His mission is to scatter as much $L2VE as possible. For this mission he travels from one L2 blockchain to the next.",
+  url: "https://dapp.l2ve.me", // origin must match your domain & subdomain
+  icons: ["https://dapp.l2ve.me/v2/heart.svg"],
 };
 // 4. Create Ethers config
 const ethersConfig = defaultConfig({

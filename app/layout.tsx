@@ -1,15 +1,10 @@
 import { VT323 } from "next/font/google";
 import { Web3Modal } from "./context/web3modal";
+import "react-toastify/dist/ReactToastify.css";
 
-export const metadata = {
-  title: "Web3Modal",
-  description: "Web3Modal Example",
-};
 import "./globals.css";
 import Image from "next/image";
 import { ToastContainer } from "react-toastify";
-
-const walletConnectId = "946d05f75ca1f092356e4694afe6175b";
 
 const vt323 = VT323({
   subsets: ["latin"],
