@@ -142,7 +142,6 @@ export async function getAllEvents(signer: JsonRpcSigner) {
       fromBlock += blocksPerFilter
     ) {
       const toBlock = Math.min(fromBlock + blocksPerFilter - 1, currentBlock); // Ensure toBlock doesn't exceed current block
-      console.log(fromBlock, toBlock);
       const lockFilter = contract!.filters.Locked();
 
       const lockEvents = await contract!.queryFilter(

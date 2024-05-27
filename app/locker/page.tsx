@@ -289,9 +289,9 @@ export default function Locker() {
           <ConnectButtonV4 />
 
           {address && (
-            <p className="px-10 lg:px-0 text-sm text-wrap text-center">
+            <div className="px-10 lg:px-0 text-sm text-wrap text-center">
               <span className="font-bold">Wallet:</span> {address}
-            </p>
+            </div>
           )}
         </div>
         <div className="flex justify-center items-center w-full max-w-[500px] text-gray-900 self-center mt-10 lg:mt-20 text-lg gap-2">
@@ -299,7 +299,7 @@ export default function Locker() {
           <span className="text-blue-love">L2VE LOCKER</span>
         </div>
         <div className="flex flex-col w-full max-w-[500px] gap-2 p-6 bg-gray-900 text-white self-center mt-5">
-          <p>L2VE LOCKER</p>
+          <div>L2VE LOCKER</div>
           <div className="flex items-center gap-3">
             <input
               type="text"
@@ -323,14 +323,14 @@ export default function Locker() {
           </div>
           {!loadedToken.empty && loadedToken.valid && (
             <div className="flex items-center justify-between">
-              <p>TOKEN: {loadedToken.symbol.toUpperCase()}</p>
-              <p>BALANCE: {loadedToken.balance.toLocaleString("en-us")}</p>
+              <div>TOKEN: {loadedToken.symbol.toUpperCase()}</div>
+              <div>BALANCE: {loadedToken.balance.toLocaleString("en-us")}</div>
             </div>
           )}
 
           {!loadedToken.empty && !loadedToken.valid && (
             <div className="flex items-center justify-between text-red-600">
-              <p>TOKEN: {inputToken.toUpperCase()} IS INVALID!</p>
+              <div>TOKEN: {inputToken.toUpperCase()} IS INVALID!</div>
             </div>
           )}
           <input
@@ -447,39 +447,39 @@ export default function Locker() {
                 {events.map((event: Event, index: number) => (
                   <div key={index} className="flex px-8 lg:px-12 h-44">
                     <div className="flex flex-col gap-1 py-6">
-                      <p className="font-bold underline text-sm lg:text-[16px]">
+                      <div className="font-bold underline text-sm lg:text-[16px]">
                         {event.lockData.symbol}: {event.lockData.token}
-                      </p>
+                      </div>
 
                       <div className="flex justify-between items-center text-sm lg:text-[16px]">
                         <div>
-                          <p>
+                          <div>
                             Locked at:{" "}
                             {format(
                               fromUnixTime(event.lockData.lockedAt),
                               "dd/MM/yyyy - HH:mm"
                             )}
-                          </p>
-                          <p>
+                          </div>
+                          <div>
                             Locked until:{" "}
                             {format(
                               fromUnixTime(event.lockData.lockedUntil),
                               "dd/MM/yyyy - HH:mm"
                             )}
-                          </p>
+                          </div>
                           {event.lockData.unlockedAt > 0 && (
-                            <p>
+                            <div>
                               Unlocked at:{" "}
                               {format(
                                 fromUnixTime(event.lockData.unlockedAt),
                                 "dd/MM/yyyy - HH:mm"
                               )}
-                            </p>
+                            </div>
                           )}
-                          <p>
+                          <div>
                             Amount:{" "}
                             {event.lockData.amount.toLocaleString("en-us")}
-                          </p>
+                          </div>
                         </div>
                         <button
                           onClick={() => onUnlock(event)}
