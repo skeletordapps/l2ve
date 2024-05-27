@@ -22,13 +22,8 @@ import {
 
 import { now } from "./utils/time";
 import Icons from "./components/v2/icons";
-import {
-  useDisconnect,
-  useWeb3ModalAccount,
-  useWeb3ModalProvider,
-} from "@web3modal/ethers/react";
+import { useDisconnect, useWeb3ModalProvider } from "@web3modal/ethers/react";
 import { BrowserProvider, JsonRpcSigner } from "ethers";
-import ConnectButtonV4 from "./components/connectbuttonV4";
 
 const friends = [
   {
