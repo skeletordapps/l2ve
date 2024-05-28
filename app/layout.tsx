@@ -1,3 +1,4 @@
+"use client";
 import { VT323 } from "next/font/google";
 import { Web3Modal } from "./context/web3modal";
 import "react-toastify/dist/ReactToastify.css";
@@ -5,6 +6,9 @@ import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import Image from "next/image";
 import { ToastContainer } from "react-toastify";
+import StateProvider, { StateContext } from "./context/StateContext";
+import Nav from "./components/v2/nav";
+import Icons from "./components/v2/icons";
 
 const vt323 = VT323({
   subsets: ["latin"],
@@ -35,7 +39,18 @@ export default function RootLayout({
         </div>
         <ToastContainer theme="dark" />
         <div className="flex flex-col w-full max-w-[1800px] xl:self-center">
-          <Web3Modal>{children}</Web3Modal>
+          <StateProvider>
+            <Web3Modal>
+              <div className="flex flex-col">
+                <Nav />
+                <div className="flex flex-col lg:flex-row lg:justify-between  lg:px-[34px] ">
+                  <Icons />
+                  {children}
+                  <div className="w-full lg:max-w-[20%]"></div>
+                </div>
+              </div>
+            </Web3Modal>
+          </StateProvider>
         </div>
       </body>
     </html>

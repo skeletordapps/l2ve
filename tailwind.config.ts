@@ -30,6 +30,7 @@ const config: Config = {
         "wallet-connected-v2": "url('/v2/wallet-connected.svg')",
         "wallet-connected-v2-hover": "url('/v2/wallet-connected-move.svg')",
         opensea: "url('/opensea.svg')",
+        locker: "url('/v2/bg-locker.svg')",
       },
     },
   },

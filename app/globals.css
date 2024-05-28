@@ -76,7 +76,17 @@
   animation: pulse 2s infinite, heart-pulse 1s infinite;
 }
 
-.input-no-rounded input {
-  border-radius: 0 !important;
-  font-size: 16px !important;
+#locker input {
+  max-height: 28px !important;
+}
+
+#datepicker input {
+  max-height: 28px !important;
+
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(107 114 128 / var(--tw-bg-opacity)) !important;
+
+  border: none !important;
+  
+  /* bg-gray-500 placeholder-black */
 }

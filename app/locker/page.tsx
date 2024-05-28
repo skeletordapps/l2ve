@@ -3,8 +3,6 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import Nav from "../components/v2/nav";
 import type { CustomFlowbiteTheme } from "flowbite-react";
 import { Carousel, Datepicker } from "flowbite-react";
-import { StateContext } from "../context/StateContext";
-import { useAccount, useNetwork } from "wagmi";
 import { TokenInfos, empty, tokenInfos } from "../contracts/tokenInfos";
 import { format, getUnixTime, fromUnixTime, parse } from "date-fns";
 import {
@@ -16,14 +14,8 @@ import {
   unlock,
 } from "../contracts/locker";
 
-import { JsonRpcSigner } from "ethers";
-import { BrowserProvider } from "ethers";
-import {
-  useWeb3ModalAccount,
-  useSwitchNetwork,
-  useWeb3ModalProvider,
-} from "@web3modal/ethers/react";
 import ConnectButtonV4 from "../components/connectbuttonV4";
+import { StateContext } from "../context/StateContext";
 
 export default function Locker() {
   const [loading, setLoading] = useState(false);
@@ -35,7 +27,8 @@ export default function Locker() {
   const [loadedToken, setLoadedToken] = useState<TokenInfos>(empty);
   const [allowed, setAllowed] = useState(false);
   const [events, setEvents] = useState<Event[] | []>([]);
-  const [signer, setSigner] = useState<JsonRpcSigner | undefined>(undefined);
+
+  const { account, signer } = useContext(StateContext);
 
   const customTheme: CustomFlowbiteTheme["datepicker"] = {
     root: {
@@ -159,9 +152,6 @@ export default function Locker() {
     },
   };
 
-  const { address } = useWeb3ModalAccount();
-  const { walletProvider } = useWeb3ModalProvider();
-
   const onInputAmountChange = (value: string) => {
     const re = new RegExp("^[+]?([0-9]+([.][0-9]*)?|[.][0-9]+)$");
 
@@ -268,50 +258,39 @@ export default function Locker() {
     setTimestamp(getUnixTime(parsedTime));
   }, [inputDate, inputTime, setTimestamp]);
 
-  const getSigner = useCallback(async () => {
-    if (walletProvider) {
-      const provider = new BrowserProvider(walletProvider);
-      const signer = await provider.getSigner();
-      setSigner(signer);
-    }
-  }, [walletProvider]);
-
-  useEffect(() => {
-    getSigner();
-  }, [walletProvider]);
-
   return (
     <>
-      <Nav />
-
-      <div className="flex flex-col relative min-h-[700px]">
-        <div className="flex flex-col justify-center items-center w-full text-gray-900 pt-10 gap-4">
+      <div className="flex flex-col relative w-full min-h-[700px]">
+        {/* <div className="flex flex-col justify-center items-center w-full text-gray-900 pt-10 gap-4">
           <ConnectButtonV4 />
 
-          {address && (
+          {account && (
             <div className="px-10 lg:px-0 text-sm text-wrap text-center">
-              <span className="font-bold">Wallet:</span> {address}
+              <span className="font-bold">Wallet:</span> {account}
             </div>
           )}
-        </div>
+        </div> */}
         <div className="flex justify-center items-center w-full max-w-[500px] text-gray-900 self-center mt-10 lg:mt-20 text-lg gap-2">
           LOCK ANY TOKEN WITH{" "}
           <span className="text-blue-love">L2VE LOCKER</span>
         </div>
-        <div className="flex flex-col w-full max-w-[500px] gap-2 p-6 bg-gray-900 text-white self-center mt-5">
-          <div>L2VE LOCKER</div>
-          <div className="flex items-center gap-3">
+        <div
+          id="locker"
+          className="flex flex-col w-full max-w-[500px] min-h-[240px] gap-3 p-6 pt-[6px] bg-locker bg-no-repeat-y text-white self-center mt-5 text-[14px]"
+        >
+          <div className="text-[12px]">L2VE LOCKER</div>
+          <div className="flex items-center gap-3 pt-5">
             <input
               type="text"
               placeholder="FILL THE DESIRED TOKEN ADDRESS"
-              className="w-full text-black"
+              className="w-full text-black max-h-[22px] rounded-md bg-gray-500 placeholder-black"
               value={inputToken}
               onChange={(e) => setInputToken(e.target.value)}
             />
             <button
               disabled={loading || inputToken === ""}
               type="button"
-              className={`inline-flex justify-center items-center w-[131px] h-[43.5px] rounded-md bg-blue-love text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0  ${
+              className={`inline-flex justify-center items-center w-[131px] h-[28px] rounded-md bg-[#00D1FF]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0  ${
                 loading || inputToken === ""
                   ? "opacity-20"
                   : "opacity-100 hover:opacity-80"
@@ -342,7 +321,7 @@ export default function Locker() {
             }
             type="text"
             placeholder="FILL THE AMOUNT TO LOCK"
-            className={`w-full text-black ${
+            className={`w-full text-black rounded-md bg-gray-500 placeholder-black ${
               loading ||
               loadedToken.empty ||
               !loadedToken.valid ||
@@ -357,13 +336,14 @@ export default function Locker() {
           <div className="flex items-center gap-3">
             {/* DATE PICKER */}
             <Datepicker
+              id="datepicker"
               disabled={
                 loading ||
                 loadedToken.balance === 0 ||
                 Number(inputAmount) === 0 ||
                 Number(inputAmount) > loadedToken.balance
               }
-              className="input-no-rounded w-full"
+              className="w-full "
               value={format(inputDate, "dd/MM/yyyy")}
               onSelectedDateChanged={(e) => setInputDate(e)}
               theme={customTheme}
@@ -382,7 +362,7 @@ export default function Locker() {
             >
               <div className="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
                 <svg
-                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  className="w-4 h-4 text-gray-500 dark:text-gray-400 z-20"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
@@ -398,7 +378,7 @@ export default function Locker() {
               <input
                 type="time"
                 id="time"
-                className="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-love block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-love dark:focus:border-blue-love w-[100px]"
+                className="leading-none  text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-love block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-love dark:focus:border-blue-love w-[100px]  max-h-[22px] rounded-md bg-gray-500 placeholder-black"
                 min="09:00"
                 max="18:00"
                 value={inputTime}
@@ -422,7 +402,7 @@ export default function Locker() {
               Number(inputAmount) > loadedToken.balance
             }
             type="button"
-            className={`inline-flex justify-center items-center h-[43.5px] rounded-md bg-blue-love text-[18px]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 w-full enabled:hover:opacity-80 ${
+            className={`inline-flex justify-center items-center h-[28px] rounded-md bg-[#00D1FF]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 w-full enabled:hover:opacity-80 ${
               loading ||
               loadedToken.balance === 0 ||
               Number(inputAmount) === 0 ||
@@ -502,10 +482,6 @@ export default function Locker() {
             </div>
           </div>
         )}
-        {/* COPYRIGHTS */}
-        <span className="hidden lg:absolute bottom-[340px] lg:bottom-[140px] left-[-40px] lg:left-0 -rotate-90 text-black text-[12px]">
-          2024® ALL RIGHTS RESERVED
-        </span>
       </div>
     </>
   );
