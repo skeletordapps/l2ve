@@ -80,13 +80,13 @@
   max-height: 28px !important;
 }
 
-#datepicker input {
+#datepicker {
   max-height: 28px !important;
 
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(107 114 128 / var(--tw-bg-opacity)) !important;
-
   border: none !important;
+  border-radius: 6px !important;
+
+  font-size: 16px !important;
   
   /* bg-gray-500 placeholder-black */
 }

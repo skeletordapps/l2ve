@@ -1,6 +1,5 @@
 "use client";
 import { useCallback, useContext, useEffect, useState } from "react";
-import Nav from "../components/v2/nav";
 import type { CustomFlowbiteTheme } from "flowbite-react";
 import { Carousel, Datepicker } from "flowbite-react";
 import { TokenInfos, empty, tokenInfos } from "../contracts/tokenInfos";
@@ -14,8 +13,14 @@ import {
   unlock,
 } from "../contracts/locker";
 
-import ConnectButtonV4 from "../components/connectbuttonV4";
 import { StateContext } from "../context/StateContext";
+import Image from "next/image";
+
+export enum LockStatus {
+  todo,
+  progress,
+  done,
+}
 
 export default function Locker() {
   const [loading, setLoading] = useState(false);
@@ -26,9 +31,89 @@ export default function Locker() {
   const [timestamp, setTimestamp] = useState(0);
   const [loadedToken, setLoadedToken] = useState<TokenInfos>(empty);
   const [allowed, setAllowed] = useState(false);
+  const [locked, setLocked] = useState(false);
   const [events, setEvents] = useState<Event[] | []>([]);
 
-  const { account, signer } = useContext(StateContext);
+  const { signer, account } = useContext(StateContext);
+
+  const steps = [
+    {
+      text: "CONNECT WALLET",
+      image: account ? "open-done.svg" : "open-todo.svg",
+      status: account ? LockStatus.done : LockStatus.todo,
+    },
+    {
+      text: "",
+      image: account ? "arrow-done.svg" : "arrow-inactive.svg",
+      status: LockStatus.todo,
+    },
+    {
+      text: "ENTER TOKEN ADDRESS",
+      image: loadedToken.valid
+        ? "open-done.svg"
+        : account
+        ? "open-current.svg"
+        : "open-todo.svg",
+      status: loadedToken.valid
+        ? LockStatus.done
+        : account
+        ? LockStatus.progress
+        : LockStatus.todo,
+    },
+    {
+      text: "",
+      image: loadedToken.valid
+        ? "arrow-done.svg"
+        : account
+        ? "arrow-active.svg"
+        : "arrow-inactive.svg",
+      status: LockStatus.todo,
+    },
+    {
+      text: "ADD LOCK DETAILS",
+      image:
+        Number(inputAmount) > 0 && Number(inputAmount) <= loadedToken.balance
+          ? "open-done.svg"
+          : loadedToken.valid
+          ? "open-current.svg"
+          : "open-todo.svg",
+      status:
+        Number(inputAmount) > 0 && Number(inputAmount) <= loadedToken.balance
+          ? LockStatus.done
+          : loadedToken.valid
+          ? LockStatus.progress
+          : LockStatus.todo,
+    },
+    {
+      text: "",
+      image:
+        Number(inputAmount) > 0 && Number(inputAmount) <= loadedToken.balance
+          ? "arrow-done.svg"
+          : loadedToken.valid
+          ? "arrow-active.svg"
+          : "arrow-inactive.svg",
+      status: LockStatus.todo,
+    },
+    {
+      text: "TOKEN LOCKED",
+      image: locked
+        ? "closed-done.svg"
+        : Number(inputAmount) > 0 &&
+          Number(inputAmount) <= loadedToken.balance &&
+          inputDate &&
+          inputTime
+        ? "closed-current.svg"
+        : "closed-todo.svg",
+      status: locked
+        ? LockStatus.done
+        : Number(inputAmount) > 0 &&
+          Number(inputAmount) <= loadedToken.balance &&
+          inputDate &&
+          inputTime
+        ? LockStatus.progress
+        : LockStatus.todo,
+    },
+  ];
 
   const customTheme: CustomFlowbiteTheme["datepicker"] = {
     root: {
@@ -63,7 +148,7 @@ export default function Locker() {
         button: {
           base: "w-full rounded-lg px-5 py-2 text-center font-medium focus:ring-4 focus:ring-blue-love",
           today:
-            "bg-blue-love text-white hover:bg-blue-love dark:bg-cyan-600 dark:hover:bg-blue-love",
+            "bg-[#00D1FF] text-white hover:bg-[#00D1FF]/80 dark:bg-cyan-600 dark:hover:bg-blue-love",
           clear:
             "border border-gray-300 bg-white text-gray-900 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600",
         },
@@ -80,7 +165,7 @@ export default function Locker() {
           base: "grid w-64 grid-cols-7",
           item: {
             base: "block flex-1 cursor-pointer rounded-lg border-0 text-center font-semibold leading-9 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600 ",
-            selected: "bg-blue-love text-white hover:bg-blue-love/80",
+            selected: "bg-[#00D1FF] text-white hover:bg-[#00D1FF]/80",
             disabled: "text-gray-500",
           },
         },
@@ -90,7 +175,7 @@ export default function Locker() {
           base: "grid w-64 grid-cols-4",
           item: {
             base: "block flex-1 cursor-pointer rounded-lg border-0 text-center font-semibold leading-9 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600",
-            selected: "bg-blue-love text-white hover:bg-blue-love/80",
+            selected: "bg-[#00D1FF] text-white hover:bg-[#00D1FF]/80",
             disabled: "text-gray-500",
           },
         },
@@ -100,7 +185,7 @@ export default function Locker() {
           base: "grid w-64 grid-cols-4",
           item: {
             base: "block flex-1 cursor-pointer rounded-lg border-0 text-center font-semibold leading-9 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600",
-            selected: "bg-blue-love text-white hover:bg-blue-love/80",
+            selected: "bg-[#00D1FF] text-white hover:bg-[#00D1FF]/80",
             disabled: "text-gray-500",
           },
         },
@@ -110,7 +195,7 @@ export default function Locker() {
           base: "grid w-64 grid-cols-4",
           item: {
             base: "block flex-1 cursor-pointer rounded-lg border-0 text-center font-semibold leading-9  text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600",
-            selected: "bg-blue-love text-white hover:bg-blue-love/80",
+            selected: "bg-[#00D1FF] text-white hover:bg-[#00D1FF]/80",
             disabled: "text-gray-500",
           },
         },
@@ -121,10 +206,10 @@ export default function Locker() {
   const carouselTheme: CustomFlowbiteTheme["carousel"] = {
     root: {
       base: "relative h-full w-full",
-      leftControl:
-        "absolute left-[-20px] top-0 flex h-full items-center justify-center px-4 focus:outline-none",
-      rightControl:
-        "absolute right-[-20px] top-0 flex h-full items-center justify-center px-4 focus:outline-none",
+      // leftControl:
+      //   "absolute left-[-20px] top-0 flex h-full items-center justify-center px-4 focus:outline-none",
+      // rightControl:
+      //   "absolute right-[-20px] top-0 flex h-full items-center justify-center px-4 focus:outline-none",
     },
     indicators: {
       active: {
@@ -152,6 +237,26 @@ export default function Locker() {
     },
   };
 
+  const clear = useCallback(async () => {
+    let newSteps = [...steps];
+    if (account) {
+      newSteps[0].image = "open-done.svg";
+      newSteps[0].status = LockStatus.done;
+      newSteps[1].image = "arrow-done.svg";
+      newSteps[1].status = LockStatus.done;
+      newSteps[2].image = "open-current.svg";
+      newSteps[2].status = LockStatus.progress;
+      newSteps[3].image = "arrow-active.svg";
+      newSteps[3].status = LockStatus.progress;
+    }
+
+    setLoadedToken(empty);
+    setInputToken("");
+    setInputAmount("");
+    setInputDate(new Date());
+    setLocked(false);
+  }, [account, setLoadedToken, setInputAmount, setInputDate, setLocked]);
+
   const onInputAmountChange = (value: string) => {
     const re = new RegExp("^[+]?([0-9]+([.][0-9]*)?|[.][0-9]+)$");
 
@@ -164,12 +269,12 @@ export default function Locker() {
 
   const onLoadToken = useCallback(async () => {
     setLoading(true);
-    if (signer && inputToken) {
+    if (signer && account && inputToken) {
       const tokenData = await tokenInfos(signer, inputToken);
       setLoadedToken(tokenData);
     }
     setLoading(false);
-  }, [inputToken, signer, setLoading, setLoadedToken]);
+  }, [inputToken, account, signer, setLoading, setLoadedToken]);
 
   const onApprove = useCallback(async () => {
     setLoading(true);
@@ -203,20 +308,23 @@ export default function Locker() {
   const onLock = useCallback(async () => {
     setLoading(true);
     if (signer) {
-      await lock(
+      const response = await lock(
         loadedToken.token,
         loadedToken.decimals,
         inputAmount,
         timestamp,
         signer
       );
+
+      setLocked(response.success);
+
       await onLoadToken();
       await onCheckAllowance();
       await getEvents();
     }
 
     setLoading(false);
-  }, [signer, loadedToken, inputAmount, timestamp, setLoading]);
+  }, [signer, loadedToken, inputAmount, timestamp, setLoading, setLocked]);
 
   const onUnlock = useCallback(
     async (event: Event) => {
@@ -248,9 +356,7 @@ export default function Locker() {
   }, [signer]);
 
   useEffect(() => {
-    if (signer) {
-      getEvents();
-    }
+    if (signer) getEvents();
   }, [signer]);
 
   useEffect(() => {
@@ -258,40 +364,69 @@ export default function Locker() {
     setTimestamp(getUnixTime(parsedTime));
   }, [inputDate, inputTime, setTimestamp]);
 
+  useEffect(() => {
+    if (!account) {
+      clear();
+    }
+  }, [account]);
+
   return (
     <>
       <div className="flex flex-col relative w-full min-h-[700px]">
-        {/* <div className="flex flex-col justify-center items-center w-full text-gray-900 pt-10 gap-4">
-          <ConnectButtonV4 />
-
-          {account && (
-            <div className="px-10 lg:px-0 text-sm text-wrap text-center">
-              <span className="font-bold">Wallet:</span> {account}
-            </div>
-          )}
-        </div> */}
-        <div className="flex justify-center items-center w-full max-w-[500px] text-gray-900 self-center mt-10 lg:mt-20 text-lg gap-2">
+        <div className="flex justify-center items-center text-gray-900 self-center mt-10 text-lg gap-2  border-b border-black w-max">
           LOCK ANY TOKEN WITH{" "}
           <span className="text-blue-love">L2VE LOCKER</span>
         </div>
+        <div className="flex self-center mt-10 lg:mt-20 lg:mb-10">
+          {steps.map((item, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center gap-2 lg:gap-5 flex-wrap w-[50px] lg:w-[60px] text-center text-[11px] lg:text-[13px]"
+            >
+              <Image
+                src={`/v2/lock-steps/${item.image}`}
+                width={24}
+                height={24}
+                alt={item.text}
+                className={`${
+                  item.text === ""
+                    ? "mt-2 max-w-[12px] max-h-[12px] lg:max-w-[14px] lg:max-h-[14px]"
+                    : "max-w-[20px] max-h-[20px] lg:max-w-[24px] lg:max-h-[24px]"
+                }`}
+              />
+              <div
+                className={`${
+                  item.status === LockStatus.todo
+                    ? "opacity-30"
+                    : item.status === LockStatus.done
+                    ? "text-blue-love"
+                    : ""
+                }`}
+              >
+                {item.text}
+              </div>
+            </div>
+          ))}
+        </div>
+
         <div
           id="locker"
-          className="flex flex-col w-full max-w-[500px] min-h-[240px] gap-3 p-6 pt-[6px] bg-locker bg-no-repeat-y text-white self-center mt-5 text-[14px]"
+          className="flex flex-col w-full lg:max-w-[500px] min-h-[240px] gap-3 p-6 pt-[6px] bg-locker bg-no-repeat-y text-white self-center mt-5 text-[14px]"
         >
           <div className="text-[12px]">L2VE LOCKER</div>
           <div className="flex items-center gap-3 pt-5">
             <input
               type="text"
               placeholder="FILL THE DESIRED TOKEN ADDRESS"
-              className="w-full text-black max-h-[22px] rounded-md bg-gray-500 placeholder-black"
+              className="w-full text-black max-h-[22px] rounded-md placeholder-black"
               value={inputToken}
               onChange={(e) => setInputToken(e.target.value)}
             />
             <button
-              disabled={loading || inputToken === ""}
+              disabled={loading || inputToken === "" || loadedToken.valid}
               type="button"
               className={`inline-flex justify-center items-center w-[131px] h-[28px] rounded-md bg-[#00D1FF]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0  ${
-                loading || inputToken === ""
+                loading || inputToken === "" || loadedToken.valid
                   ? "opacity-20"
                   : "opacity-100 hover:opacity-80"
               }`}
@@ -301,7 +436,7 @@ export default function Locker() {
             </button>
           </div>
           {!loadedToken.empty && loadedToken.valid && (
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mt-[-8px]">
               <div>TOKEN: {loadedToken.symbol.toUpperCase()}</div>
               <div>BALANCE: {loadedToken.balance.toLocaleString("en-us")}</div>
             </div>
@@ -321,7 +456,7 @@ export default function Locker() {
             }
             type="text"
             placeholder="FILL THE AMOUNT TO LOCK"
-            className={`w-full text-black rounded-md bg-gray-500 placeholder-black ${
+            className={`w-full text-black rounded-md placeholder-black ${
               loading ||
               loadedToken.empty ||
               !loadedToken.valid ||
@@ -343,7 +478,7 @@ export default function Locker() {
                 Number(inputAmount) === 0 ||
                 Number(inputAmount) > loadedToken.balance
               }
-              className="w-full "
+              className="w-full"
               value={format(inputDate, "dd/MM/yyyy")}
               onSelectedDateChanged={(e) => setInputDate(e)}
               theme={customTheme}
@@ -360,6 +495,22 @@ export default function Locker() {
                   : "opacity-100"
               }`}
             >
+              <input
+                type="time"
+                id="time"
+                className="leading-none text-gray-900 text-[16px]  focus:ring-[#00D1FF] focus:border-[#00D1FF] block p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#00D1FF] dark:focus:border-[#00D1FF] w-[100px]  max-h-[22px] rounded-md placeholder-black pl-3"
+                min="09:00"
+                max="18:00"
+                value={inputTime}
+                onChange={(e) => setInputTime(e.target.value)}
+                required
+                disabled={
+                  loading ||
+                  loadedToken.balance === 0 ||
+                  Number(inputAmount) === 0 ||
+                  Number(inputAmount) > loadedToken.balance
+                }
+              />
               <div className="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
                 <svg
                   className="w-4 h-4 text-gray-500 dark:text-gray-400 z-20"
@@ -375,22 +526,6 @@ export default function Locker() {
                   />
                 </svg>
               </div>
-              <input
-                type="time"
-                id="time"
-                className="leading-none  text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-love block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-love dark:focus:border-blue-love w-[100px]  max-h-[22px] rounded-md bg-gray-500 placeholder-black"
-                min="09:00"
-                max="18:00"
-                value={inputTime}
-                onChange={(e) => setInputTime(e.target.value)}
-                required
-                disabled={
-                  loading ||
-                  loadedToken.balance === 0 ||
-                  Number(inputAmount) === 0 ||
-                  Number(inputAmount) > loadedToken.balance
-                }
-              />
             </div>
           </div>
 
@@ -399,14 +534,16 @@ export default function Locker() {
               loading ||
               loadedToken.balance === 0 ||
               Number(inputAmount) === 0 ||
-              Number(inputAmount) > loadedToken.balance
+              Number(inputAmount) > loadedToken.balance ||
+              locked
             }
             type="button"
             className={`inline-flex justify-center items-center h-[28px] rounded-md bg-[#00D1FF]  text-[#F0EFEF] focus:outline-none focus-visible:ring-0 w-full enabled:hover:opacity-80 ${
               loading ||
               loadedToken.balance === 0 ||
               Number(inputAmount) === 0 ||
-              Number(inputAmount) > loadedToken.balance
+              Number(inputAmount) > loadedToken.balance ||
+              locked
                 ? "opacity-20"
                 : "opacity-100"
             }`}
@@ -414,25 +551,39 @@ export default function Locker() {
           >
             {loading ? "LOADING..." : allowed ? "LOCK" : "APPROVE"}
           </button>
+
+          {locked && (
+            <button onClick={clear} className="text-white">
+              LOCK AGAIN
+            </button>
+          )}
         </div>
 
         {events.length > 0 && (
-          <div className="flex flex-col w-full max-w-[350px] lg:max-w-[500px] gap-4 text-gray-900 self-center mt-10">
-            <div className="flex justify-center items-center w-full  self-center text-lg gap-2">
-              MANAGE YOUR LOCKS
+          <div className="flex flex-col w-full lg:max-w-[500px] gap-4 text-gray-900 self-center mt-10">
+            <div className="flex justify-center items-center self-center text-lg gap-2 border-b border-black w-max">
+              YOUR LOCKS
             </div>
 
-            <div className="h-44">
-              <Carousel slide={false} theme={carouselTheme}>
+            <div className="h-[200px]">
+              <Carousel
+                slide={false}
+                theme={carouselTheme}
+                leftControl=" "
+                rightControl=" "
+              >
                 {events.map((event: Event, index: number) => (
-                  <div key={index} className="flex px-8 lg:px-12 h-44">
-                    <div className="flex flex-col gap-1 py-6">
-                      <div className="font-bold underline text-sm lg:text-[16px]">
-                        {event.lockData.symbol}: {event.lockData.token}
+                  <div
+                    key={index}
+                    className="flex px-8 lg:px-12 h-[200px] bg-black/15"
+                  >
+                    <div className="flex flex-col text-center items-center justify-center gap-1 py-6 text-black w-full px-4 lg:px-10">
+                      <div className="font-bold text-sm lg:text-[16px] text-[#00D1FF] bg-black/80 p-2">
+                        {event.lockData.symbol}:{event.lockData.token}
                       </div>
 
                       <div className="flex justify-between items-center text-sm lg:text-[16px]">
-                        <div>
+                        <div className="pt-2">
                           <div>
                             Locked at:{" "}
                             {format(
@@ -441,6 +592,11 @@ export default function Locker() {
                             )}
                           </div>
                           <div>
+                            Amount:{" "}
+                            {event.lockData.amount.toLocaleString("en-us")}{" "}
+                            {event.lockData.symbol}
+                          </div>
+                          <div className="border-t border-black mt-2 pt-2">
                             Locked until:{" "}
                             {format(
                               fromUnixTime(event.lockData.lockedUntil),
@@ -456,24 +612,21 @@ export default function Locker() {
                               )}
                             </div>
                           )}
-                          <div>
-                            Amount:{" "}
-                            {event.lockData.amount.toLocaleString("en-us")}
-                          </div>
+                          <button
+                            onClick={() => onUnlock(event)}
+                            className={`${
+                              event.lockData.unlockedAt > 0 ||
+                              getUnixTime(new Date()) <
+                                event.lockData.lockedUntil
+                                ? "hidden"
+                                : "inline-flex"
+                            }  justify-center items-center rounded-md bg-gray-600 text-[#00D1FF] text-sm lg:text-[16px]  focus:outline-none focus-visible:ring-0 py-1 px-3 lg:px-6 hover:opacity-80 h-[22px] mt-2 ${
+                              loading ? "opacity-20" : "opacity-100"
+                            }`}
+                          >
+                            {loading ? "LOADING..." : "UNLOCK"}
+                          </button>
                         </div>
-                        <button
-                          onClick={() => onUnlock(event)}
-                          className={`${
-                            event.lockData.unlockedAt > 0 ||
-                            getUnixTime(new Date()) < event.lockData.lockedUntil
-                              ? "hidden"
-                              : "inline-flex"
-                          }  justify-center items-center rounded-md bg-blue-love text-sm lg:text-[16px] text-[#F0EFEF] focus:outline-none focus-visible:ring-0 py-1 px-3 lg:px-6 hover:opacity-80 ${
-                            loading ? "opacity-20" : "opacity-100"
-                          }`}
-                        >
-                          {loading ? "LOADING..." : "UNLOCK"}
-                        </button>
                       </div>
                     </div>
                   </div>

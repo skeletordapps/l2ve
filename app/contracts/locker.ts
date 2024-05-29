@@ -79,6 +79,7 @@ export async function lock(
   signer: JsonRpcSigner
 ) {
   const contract = new Contract(CONTRACTS.locker, L2VE_ANY_LOCKER, signer);
+  let success = false;
   try {
     const userAddress = await signer.getAddress();
     const network = await signer.provider?.getNetwork();
@@ -89,8 +90,11 @@ export async function lock(
       lockUntil
     );
     await NotificateTx(network, tx);
+    success = true;
+    return { success };
   } catch (error) {
     handleError({ e: error as Error, notificate: true });
+    return { success };
   }
 }
 
@@ -176,22 +180,22 @@ export async function getAllEvents(signer: JsonRpcSigner) {
             ]
           ];
 
-          // if (log[0] === wallet) {
-          lockingEvents.push({
-            wallet: log[0],
-            lockData: {
-              id: Number(log[1][0]),
-              wallet: log[1][1],
-              token: log[1][2],
-              symbol: log[1][3],
-              decimals: Number(log[1][4]),
-              amount: Number(formatUnits(log[1][5], Number(log[1][4]))),
-              lockedAt: Number(log[1][6]),
-              lockedUntil: Number(log[1][7]),
-              unlockedAt: Number(log[1][8]),
-            },
-          });
-          // }
+          if (log[0] === wallet) {
+            lockingEvents.push({
+              wallet: log[0],
+              lockData: {
+                id: Number(log[1][0]),
+                wallet: log[1][1],
+                token: log[1][2],
+                symbol: log[1][3],
+                decimals: Number(log[1][4]),
+                amount: Number(formatUnits(log[1][5], Number(log[1][4]))),
+                lockedAt: Number(log[1][6]),
+                lockedUntil: Number(log[1][7]),
+                unlockedAt: Number(log[1][8]),
+              },
+            });
+          }
         });
       }
 
@@ -212,22 +216,22 @@ export async function getAllEvents(signer: JsonRpcSigner) {
             ]
           ];
 
-          // if (log[0] === wallet) {
-          unlockingEvents.push({
-            wallet: log[0],
-            lockData: {
-              id: Number(log[1][0]),
-              wallet: log[1][1],
-              token: log[1][2],
-              symbol: log[1][3],
-              decimals: Number(log[1][4]),
-              amount: Number(formatUnits(log[1][5], Number(log[1][4]))),
-              lockedAt: Number(log[1][6]),
-              lockedUntil: Number(log[1][7]),
-              unlockedAt: Number(log[1][8]),
-            },
-          });
-          // }
+          if (log[0] === wallet) {
+            unlockingEvents.push({
+              wallet: log[0],
+              lockData: {
+                id: Number(log[1][0]),
+                wallet: log[1][1],
+                token: log[1][2],
+                symbol: log[1][3],
+                decimals: Number(log[1][4]),
+                amount: Number(formatUnits(log[1][5], Number(log[1][4]))),
+                lockedAt: Number(log[1][6]),
+                lockedUntil: Number(log[1][7]),
+                unlockedAt: Number(log[1][8]),
+              },
+            });
+          }
         });
       }
     }

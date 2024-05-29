@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { format, addMinutes } from "date-fns";
 import Image from "next/image";
 import { StateContext } from "@/app/context/StateContext";
+import Link from "next/link";
 
 export default function Nav() {
   const [day, setDay] = useState("");
@@ -28,9 +29,11 @@ export default function Nav() {
   }, []);
   return (
     <div className="h-[40px] bg-white flex items-center justify-between px-[20px] text-[23px] text-black/80  border-b border-black">
-      <div className="flex items-center gap-[25px] w-full">
-        <Image src="/v2/heart.svg" width={19} height={16} alt="heart" />
-        <span className="text-xs xl:text-[23px]">
+      <div className="flex items-center gap-[10px] lg:gap-[25px] w-full">
+        <Link href="/" className="w-[19px] h-[16px] z-30">
+          <Image src="/v2/heart.svg" width={19} height={16} alt="heart" />
+        </Link>
+        <span className="text-[23px]">
           {page === "/locker"
             ? "LOCKER"
             : page === "/multisender"
