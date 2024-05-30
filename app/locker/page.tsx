@@ -16,13 +16,13 @@ import {
 import { StateContext } from "../context/StateContext";
 import Image from "next/image";
 
-export enum LockStatus {
-  todo,
-  progress,
-  done,
-}
-
 export default function Locker() {
+  enum LockStatus {
+    todo,
+    progress,
+    done,
+  }
+
   const [loading, setLoading] = useState(false);
   const [inputToken, setInputToken] = useState("");
   const [inputAmount, setInputAmount] = useState("");
