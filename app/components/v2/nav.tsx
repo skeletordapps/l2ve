@@ -1,17 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { format, addMinutes } from "date-fns";
-import { VT323 } from "next/font/google";
 import Image from "next/image";
-
-const vt323 = VT323({
-  subsets: ["latin", "latin-ext", "vietnamese"],
-  weight: ["400"],
-});
+import { StateContext } from "@/app/context/StateContext";
+import Link from "next/link";
 
 export default function Nav() {
   const [day, setDay] = useState("");
   const [time, setTime] = useState("");
+  const { page } = useContext(StateContext);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,9 +29,17 @@ export default function Nav() {
   }, []);
   return (
     <div className="h-[40px] bg-white flex items-center justify-between px-[20px] text-[23px] text-black/80  border-b border-black">
-      <div className="flex items-center gap-[25px] w-full">
-        <Image src="/v2/heart.svg" width={19} height={16} alt="heart" />
-        <span className="text-xs xl:text-[23px]">NFTS GENERATOR COMPUTER</span>
+      <div className="flex items-center gap-[10px] lg:gap-[25px] w-full">
+        <Link href="/" className="w-[19px] h-[16px] z-30">
+          <Image src="/v2/heart.svg" width={19} height={16} alt="heart" />
+        </Link>
+        <span className="text-[23px]">
+          {page === "/locker"
+            ? "LOCKER"
+            : page === "/multisender"
+            ? "MULTISENDER"
+            : "NFTS GENERATOR COMPUTER"}
+        </span>
       </div>
       <div className="w-max">
         <Image

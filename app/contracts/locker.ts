@@ -79,6 +79,7 @@ export async function lock(
   signer: JsonRpcSigner
 ) {
   const contract = new Contract(CONTRACTS.locker, L2VE_ANY_LOCKER, signer);
+  let success = false;
   try {
     const userAddress = await signer.getAddress();
     const network = await signer.provider?.getNetwork();
@@ -89,8 +90,11 @@ export async function lock(
       lockUntil
     );
     await NotificateTx(network, tx);
+    success = true;
+    return { success };
   } catch (error) {
     handleError({ e: error as Error, notificate: true });
+    return { success };
   }
 }
 
