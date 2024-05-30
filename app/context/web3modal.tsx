@@ -43,17 +43,17 @@ createWeb3Modal({
   projectId,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
   enableOnramp: true, // Optional - false as default
-  includeWalletIds: [
-    "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96", // metamask
-    "fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa", // coinbase
-    "18388be9ac2d02726dbac9777c96efaac06d744b2f6d580fccdd4127a6d01fd1", // rabby
-    "ecc4036f814562b41a5268adc86270fba1365471402006302e70169465b7ac18", // zerion
-  ],
-  // excludeWalletIds: [
-  //   "163d2cf19babf05eb8962e9748f9ebe613ed52ebf9c8107c9a0f104bfcf161b3",
-  //   "a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393",
+  // includeWalletIds: [
+  //   "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96", // metamask
+  //   "fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa", // coinbase
+  //   "18388be9ac2d02726dbac9777c96efaac06d744b2f6d580fccdd4127a6d01fd1", // rabby
+  //   "ecc4036f814562b41a5268adc86270fba1365471402006302e70169465b7ac18", // zerion
   // ],
-  allWallets: "HIDE",
+  // // excludeWalletIds: [
+  // //   "163d2cf19babf05eb8962e9748f9ebe613ed52ebf9c8107c9a0f104bfcf161b3",
+  // //   "a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393",
+  // // ],
+  // allWallets: "HIDE",
 });
 
 export function Web3Modal({ children }: { children: ReactNode }) {
