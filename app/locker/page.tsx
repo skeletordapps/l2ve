@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useContext, useEffect, useState } from "react";
 import type { CustomFlowbiteTheme } from "flowbite-react";
-import { Carousel, Datepicker } from "flowbite-react";
+import { Datepicker } from "flowbite-react";
 import { TokenInfos, empty, tokenInfos } from "../contracts/tokenInfos";
 import { format, getUnixTime, fromUnixTime, parse } from "date-fns";
 import {
@@ -565,73 +565,65 @@ export default function Locker() {
               YOUR LOCKS
             </div>
 
-            <div className="h-[200px]">
-              <Carousel
-                slide={false}
-                theme={carouselTheme}
-                leftControl=" "
-                rightControl=" "
-              >
-                {events.map((event: Event, index: number) => (
-                  <div
-                    key={index}
-                    className="flex px-8 lg:px-12 h-[200px] bg-black/15"
-                  >
-                    <div className="flex flex-col text-center items-center justify-center gap-1 py-6 text-black w-full px-4 lg:px-10">
-                      <div className="font-bold text-sm lg:text-[16px] text-[#00D1FF] bg-black/80 p-2">
-                        {event.lockData.symbol}:{event.lockData.token}
-                      </div>
+            <div className="flex flex-col h-[600px] overflow-y-scroll gap-2 pb-5">
+              {events.map((event: Event, index: number) => (
+                <div
+                  key={index}
+                  className="flex px-8 lg:px-12 h-[200px] bg-black/15"
+                >
+                  <div className="flex flex-col text-center items-center justify-center gap-1 py-6 text-black w-full px-4 lg:px-10">
+                    <div className="font-bold text-sm lg:text-[16px] text-[#00D1FF] bg-black/80 p-2">
+                      {event.lockData.symbol}:{event.lockData.token}
+                    </div>
 
-                      <div className="flex justify-between items-center text-sm lg:text-[16px]">
-                        <div className="pt-2">
-                          <div>
-                            Locked at:{" "}
-                            {format(
-                              fromUnixTime(event.lockData.lockedAt),
-                              "dd/MM/yyyy - HH:mm"
-                            )}
-                          </div>
-                          <div>
-                            Amount:{" "}
-                            {event.lockData.amount.toLocaleString("en-us")}{" "}
-                            {event.lockData.symbol}
-                          </div>
-                          <div className="border-t border-black mt-2 pt-2">
-                            Locked until:{" "}
-                            {format(
-                              fromUnixTime(event.lockData.lockedUntil),
-                              "dd/MM/yyyy - HH:mm"
-                            )}
-                          </div>
-                          {event.lockData.unlockedAt > 0 && (
-                            <div>
-                              Unlocked at:{" "}
-                              {format(
-                                fromUnixTime(event.lockData.unlockedAt),
-                                "dd/MM/yyyy - HH:mm"
-                              )}
-                            </div>
+                    <div className="flex justify-between items-center text-sm lg:text-[16px]">
+                      <div className="pt-2">
+                        <div>
+                          Locked at:{" "}
+                          {format(
+                            fromUnixTime(event.lockData.lockedAt),
+                            "dd/MM/yyyy - HH:mm"
                           )}
-                          <button
-                            onClick={() => onUnlock(event)}
-                            className={`${
-                              event.lockData.unlockedAt > 0 ||
-                              getUnixTime(new Date()) <
-                                event.lockData.lockedUntil
-                                ? "hidden"
-                                : "inline-flex"
-                            }  justify-center items-center rounded-md bg-gray-600 text-[#00D1FF] text-sm lg:text-[16px]  focus:outline-none focus-visible:ring-0 py-1 px-3 lg:px-6 hover:opacity-80 h-[22px] mt-2 ${
-                              loading ? "opacity-20" : "opacity-100"
-                            }`}
-                          >
-                            {loading ? "LOADING..." : "UNLOCK"}
-                          </button>
                         </div>
+                        <div>
+                          Amount:{" "}
+                          {event.lockData.amount.toLocaleString("en-us")}{" "}
+                          {event.lockData.symbol}
+                        </div>
+                        <div className="border-t border-black mt-2 pt-2">
+                          Locked until:{" "}
+                          {format(
+                            fromUnixTime(event.lockData.lockedUntil),
+                            "dd/MM/yyyy - HH:mm"
+                          )}
+                        </div>
+                        {event.lockData.unlockedAt > 0 && (
+                          <div>
+                            Unlocked at:{" "}
+                            {format(
+                              fromUnixTime(event.lockData.unlockedAt),
+                              "dd/MM/yyyy - HH:mm"
+                            )}
+                          </div>
+                        )}
+                        <button
+                          onClick={() => onUnlock(event)}
+                          className={`${
+                            event.lockData.unlockedAt > 0 ||
+                            getUnixTime(new Date()) < event.lockData.lockedUntil
+                              ? "hidden"
+                              : "inline-flex"
+                          }  justify-center items-center rounded-md bg-gray-600 text-[#00D1FF] text-sm lg:text-[16px]  focus:outline-none focus-visible:ring-0 py-1 px-3 lg:px-6 hover:opacity-80 h-[22px] mt-2 ${
+                            loading ? "opacity-20" : "opacity-100"
+                          }`}
+                        >
+                          {loading ? "LOADING..." : "UNLOCK"}
+                        </button>
                       </div>
                     </div>
                   </div>
-                ))}
-              </Carousel>
+                </div>
+              ))}
             </div>
           </div>
         )}

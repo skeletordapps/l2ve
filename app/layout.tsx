@@ -43,7 +43,7 @@ export default function RootLayout({
             <Web3Modal>
               <div className="flex flex-col">
                 <Nav />
-                <div className="flex flex-col lg:flex-row lg:justify-between  lg:px-[34px] ">
+                <div className="flex flex-col lg:flex-row lg:justify-between lg:px-[34px]">
                   <Icons />
                   {children}
                   <div className="w-full lg:max-w-[20%]"></div>
