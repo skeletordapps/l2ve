@@ -180,22 +180,22 @@ export async function getAllEvents(signer: JsonRpcSigner) {
             ]
           ];
 
-          // if (log[0] === wallet) {
-          lockingEvents.push({
-            wallet: log[0],
-            lockData: {
-              id: Number(log[1][0]),
-              wallet: log[1][1],
-              token: log[1][2],
-              symbol: log[1][3],
-              decimals: Number(log[1][4]),
-              amount: Number(formatUnits(log[1][5], Number(log[1][4]))),
-              lockedAt: Number(log[1][6]),
-              lockedUntil: Number(log[1][7]),
-              unlockedAt: Number(log[1][8]),
-            },
-          });
-          // }
+          if (log[0] === wallet) {
+            lockingEvents.push({
+              wallet: log[0],
+              lockData: {
+                id: Number(log[1][0]),
+                wallet: log[1][1],
+                token: log[1][2],
+                symbol: log[1][3],
+                decimals: Number(log[1][4]),
+                amount: Number(formatUnits(log[1][5], Number(log[1][4]))),
+                lockedAt: Number(log[1][6]),
+                lockedUntil: Number(log[1][7]),
+                unlockedAt: Number(log[1][8]),
+              },
+            });
+          }
         });
       }
 
@@ -240,7 +240,7 @@ export async function getAllEvents(signer: JsonRpcSigner) {
       const unlockingEvent = unlockingEvents.find(
         (unlockingEvent: Event) =>
           unlockingEvent.lockData.id === event.lockData.id &&
-          // unlockingEvent.lockData.wallet === event.lockData.wallet &&
+          unlockingEvent.lockData.wallet === event.lockData.wallet &&
           unlockingEvent.lockData.token === event.lockData.token
       );
 
