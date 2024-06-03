@@ -203,40 +203,6 @@ export default function Locker() {
     },
   };
 
-  const carouselTheme: CustomFlowbiteTheme["carousel"] = {
-    root: {
-      base: "relative h-full w-full",
-      // leftControl:
-      //   "absolute left-[-20px] top-0 flex h-full items-center justify-center px-4 focus:outline-none",
-      // rightControl:
-      //   "absolute right-[-20px] top-0 flex h-full items-center justify-center px-4 focus:outline-none",
-    },
-    indicators: {
-      active: {
-        off: "bg-black/10 hover:bg-black dark:bg-gray-800/50 dark:hover:bg-gray-800",
-        on: "bg-black/80 dark:bg-gray-800",
-      },
-      base: "h-3 w-3 rounded-full",
-      wrapper:
-        "absolute bottom-[-30px] left-1/2 flex -translate-x-1/2 space-x-3",
-    },
-    item: {
-      base: "absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2",
-      wrapper: {
-        off: "w-full flex-shrink-0 transform cursor-default snap-center",
-        on: "w-full flex-shrink-0 transform cursor-grab snap-center",
-      },
-    },
-    control: {
-      base: "inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/30 scale-[0.6] group-hover:bg-black/80 group-focus:outline-none group-focus:ring-0 group-focus:ring-white dark:bg-gray-800/30 dark:group-hover:bg-gray-800/60 dark:group-focus:ring-gray-800/70 sm:h-10 sm:w-10",
-      icon: "h-5 w-5 text-white dark:text-gray-800 sm:h-6 sm:w-6 scale-[0.8]",
-    },
-    scrollContainer: {
-      base: "flex h-full snap-mandatory overflow-y-hidden overflow-x-scroll scroll-smooth",
-      snap: "snap-x",
-    },
-  };
-
   const clear = useCallback(async () => {
     let newSteps = [...steps];
     if (account) {
@@ -559,74 +525,77 @@ export default function Locker() {
           )}
         </div>
 
-        {events.length > 0 && (
-          <div className="flex flex-col w-full lg:max-w-[500px] gap-4 text-gray-900 self-center mt-10">
-            <div className="flex justify-center items-center self-center text-lg gap-2 border-b border-black w-max">
-              YOUR LOCKS
-            </div>
+        <div className="flex flex-col w-full lg:max-w-[500px] gap-4 text-gray-900 self-center mt-10">
+          <div className="flex justify-center items-center self-center text-lg gap-2 border-b border-black w-max">
+            YOUR LOCKS
+          </div>
 
-            <div className="flex flex-col h-[600px] overflow-y-scroll gap-2 pb-5">
-              {events.map((event: Event, index: number) => (
-                <div
-                  key={index}
-                  className="flex px-8 lg:px-12 h-[200px] bg-black/15"
-                >
-                  <div className="flex flex-col text-center items-center justify-center gap-1 py-6 text-black w-full px-4 lg:px-10">
-                    <div className="font-bold text-sm lg:text-[16px] text-[#00D1FF] bg-black/80 p-2">
-                      {event.lockData.symbol}:{event.lockData.token}
-                    </div>
+          {events.length === 0 && (
+            <span className="text-center">
+              Your locks will appear here and this may take a while...
+            </span>
+          )}
 
-                    <div className="flex justify-between items-center text-sm lg:text-[16px]">
-                      <div className="pt-2">
-                        <div>
-                          Locked at:{" "}
-                          {format(
-                            fromUnixTime(event.lockData.lockedAt),
-                            "dd/MM/yyyy - HH:mm"
-                          )}
-                        </div>
-                        <div>
-                          Amount:{" "}
-                          {event.lockData.amount.toLocaleString("en-us")}{" "}
-                          {event.lockData.symbol}
-                        </div>
-                        <div className="border-t border-black mt-2 pt-2">
-                          Locked until:{" "}
-                          {format(
-                            fromUnixTime(event.lockData.lockedUntil),
-                            "dd/MM/yyyy - HH:mm"
-                          )}
-                        </div>
-                        {event.lockData.unlockedAt > 0 && (
-                          <div>
-                            Unlocked at:{" "}
-                            {format(
-                              fromUnixTime(event.lockData.unlockedAt),
-                              "dd/MM/yyyy - HH:mm"
-                            )}
-                          </div>
+          <div className="flex flex-col h-[600px] overflow-y-scroll gap-2 pb-5">
+            {events.map((event: Event, index: number) => (
+              <div
+                key={index}
+                className="flex px-8 lg:px-12 h-[200px] bg-black/15"
+              >
+                <div className="flex flex-col text-center items-center justify-center gap-1 py-6 text-black w-full px-4 lg:px-10">
+                  <div className="font-bold text-sm lg:text-[16px] text-[#00D1FF] bg-black/80 p-2">
+                    {event.lockData.symbol}:{event.lockData.token}
+                  </div>
+
+                  <div className="flex justify-between items-center text-sm lg:text-[16px]">
+                    <div className="pt-2">
+                      <div>
+                        Locked at:{" "}
+                        {format(
+                          fromUnixTime(event.lockData.lockedAt),
+                          "dd/MM/yyyy - HH:mm"
                         )}
-                        <button
-                          onClick={() => onUnlock(event)}
-                          className={`${
-                            event.lockData.unlockedAt > 0 ||
-                            getUnixTime(new Date()) < event.lockData.lockedUntil
-                              ? "hidden"
-                              : "inline-flex"
-                          }  justify-center items-center rounded-md bg-gray-600 text-[#00D1FF] text-sm lg:text-[16px]  focus:outline-none focus-visible:ring-0 py-1 px-3 lg:px-6 hover:opacity-80 h-[22px] mt-2 ${
-                            loading ? "opacity-20" : "opacity-100"
-                          }`}
-                        >
-                          {loading ? "LOADING..." : "UNLOCK"}
-                        </button>
                       </div>
+                      <div>
+                        Amount: {event.lockData.amount.toLocaleString("en-us")}{" "}
+                        {event.lockData.symbol}
+                      </div>
+                      <div className="border-t border-black mt-2 pt-2">
+                        Locked until:{" "}
+                        {format(
+                          fromUnixTime(event.lockData.lockedUntil),
+                          "dd/MM/yyyy - HH:mm"
+                        )}
+                      </div>
+                      {event.lockData.unlockedAt > 0 && (
+                        <div>
+                          Unlocked at:{" "}
+                          {format(
+                            fromUnixTime(event.lockData.unlockedAt),
+                            "dd/MM/yyyy - HH:mm"
+                          )}
+                        </div>
+                      )}
+                      <button
+                        onClick={() => onUnlock(event)}
+                        className={`${
+                          event.lockData.unlockedAt > 0 ||
+                          getUnixTime(new Date()) < event.lockData.lockedUntil
+                            ? "hidden"
+                            : "inline-flex"
+                        }  justify-center items-center rounded-md bg-gray-600 text-[#00D1FF] text-sm lg:text-[16px]  focus:outline-none focus-visible:ring-0 py-1 px-3 lg:px-6 hover:opacity-80 h-[22px] mt-2 ${
+                          loading ? "opacity-20" : "opacity-100"
+                        }`}
+                      >
+                        {loading ? "LOADING..." : "UNLOCK"}
+                      </button>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
       </div>
     </>
   );
