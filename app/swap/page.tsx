@@ -36,6 +36,7 @@ export default function Swap() {
     setLoading(true);
     if (signer && Number(input) > 0) {
       await swap(input, signer);
+      await onGeneralInfo();
       await onUserInfo();
     }
     setLoading(false);
@@ -45,6 +46,7 @@ export default function Swap() {
     setLoading(true);
     if (signer && Number(input) > 0) {
       await handleApproval(input, signer);
+      await onGeneralInfo();
       await onUserInfo();
     }
     setLoading(false);
