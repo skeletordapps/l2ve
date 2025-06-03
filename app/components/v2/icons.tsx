@@ -50,34 +50,31 @@ export default function Icons() {
             </span>
           </Link>
 
-          <Link
-            href="#"
-            aria-disabled
-            className="flex flex-col items-center gap-[10px] opacity-35"
-          >
-            <svg
-              width="48"
-              height="44"
-              viewBox="0 0 26 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="flex self-center"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M11.8696 0H10.1739V1.65H8.47826V3.3H6.78261V4.95H5.08696V6.6H3.3913V8.25H1.69565V9.9H0V11.55H1.69565V13.2H3.3913V14.85H5.08696V17.05H6.78261V18.7H8.47826V20.35H10.1739V22H11.8696V20.35H13.5652V18.7H15.2609V17.05H17.5217V13.2H19.2174V11.55H22.6087V13.2H20.913V14.85H22.6087V13.2H24.3043V11.55H26V9.9H24.3043V8.25H22.6087V6.6H20.913V8.25H22.6087V9.9H19.2174V8.25H17.5217V4.95H15.2609V3.3H13.5652V1.65H11.8696V0ZM11.8696 20.35H10.1739V18.7H8.47826V17.05H6.78261V14.85H5.08696V13.2H3.3913V11.55H15.2609V13.2H13.5652V17.05H11.8696V20.35ZM11.8696 1.65V4.95H13.5652V8.25H15.2609V9.9H3.3913V8.25H5.08696V6.6H6.78261V4.95H8.47826V3.3H10.1739V1.65H11.8696Z"
-                fill="black"
-              />
-            </svg>
+          <Link href="/swap" className="flex flex-col items-center gap-[10px]">
+            <div className="w-[50px] h-[50px] text-gray-300 bg-black rounded-full p-2">
+              <svg
+                data-slot="icon"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z"
+                ></path>
+              </svg>
+            </div>
+
             <span className="w-28 text-center transition-all bg-[#F9F9F9] hover:bg-[#F9F9F9]/80 hover:shadow-inner text-black text-[14.62px] font-bold">
-              MULTISENDER
+              SWAP
             </span>
           </Link>
 
           {/* COPYRIGHTS */}
           <span className="flex -rotate-90 text-black text-[12px] mt-32 ml-[-98px]">
-            2024® ALL RIGHTS RESERVED
+            2025® ALL RIGHTS RESERVED
           </span>
         </div>
       </div>
@@ -125,31 +122,29 @@ export default function Icons() {
               LOCKER
             </span>
           </Link>
-
           <Link
-            aria-disabled
-            href="#"
-            className="flex flex-col items-center gap-[2px] enabled:hover:opacity-70 opacity-35"
+            href="/swap"
+            className="flex flex-col items-center gap-[2px] hover:opacity-70"
           >
             <svg
-              width="18"
-              height="14"
-              viewBox="0 0 26 22"
-              fill="none"
+              data-slot="icon"
+              fill="currentColor"
+              viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
-              className="flex self-center w-[24px] h-[22px]"
+              aria-hidden="true"
             >
               <path
-                fillRule="evenodd"
                 clipRule="evenodd"
-                d="M11.8696 0H10.1739V1.65H8.47826V3.3H6.78261V4.95H5.08696V6.6H3.3913V8.25H1.69565V9.9H0V11.55H1.69565V13.2H3.3913V14.85H5.08696V17.05H6.78261V18.7H8.47826V20.35H10.1739V22H11.8696V20.35H13.5652V18.7H15.2609V17.05H17.5217V13.2H19.2174V11.55H22.6087V13.2H20.913V14.85H22.6087V13.2H24.3043V11.55H26V9.9H24.3043V8.25H22.6087V6.6H20.913V8.25H22.6087V9.9H19.2174V8.25H17.5217V4.95H15.2609V3.3H13.5652V1.65H11.8696V0ZM11.8696 20.35H10.1739V18.7H8.47826V17.05H6.78261V14.85H5.08696V13.2H3.3913V11.55H15.2609V13.2H13.5652V17.05H11.8696V20.35ZM11.8696 1.65V4.95H13.5652V8.25H15.2609V9.9H3.3913V8.25H5.08696V6.6H6.78261V4.95H8.47826V3.3H10.1739V1.65H11.8696Z"
-                fill="black"
-              />
+                fillRule="evenodd"
+                d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z"
+              ></path>
             </svg>
+
             <span className="text-center text-black text-[14.62px] font-bold">
-              MULTISENDER
+              SWAP
             </span>
           </Link>
+
           <ConnectButtonV4 />
         </div>
       </div>
