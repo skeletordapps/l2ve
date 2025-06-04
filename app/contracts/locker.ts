@@ -38,9 +38,10 @@ export async function hasAllowance(
   signer: JsonRpcSigner
 ) {
   try {
+    const signerAddress = await signer.getAddress();
     const allowance = Number(
       formatUnits(
-        await getAllowance(ERC20_ABI, token, CONTRACTS.locker, signer),
+        await getAllowance(ERC20_ABI, token, CONTRACTS.locker, signerAddress),
         decimals
       )
     );

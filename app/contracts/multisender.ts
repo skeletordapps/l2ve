@@ -17,16 +17,10 @@ export async function checkBalance(
     const userAddress = await signer.getAddress();
 
     if (type === SendType.ether) {
-      const etherBalance = Number(await getEtherBalance(userAddress, signer));
+      const etherBalance = Number(await getEtherBalance(userAddress));
       return etherBalance;
     } else if (type === SendType.token && token) {
-      const tokenBalance = await balanceOf(
-        L2VE_ABI,
-        token,
-        userAddress,
-        undefined,
-        signer
-      );
+      const tokenBalance = await balanceOf(L2VE_ABI, token, userAddress);
 
       return Number(formatEther(tokenBalance));
     }
