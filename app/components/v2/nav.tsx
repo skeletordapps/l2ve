@@ -11,6 +11,10 @@ export default function Nav() {
   const { page } = useContext(StateContext);
 
   useEffect(() => {
+    if (page === "/swap") location.href = "/";
+  }, [page]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       const date = new Date();
       const formattedDay = format(
@@ -27,6 +31,7 @@ export default function Nav() {
       setTime(formattedTime);
     }, 60);
   }, []);
+
   return (
     <div className="h-[40px] bg-white flex items-center justify-between px-[20px] text-[23px] text-black/80  border-b border-black">
       <div className="flex items-center gap-[10px] lg:gap-[25px] w-full">

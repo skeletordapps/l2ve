@@ -49,7 +49,7 @@ export default function Icons() {
               LOCKER
             </span>
           </Link>
-
+          {/* 
           <Link href="/swap" className="flex flex-col items-center gap-[10px]">
             <div className="w-[50px] h-[50px] text-gray-300 bg-black rounded-full p-2">
               <svg
@@ -70,7 +70,7 @@ export default function Icons() {
             <span className="w-28 text-center transition-all bg-[#F9F9F9] hover:bg-[#F9F9F9]/80 hover:shadow-inner text-black text-[14.62px] font-bold">
               SWAP
             </span>
-          </Link>
+          </Link> */}
 
           {/* COPYRIGHTS */}
           <span className="flex -rotate-90 text-black text-[12px] mt-32 ml-[-98px]">
